@@ -17,8 +17,6 @@ Das Kernziel dieses Projekts ist die Schaffung eines physischen Bedienfelds, das
 
 ```mermaid
 
-%%{init: {"theme": "dark"}}%%
-
 graph TD;
 
 subgraph LinuxCNC-Umgebung
@@ -27,7 +25,8 @@ LCNC(LinuxCNC+Ethercat Host-PC)
 
 end
 
-subgraph Servos
+subgraph (Servos
+  )
 SERVO1(Servo 1)
 SERVO2(Servo 2)
 SERVO3(Servo ...)
