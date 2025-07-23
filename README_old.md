@@ -81,7 +81,7 @@ ESP2 -- liest --> POTS
 
 ESP2 -- liest --> ROT
 
-**```**
+```
 
 **1.2. Datenfluss und Kommunikationslogik**
 
