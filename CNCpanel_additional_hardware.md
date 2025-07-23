@@ -66,7 +66,7 @@ Dies ist nicht optional, sondern für einen stabilen Betrieb unerlässlich.
 
 ```mermaid
 graph LR
-A["VCC (3.3V oder 5V) des IC"] -->|" [C] (100nF "| B["GND Pin des IC"]
+A["VCC (3.3V oder 5V) des IC"] -->|" [C] (100nF) Keramikkondensator "| B["GND Pin des IC"]
 ```
 
 - **Erklärung:** Platzieren Sie einen 100nF-Keramikkondensator so nah wie physisch möglich zwischen den VCC- und GND-Pins jedes einzelnen integrierten Schaltkreises (IC). Das gilt für beide ESP32, alle MCP23S17 und alle TXS0108E Pegelwandler.
