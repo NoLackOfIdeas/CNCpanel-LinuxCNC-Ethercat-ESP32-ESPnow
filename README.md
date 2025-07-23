@@ -25,7 +25,7 @@ LCNC(LinuxCNC+Ethercat Host-PC)
 
 end
 
-subgraph (Servos)
+subgraph Servos
 SERVO1(Servo 1)
 SERVO2(Servo 2)
 SERVO3(Servo ...)
