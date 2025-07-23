@@ -32,9 +32,16 @@ B --> |" -- Schwarzes Kabel --+--> "| C[Sensor]
 Sie benötigen **nicht** 64 Widerstände, sondern nur 8 – einen für jede Zeile.
 
 - **Schaltung (für eine Zeile):**
-- MCP23S17 Zeilen-Pin ---> (220Ω) --->+-- Anode LED 1
 
-|-- Anode LED 2 |--... +-- Anode LED 8 ```
+```mermaid
+graph LR
+A[MCP23S17 Zeilen-Pin] --> B[220 Ohm]
+B --> C[Anode LED 1]
+B --> D[Anode LED 2]
+B --> E[Anode LED ...]
+B --> F[Anode LED 8]
+
+```
 
 - **Erklärung:** Die Ansteuerung der Matrix erfolgt per Multiplexing. Es wird immer nur eine Spalte gleichzeitig aktiviert (über die MOSFETs). Der Strom fließt vom MCP23S17 durch den Widerstand zu den Anoden der LEDs in der aktiven Zeile. Der 220Ω-Widerstand ist ein guter Allround-Wert für 5V-Systeme, um eine gute Helligkeit bei ca. 15mA zu erreichen.
 
@@ -107,3 +114,10 @@ Ein Potentiometer ist im Grunde bereits ein verstellbarer Widerstand, der hier a
 Dadurch liefert das Potentiometer je nach Drehposition eine saubere Spannung zwischen 0V und 3.3V an den ESP32, ohne dass weitere Widerstände nötig sind.
 
 💡 **Tipp für stabile Messwerte:** Um das Rauschen bei den Potentiometer-Messungen zu reduzieren, ist es empfehlenswert, einen kleinen **Keramikkondensator** (ca. 10 nF bis 100 nF) zwischen dem mittleren Anschluss (ADC-Pin) und GND zu schalten. Dies ist aber optional und kein Widerstand.
+
+````
+
+```
+
+```
+````
