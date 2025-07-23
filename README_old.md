@@ -21,7 +21,7 @@ graph TD;
 
 subgraph LinuxCNC-Umgebung
 
-LCNC\[LinuxCNC Host-PC\]
+LCNC[LinuxCNC Host-PC]
 
 end
 
@@ -261,7 +261,7 @@ Projekt-Root/
 
 └── script.js
 
-Diese Struktur nutzt PlatformIO-Umgebungen (\[env\]), um die separaten Build-Prozesse für ESP1 und ESP2 zu verwalten.<sup>30</sup>
+Diese Struktur nutzt PlatformIO-Umgebungen ([env]), um die separaten Build-Prozesse für ESP1 und ESP2 zu verwalten.<sup>30</sup>
 
 **3.2.** platformio.ini **Konfiguration**
 
@@ -273,13 +273,13 @@ Die platformio.ini-Datei ist das Herzstück der Projektkonfiguration. Sie defini
 
 ; <https://docs.platformio.org/page/projectconf.html>
 
-\[platformio\]
+[platformio]
 
 default_envs = esp1, esp2
 
 ; Gemeinsame Konfigurationen für beide Umgebungen
 
-\[env\]
+[env]
 
 framework = arduino
 
@@ -291,7 +291,7 @@ monitor_speed = 115200
 
 ; Umgebung für ESP1 (EtherCAT Bridge)
 
-\[env:esp1\]
+[env:esp1]
 
 src_dir = src/esp1
 
@@ -303,7 +303,7 @@ build_flags = -DCORE_ESP1
 
 ; Umgebung für ESP2 (HMI Controller)
 
-\[env:esp2\]
+[env:esp2]
 
 src_dir = src/esp2
 
@@ -333,7 +333,7 @@ build_flags = -DCORE_ESP2
 
 ```
 
-- \[env:esp1\] **und** \[env:esp2\]: Definieren separate Build-Ziele. src_dir weist PlatformIO an, den Code aus den jeweiligen Unterverzeichnissen zu kompilieren.
+- [env:esp1] **und** [env:esp2]: Definieren separate Build-Ziele. src_dir weist PlatformIO an, den Code aus den jeweiligen Unterverzeichnissen zu kompilieren.
 - lib_deps: Listet die Abhängigkeiten auf, die PlatformIO automatisch aus seiner Registry herunterladen und verwalten soll.<sup>31</sup> Für ESP2 werden die Bibliotheken für den MCP23S17 <sup>33</sup>, den asynchronen Webserver <sup>34</sup>, OTA-Updates <sup>35</sup> und die Tastenmatrix <sup>36</sup> eingebunden.
 - build_flags: Definiert Präprozessor-Makros (-DCORE_ESP1, -DCORE_ESP2), die im Code verwendet werden können, um zwischen den Builds für die beiden Boards zu unterscheiden.
 - board_build.filesystem = littlefs: Konfiguriert das Dateisystem für ESP2, um die Web-Dateien zu speichern.
@@ -487,7 +487,7 @@ EASYCAT.BufferIn.Cust.spindle_rpm = rpm;
 
 uint8_t read_led_state_from_ethercat(int led_index) {
 
-return EASYCAT.BufferOut.Cust.led_states_from_lcnc\[led_index\];
+return EASYCAT.BufferOut.Cust.led_states_from_lcnc[led_index];
 
 }
 
@@ -643,8 +643,8 @@ Die serverseitige C++-Funktion onEvent ist der zentrale Punkt für die Echtzeitk
 
 - index.html: Die HTML-Datei definiert die Grundstruktur der Seite. Sie enthält Tabellen für die 8x8-Button- und LED-Matrizen, Eingabefelder für die Konfiguration (z.B. Tastenname, Toggle-Checkbox, Gruppenauswahl), Live-Statusanzeigen und Steuerelemente wie "Speichern"- und "Firmware-Update"-Buttons. Tooltips und Hilfe-Labels werden hinzugefügt, um die Bedienung zu erleichtern.
 - script.js: Die gesamte dynamische Logik befindet sich in dieser JavaScript-Datei.
-  1. **WebSocket-Verbindung:** Beim Laden der Seite wird die Verbindung zum Server aufgebaut: var gateway = \\ws://${window.location.hostname}/ws\`; websocket = new WebSocket(gateway);.<sup>43</sup> Es werden Handler für onopen, oncloseundonmessage\` registriert.
-  2. onmessage**\-Handler:** Diese Funktion ist der Kern der Live-Anzeige. Sie empfängt JSON-Nachrichten vom ESP32, parst sie und aktualisiert die entsprechenden HTML-Elemente (z. B. ändert sie die Farbe eines <div>, das eine LED darstellt, oder den Text eines Statusfeldes).
+  1. **WebSocket-Verbindung:** Beim Laden der Seite wird die Verbindung zum Server aufgebaut: var gateway = \ws://${window.location.hostname}/ws\`; websocket = new WebSocket(gateway);.<sup>43</sup> Es werden Handler für onopen, oncloseundonmessage\` registriert.
+  2. onmessage**-Handler:** Diese Funktion ist der Kern der Live-Anzeige. Sie empfängt JSON-Nachrichten vom ESP32, parst sie und aktualisiert die entsprechenden HTML-Elemente (z. B. ändert sie die Farbe eines <div>, das eine LED darstellt, oder den Text eines Statusfeldes).
   3. **Event-Listener:** An die Konfigurationselemente (Eingabefelder, Checkboxen) und den "Speichern"-Button werden Event-Listener angehängt.
   4. **Konfiguration senden:** Wenn der Benutzer auf "Speichern" klickt, liest eine Funktion alle Werte aus den Konfigurationsfeldern der Seite, baut daraus ein großes JSON-Objekt, das die gesamte Konfiguration repräsentiert, und sendet es mit websocket.send(JSON.stringify(configObject)) an den ESP32.
   5. **Clientseitige Validierung:** JavaScript-Logik validiert Eingaben direkt im Browser, z. B. um sicherzustellen, dass innerhalb einer als "Radio-Gruppe" definierten Tastengruppe immer nur eine Taste als aktiv markiert werden kann.
@@ -787,7 +787,7 @@ const int POTI_PINS = {36, 39, 32, 33, 35, 34};
 
 struct ButtonConfig {
 
-const char\* name; // Name für die Weboberfläche
+const char* name; // Name für die Weboberfläche
 
 uint8_t matrix_row; // Zeile in der 8x8 Matrix (0-7)
 
@@ -839,7 +839,7 @@ BOUND_TO_LCNC // Zustand wird von LinuxCNC über EtherCAT gesteuert
 
 struct LedConfig {
 
-const char\* name;
+const char* name;
 
 uint8_t matrix_row;
 
@@ -899,7 +899,7 @@ platformio.ini
 
 ; <https://docs.platformio.org/page/projectconf.html>
 
-\[platformio\]
+[platformio]
 
 default_envs = esp1, esp2
 
@@ -911,7 +911,7 @@ description = Dual ESP32 control system for LinuxCNC via EtherCAT and ESP-NOW.
 
 ; =================================================================
 
-\[env\]
+[env]
 
 framework = arduino
 
@@ -929,7 +929,7 @@ lib_ldf_mode = chain+
 
 ; =================================================================
 
-\[env:esp1\]
+[env:esp1]
 
 src_dir = src/esp1
 
@@ -945,7 +945,7 @@ build_flags = -DCORE_ESP1
 
 ; =================================================================
 
-\[env:esp2\]
+[env:esp2]
 
 src_dir = src/esp2
 
@@ -1141,11 +1141,11 @@ struct_message_to_esp2 outgoing_lcnc_data;
 
 // --- ESP-NOW Callbacks ---
 
-void OnDataSent(const uint8_t \*mac_addr, esp_now_send_status_t status) {
+void OnDataSent(const uint8_t *mac_addr, esp_now_send_status_t status) {
 
 if (DEBUG_ENABLED) {
 
-Serial.print("\\r\\nLast Packet Send Status:\\t");
+Serial.print("\r\nLast Packet Send Status:\t");
 
 Serial.println(status == ESP_NOW_SEND_SUCCESS? "Delivery Success" : "Delivery Fail");
 
@@ -1153,7 +1153,7 @@ Serial.println(status == ESP_NOW_SEND_SUCCESS? "Delivery Success" : "Delivery Fa
 
 }
 
-void OnDataRecv(const uint8_t \*mac, const uint8_t \*incomingData, int len) {
+void OnDataRecv(const uint8_t *mac, const uint8_t *incomingData, int len) {
 
 memcpy(&incoming_hmi_data, incomingData, sizeof(incoming_hmi_data));
 
@@ -1243,15 +1243,15 @@ while (1) { delay(100); }
 
 for (int i = 0; i < NUM_ENCODERS; i++) {
 
-if (ENCODER_A_PINS\[i\]!= -1 && ENCODER_B_PINS\[i\]!= -1) {
+if (ENCODER_A_PINS[i]!= -1 && ENCODER_B_PINS[i]!= -1) {
 
 ESP32Encoder::useInternalWeakPullResistors = UP;
 
-encoders\[i\].attachHalfQuad(ENCODER_A_PINS\[i\], ENCODER_B_PINS\[i\]);
+encoders[i].attachHalfQuad(ENCODER_A_PINS[i], ENCODER_B_PINS[i]);
 
-encoders\[i\].setFilter(ENCODER_GLITCH_FILTER);
+encoders[i].setFilter(ENCODER_GLITCH_FILTER);
 
-encoders\[i\].clearCount();
+encoders[i].clearCount();
 
 }
 
@@ -1267,7 +1267,7 @@ attachInterrupt(digitalPinToInterrupt(HALL_SENSOR_PIN), hall_sensor_isr, FALLING
 
 for(int i=0; i<NUM_PROBES; i++) {
 
-pinMode(PROBE_PINS\[i\], INPUT_PULLUP);
+pinMode(PROBE_PINS[i], INPUT_PULLUP);
 
 }
 
@@ -1291,13 +1291,13 @@ EASYCAT.MainTask();
 
 for (int i = 0; i < NUM_ENCODERS; i++) {
 
-if (ENCODER_A_PINS\[i\]!= -1) {
+if (ENCODER_A_PINS[i]!= -1) {
 
 // Mapping der Encoder-Werte in den EtherCAT-Buffer
 
 // Dies erfordert eine benutzerdefinierte Struktur in einer separaten Header-Datei
 
-// Beispiel: EASYCAT.BufferIn.Cust.encoder_values\[i\] = encoders\[i\].getCount();
+// Beispiel: EASYCAT.BufferIn.Cust.encoder_values[i] = encoders[i].getCount();
 
 }
 
@@ -1315,7 +1315,7 @@ hall_pulse_count = 0;
 
 interrupts();
 
-current_rpm = (pulses \* (60000 / TACHO_UPDATE_INTERVAL_MS)) / TACHO_MAGNETS_PER_REVOLUTION;
+current_rpm = (pulses * (60000 / TACHO_UPDATE_INTERVAL_MS)) / TACHO_MAGNETS_PER_REVOLUTION;
 
 if (current_rpm < TACHO_MIN_RPM_DISPLAY) {
 
@@ -1335,7 +1335,7 @@ uint8_t probe_bitmask = 0;
 
 for(int i=0; i<NUM_PROBES; i++) {
 
-if(probe_states\[i\]) {
+if(probe_states[i]) {
 
 probe_bitmask |= (1 << i);
 
@@ -1355,7 +1355,7 @@ probe_bitmask |= (1 << i);
 
 // outgoing_lcnc_data.linuxcnc_status = EASYCAT.BufferOut.Cust.linuxcnc_status_word;
 
-esp_now_send(esp2_mac_address, (uint8_t \*) &outgoing_lcnc_data, sizeof(outgoing_lcnc_data));
+esp_now_send(esp2_mac_address, (uint8_t *) &outgoing_lcnc_data, sizeof(outgoing_lcnc_data));
 
 }
 
@@ -1449,9 +1449,9 @@ const int ENC2_B_PINS = {27, 14};
 
 # **define** MATRIX_COLS 8
 
-# **define** MAX_BUTTONS (MATRIX_ROWS \* MATRIX_COLS)
+# **define** MAX_BUTTONS (MATRIX_ROWS * MATRIX_COLS)
 
-# **define** MAX_LEDS (MATRIX_ROWS \* MATRIX_COLS)
+# **define** MAX_LEDS (MATRIX_ROWS * MATRIX_COLS)
 
 // Pins der Button-Matrix am MCP_ADDR_BUTTONS
 
@@ -1509,11 +1509,11 @@ struct_message_to_esp2 incoming_lcnc_data;
 
 // --- WebSocket Event Handler ---
 
-void onWsEvent(AsyncWebSocket \*server, AsyncWebSocketClient \*client, AwsEventType type, void \*arg, uint8_t \*data, size_t len) {
+void onWsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType type, void *arg, uint8_t *data, size_t len) {
 
 if (type == WS_EVT_CONNECT) {
 
-if (DEBUG_ENABLED) Serial.printf("WebSocket client #%u connected from %s\\n", client->id(), client->remoteIP().toString().c_str());
+if (DEBUG_ENABLED) Serial.printf("WebSocket client #%u connected from %s\n", client->id(), client->remoteIP().toString().c_str());
 
 // Sende initiale Konfiguration und Status an den neuen Client
 
@@ -1521,23 +1521,23 @@ if (DEBUG_ENABLED) Serial.printf("WebSocket client #%u connected from %s\\n", cl
 
 } else if (type == WS_EVT_DISCONNECT) {
 
-if (DEBUG_ENABLED) Serial.printf("WebSocket client #%u disconnected\\n", client->id());
+if (DEBUG_ENABLED) Serial.printf("WebSocket client #%u disconnected\n", client->id());
 
 } else if (type == WS_EVT_DATA) {
 
-AwsFrameInfo \*info = (AwsFrameInfo\*)arg;
+AwsFrameInfo *info = (AwsFrameInfo*)arg;
 
 if (info->final && info->index == 0 && info->len == len && info->opcode == WS_TEXT) {
 
-data\[len\] = 0;
+data[len] = 0;
 
-if (DEBUG_ENABLED) Serial.printf("WS data from client #%u: %s\\n", client->id(), (char\*)data);
+if (DEBUG_ENABLED) Serial.printf("WS data from client #%u: %sn", client->id(), (char*)data);
 
 // JSON parsen und Befehle verarbeiten
 
 StaticJsonDocument doc;
 
-DeserializationError error = deserializeJson(doc, (char\*)data);
+DeserializationError error = deserializeJson(doc, (char*)data);
 
 if (error) {
 
@@ -1549,7 +1549,7 @@ return;
 
 }
 
-const char\* command = doc\["command"\];
+const char* command = doc["command"];
 
 if (strcmp(command, "saveConfig") == 0) {
 
@@ -1571,13 +1571,13 @@ save_configuration(); // Funktion aus persistence.cpp
 
 // --- ESP-NOW Callbacks ---
 
-void OnDataSent(const uint8_t \*mac_addr, esp_now_send_status_t status) {
+void OnDataSent(const uint8_t *mac_addr, esp_now_send_status_t status) {
 
 // Optional: Logik für Sende-Status
 
 }
 
-void OnDataRecv(const uint8_t \*mac, const uint8_t \*incomingData, int len) {
+void OnDataRecv(const uint8_t *mac, const uint8_t *incomingData, int len) {
 
 memcpy(&incoming_lcnc_data, incomingData, sizeof(incoming_lcnc_data));
 
@@ -1617,7 +1617,7 @@ if (DEBUG_ENABLED) Serial.print(".");
 
 if (DEBUG_ENABLED) {
 
-Serial.println("\\nWiFi connected.");
+Serial.println("\nWiFi connected.");
 
 Serial.print("IP Address: ");
 
@@ -1627,7 +1627,7 @@ Serial.println(WiFi.localIP());
 
 // ESP-NOW initialisieren
 
-if (esp_now_init()!= ESP_OK) { /\* Fehlerbehandlung \*/ }
+if (esp_now_init()!= ESP_OK) { /* Fehlerbehandlung */ }
 
 esp_now_register_send_cb(OnDataSent);
 
@@ -1641,7 +1641,7 @@ peerInfo.channel = 0;
 
 peerInfo.encrypt = false;
 
-if (esp_now_add_peer(&peerInfo)!= ESP_OK) { /\* Fehlerbehandlung \*/ }
+if (esp_now_add_peer(&peerInfo)!= ESP_OK) { /* Fehlerbehandlung */ }
 
 // Webserver-Routen und WebSocket-Handler
 
@@ -1649,19 +1649,19 @@ ws.onEvent(onWsEvent);
 
 server.addHandler(&ws);
 
-server.on("/", HTTP_GET,(AsyncWebServerRequest \*request){
+server.on("/", HTTP_GET,(AsyncWebServerRequest *request){
 
 request->send(LittleFS, "/index.html", "text/html");
 
 });
 
-server.on("/style.css", HTTP_GET,(AsyncWebServerRequest \*request){
+server.on("/style.css", HTTP_GET,(AsyncWebServerRequest *request){
 
 request->send(LittleFS, "/style.css", "text/css");
 
 });
 
-server.on("/script.js", HTTP_GET,(AsyncWebServerRequest \*request){
+server.on("/script.js", HTTP_GET,(AsyncWebServerRequest *request){
 
 request->send(LittleFS, "/script.js", "application/javascript");
 
@@ -1693,7 +1693,7 @@ if (hmi_data_has_changed()) {
 
 get_hmi_data(&outgoing_hmi_data);
 
-esp_now_send(esp1_mac_address, (uint8_t \*) &outgoing_hmi_data, sizeof(outgoing_hmi_data));
+esp_now_send(esp1_mac_address, (uint8_t *) &outgoing_hmi_data, sizeof(outgoing_hmi_data));
 
 }
 
@@ -1717,7 +1717,7 @@ void hmi_task();
 
 bool hmi_data_has_changed();
 
-void get_hmi_data(struct_message_to_esp1\* data);
+void get_hmi_data(struct_message_to_esp1* data);
 
 void update_leds_from_lcnc(const struct_message_to_esp2& data);
 
@@ -1799,13 +1799,13 @@ if (DEBUG_ENABLED) Serial.println("Error initializing MCP for buttons.");
 
 for (int i = 0; i < MATRIX_ROWS; i++) {
 
-mcp_buttons.pinMode(BUTTON_ROW_PINS\[i\], OUTPUT);
+mcp_buttons.pinMode(BUTTON_ROW_PINS[i], OUTPUT);
 
 }
 
 for (int i = 0; i < MATRIX_COLS; i++) {
 
-mcp_buttons.pinMode(BUTTON_COL_PINS\[i\], INPUT_PULLUP);
+mcp_buttons.pinMode(BUTTON_COL_PINS[i], INPUT_PULLUP);
 
 }
 
@@ -1841,7 +1841,7 @@ return state;
 
 }
 
-void get_hmi_data(struct_message_to_esp1\* data) {
+void get_hmi_data(struct_message_to_esp1* data) {
 
 memcpy(data->button_matrix_states, current_button_states, sizeof(current_button_states));
 
@@ -1979,7 +1979,7 @@ data/style.css
 
 ```CSS
 
-/\* Basic styling for the web interface \*/
+/* Basic styling for the web interface */
 
 body { font-family: sans-serif; margin: 0; background-color: #f4f4f4; }
 
@@ -2007,7 +2007,7 @@ h2 { border-bottom: 2px solid #333; padding-bottom: 0.5rem; }
 
 .led-on { background-color: #ffc107; box-shadow: 0 0 10px #ffc107; }
 
-/\* Tabs \*/
+/* Tabs */
 
 # config-tabs { overflow: hidden; border-bottom: 1px solid #ccc; margin-bottom: 1rem; }
 
@@ -2019,7 +2019,7 @@ h2 { border-bottom: 2px solid #333; padding-bottom: 0.5rem; }
 
 .tab-content { display: none; padding: 6px 12px; border-top: none; }
 
-/\* Config Tables \*/
+/* Config Tables */
 
 .config-table-header,.config-table-row { display: grid; grid-template-columns: 50px 1fr 100px 100px 1fr; gap: 10px; padding: 8px; border-bottom: 1px solid #eee; align-items: center; }
 
@@ -2046,40 +2046,25 @@ const wsStatusElem = document.getElementById('ws-status');
 window.addEventListener('load', onLoad);
 
 function onLoad(event) {
-
-initWebSocket();
-
-initUI();
-
+  initWebSocket();
+  initUI();
 }
 
 function initWebSocket() {
-
-console.log('Trying to open a WebSocket connection...');
-
-const gateway = \`ws://${window.location.hostname}/ws\`;
-
-websocket = new WebSocket(gateway);
-
-websocket.onopen = onOpen;
-
-websocket.onclose = onClose;
-
-websocket.onmessage = onMessage;
-
+  console.log('Trying to open a WebSocket connection...');
+  const gateway = `ws://${window.location.hostname}/ws`;
+  websocket = new WebSocket(gateway);
+  websocket.onopen = onOpen;
+  websocket.onclose = onClose;
+  websocket.onmessage = onMessage;
 }
 
 function onOpen(event) {
-
-console.log('Connection opened');
-
-wsStatusElem.textContent = 'Verbunden';
-
-wsStatusElem.className = 'status-connected';
-
-// Request initial data
-
-websocket.send(JSON.stringify({ command: 'getInitialState' }));
+  console.log('Connection opened');
+  wsStatusElem.textContent = 'Verbunden';
+  wsStatusElem.className = 'status-connected';
+  // Request initial data
+  websocket.send(JSON.stringify({ command: 'getInitialState' }));
 
 }
 
@@ -2129,21 +2114,21 @@ createMatrixGrid('led-matrix-live', 'led-live');
 
 function createMatrixGrid(containerId, prefix) {
 
-const container = document.getElementById(containerId);
+  const container = document.getElementById(containerId);
 
-container.innerHTML = '';
+  container.innerHTML = '';
 
-for (let r = 0; r < 8; r++) {
+  for (let r = 0; r < 8; r++) {
 
-for (let c = 0; c < 8; c++) {
+    for (let c = 0; c < 8; c++) {
 
-const cell = document.createElement('div');
+      const cell = document.createElement('div');
 
-cell.className = 'matrix-cell';
+      cell.className = 'matrix-cell';
 
-cell.id = \`${prefix}-${r}-${c}\`;
+      cell.id = `${prefix}-${r}-${c}`;
 
-container.appendChild(cell);
+      container.appendChild(cell);
 
 }
 
@@ -2159,11 +2144,11 @@ for (let i = 0; i < 8; i++) {
 
 for (let j = 0; j < 8; j++) {
 
-const cell = document.getElementById(\`btn-live-${i}-${j}\`);
+const cell = document.getElementById(`btn-live-${i}-${j}`);
 
 if (cell) {
 
-if ((status.buttons\[i\] >> j) & 1) {
+if ((status.buttons[i] >> j) & 1) {
 
 cell.classList.add('button-pressed');
 
@@ -2185,11 +2170,11 @@ for (let i = 0; i < 8; i++) {
 
 for (let j = 0; j < 8; j++) {
 
-const cell = document.getElementById(\`led-live-${i}-${j}\`);
+const cell = document.getElementById(`led-live-${i}-${j}`);
 
 if (cell) {
 
-if ((status.leds\[i\] >> j) & 1) {
+if ((status.leds[i] >> j) & 1) {
 
 cell.classList.add('led-on');
 
@@ -2213,7 +2198,7 @@ function buildConfigUI(config) {
 
 const btnContainer = document.getElementById('button-config-table');
 
-btnContainer.innerHTML = \`
+btnContainer.innerHTML = `
 
 <div class="config-table-header">
 
@@ -2221,7 +2206,7 @@ btnContainer.innerHTML = \`
 
 </div>
 
-\`;
+`;
 
 config.buttons.forEach((btn, index) => {
 
@@ -2229,7 +2214,7 @@ const row = document.createElement('div');
 
 row.className = 'config-table-row';
 
-row.innerHTML = \`
+row.innerHTML = `
 
 <div>${index}</div>
 
@@ -2241,7 +2226,7 @@ row.innerHTML = \`
 
 <div><span title="Row: ${btn.matrix_row}, Col: ${btn.matrix_col}">Pos: ${btn.matrix_row},${btn.matrix_col}</span></div>
 
-\`;
+`;
 
 btnContainer.appendChild(row);
 
@@ -2265,7 +2250,7 @@ leds:
 
 for (let i = 0; i < 64; i++) { // Assuming MAX_BUTTONS
 
-const nameEl = document.getElementById(\`btn-name-${i}\`);
+const nameEl = document.getElementById(`btn-name-${i}`);
 
 if (!nameEl) break;
 
@@ -2273,9 +2258,9 @@ config.buttons.push({
 
 name: nameEl.value,
 
-is_toggle: document.getElementById(\`btn-toggle-${i}\`).checked,
+is_toggle: document.getElementById(`btn-toggle-${i}`).checked,
 
-radio_group_id: parseInt(document.getElementById(\`btn-radio-${i}\`).value)
+radio_group_id: parseInt(document.getElementById(`btn-radio-${i}`).value)
 
 });
 
@@ -2299,7 +2284,7 @@ tabcontent = document.getElementsByClassName("tab-content");
 
 for (i = 0; i < tabcontent.length; i++) {
 
-tabcontent\[i\].style.display = "none";
+tabcontent[i].style.display = "none";
 
 }
 
@@ -2307,7 +2292,7 @@ tablinks = document.getElementsByClassName("tab-link");
 
 for (i = 0; i < tablinks.length; i++) {
 
-tablinks\[i\].className = tablinks\[i\].className.replace(" active", "");
+tablinks[i].className = tablinks[i].className.replace(" active", "");
 
 }
 
