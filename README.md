@@ -39,7 +39,7 @@ ENC2[max. 8 Quadratur-Encoder]
 
 POTS[max. 6 Potentiometer]
 
-ROT.ENCODER
+ROT.Switches
 
 end
 
@@ -79,7 +79,7 @@ ESP2 -- liest --> ENC2
 
 ESP2 -- liest --> POTS
 
-ESP2 -- liest --> ROT.ENCODER
+ESP2 -- liest --> ROT.Switches
 ```
 
 **1.2. Datenfluss und Kommunikationslogik**
