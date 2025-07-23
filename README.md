@@ -25,6 +25,13 @@ LCNC(LinuxCNC+Ethercat Host-PC)
 
 end
 
+subgraph SERVOS
+SERVO1(Servo 1)
+SERVO2(Servo 2)
+SERVO3(Servo ...)
+SERV4(Servo X)
+end
+
 subgraph HMI-Einheit
 
 ESP2(ESP2)
@@ -60,6 +67,11 @@ PROBES(max 8 Probes)
 end
 
 end
+
+SERVOS <--> |EtherCAT| LCNC
+SERVO1 <--> |EtherCAT| SERVO2
+SERVO2 <--> |EtherCAT| SERVO3
+SERVO3 <--> |EtherCAT| SERVO4
 
 LCNC <--> |EtherCAT| ESP1
 
