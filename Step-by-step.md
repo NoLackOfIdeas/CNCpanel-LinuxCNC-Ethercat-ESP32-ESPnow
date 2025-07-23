@@ -1,6 +1,6 @@
 Hier ist eine umfassende Checkliste mit allem, was Sie zur erfolgreichen Umsetzung des Projekts beachten und vorbereiten müssen, unterteilt in die Bereiche Hardware, Software und Inbetriebnahme.
 
-**1\. Hardware-Vorbereitung und Montage**
+**1. Hardware-Vorbereitung und Montage**
 
 Bevor Sie den Code aufspielen, muss die Hardware korrekt aufgebaut und konfiguriert sein.
 

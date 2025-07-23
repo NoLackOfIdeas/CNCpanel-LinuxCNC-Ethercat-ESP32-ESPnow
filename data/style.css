@@ -1,0 +1,37 @@
+/* Basic styling for the web interface */
+body { font-family: sans-serif; margin: 0; background-color: #f4f4f4; color: #333; }
+header { background-color: #333; color: white; padding: 1rem; text-align: center; position: relative; }
+main { max-width: 1200px; margin: 1rem auto; padding: 1rem; background-color: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+section { margin-bottom: 2rem; }
+h1, h2, h3 { color: #333; }
+h2 { border-bottom: 2px solid #007bff; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+
+#ws-status { position: absolute; top: 10px; right: 10px; font-size: 0.8rem; padding: 5px 10px; border-radius: 5px; }
+.status-connected { background-color: #28a745; color: white; }
+.status-disconnected { background-color: #dc3545; color: white; }
+
+.status-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; }
+.matrix-grid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 5px; width: 250px; height: 250px; border: 1px solid #ccc; padding: 10px; border-radius: 4px; }
+.matrix-cell { width: 100%; height: 100%; border: 1px solid #ddd; border-radius: 4px; transition: background-color 0.2s, box-shadow 0.2s; }
+.button-pressed { background-color: #007bff!important; }
+.led-on { background-color: #ffc107; box-shadow: 0 0 10px #ffc107; }
+
+/* Tabs */
+#config-tabs { overflow: hidden; border-bottom: 1px solid #ccc; margin-bottom: 1rem; }
+.tab-link { background-color: inherit; float: left; border: none; outline: none; cursor: pointer; padding: 14px 16px; transition: 0.3s; font-size: 1rem; }
+.tab-link:hover { background-color: #ddd; }
+.tab-link.active { background-color: #ccc; }
+.tab-content { display: none; padding: 6px 12px; border-top: none; animation: fadeEffect 0.5s; }
+@keyframes fadeEffect { from {opacity: 0;} to {opacity: 1;} }
+
+/* Config Tables */
+.config-table-header,.config-table-row { display: grid; grid-template-columns: 50px 1fr 100px 100px 1fr; gap: 10px; padding: 8px; border-bottom: 1px solid #eee; align-items: center; }
+.config-table-header { font-weight: bold; background-color: #f0f0f0; }
+.config-table-row input,.config-table-row select { width: 100%; padding: 5px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; }
+
+.actions { margin-top: 1.5rem; text-align: right; }
+.actions button { padding: 10px 20px; font-size: 1rem; cursor: pointer; border-radius: 5px; border: none; margin-left: 10px; }
+#save-config-btn { background-color: #28a745; color: white; }
+#save-config-btn:hover { background-color: #218838; }
+.actions button:last-child { background-color: #007bff; color: white; }
+.actions button:last-child:hover { background-color: #0069d9; }

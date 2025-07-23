@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LinuxCNC HMI Konfiguration</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>LinuxCNC HMI Konfiguration & Status</h1>
+        <div id="ws-status">Verbindung wird hergestellt...</div>
+    </header>
+
+    <main>
+        <section id="live-status">
+            <h2>Live-Status</h2>
+            <div class="status-grid">
+                <div>
+                    <h3>Tastenmatrix</h3>
+                    <div id="button-matrix-live" class="matrix-grid"></div>
+                </div>
+                <div>
+                    <h3>LED-Matrix</h3>
+                    <div id="led-matrix-live" class="matrix-grid"></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="configuration">
+            <h2>Konfiguration</h2>
+            <div id="config-tabs">
+                <button class="tab-link active" onclick="openTab(event, 'buttons')">Tasten</button>
+                <button class="tab-link" onclick="openTab(event, 'leds')">LEDs</button>
+                <button class="tab-link" onclick="openTab(event, 'other')">Weitere</button>
+            </div>
+
+            <div id="buttons" class="tab-content" style="display: block;">
+                <h3>Tastenkonfiguration</h3>
+                <div id="button-config-table"></div>
+            </div>
+
+            <div id="leds" class="tab-content">
+                <h3>LED-Konfiguration</h3>
+                <div id="led-config-table"></div>
+            </div>
+            
+            <div id="other" class="tab-content">
+                <h3>Weitere Einstellungen</h3>
+            </div>
+
+            <div class="actions">
+                <button id="save-config-btn">Konfiguration Speichern</button>
+                <button onclick="window.location.href='/update'">Firmware Update</button>
+            </div>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
