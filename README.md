@@ -39,7 +39,7 @@ ENC2(max. 8 Quadratur-Encoder)
 
 POTS(max. 6 Potentiometer)
 
-ROT.Switches
+ROT(max 4 ROT.Switches)
 
 end
 
@@ -53,9 +53,9 @@ subgraph ESP1 Peripherie
 
 ENC1(max. 8 Quadratur-Encoder)
 
-HALL
+HALL(1 Hall/RPM)
 
-PROBES
+PROBES(max 8 Probes)
 
 end
 
@@ -79,7 +79,7 @@ ESP2 -- liest --> ENC2
 
 ESP2 -- liest --> POTS
 
-ESP2 -- liest --> ROT.Switches
+ESP2 -- liest --> ROT
 ```
 
 **1.2. Datenfluss und Kommunikationslogik**
