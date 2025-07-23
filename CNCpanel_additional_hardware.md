@@ -50,8 +50,12 @@ B --> F[Anode LED 8]
 Dies ist entscheidend für eine zuverlässige Tastatur, die auch mehrere gleichzeitige Tastendrücke korrekt erkennt.
 
 - **Schaltung (für einen Taster):**
-- MCP23S17 Zeilen-Pin (als Ausgang) ----->| |---- ----> MCP23S17 Spalten-Pin (als Eingang mit Pull-up)
-- Diode
+
+```mermaid
+graph LR
+A[MCP23S17 Zeilen-Pin] -->|" 1N4148 Diode "| B[MCP23S17 Spalten-Pin (als Eingang mit Pull-up)]
+```
+
 - **Erklärung:** Die Diode (z.B. 1N4148) wird in Serie zu jedem Taster geschaltet. Der Strich auf der Diode (Kathode) muss in Richtung des Zeilen-Pins zeigen. Dies stellt sicher, dass der Strom nur von der Spalte zur Zeile fließen kann, wenn eine Taste gedrückt wird, und verhindert Rückflüsse, die zu "Ghosting" führen würden.
 
 **4. Entkopplungskondensatoren (an allen ICs)**
