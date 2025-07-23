@@ -31,9 +31,9 @@ ESP2
 
 subgraph ESP2 Peripherie
 
-BTN
+BTN (8x8)
 
-LED
+LED (8x8)
 
 ENC2[max. 8 Quadratur-Encoder]
 
@@ -71,9 +71,9 @@ ESP1 -- erfasst --> HALL
 
 ESP1 -- erfasst --> PROBES
 
-ESP2 -- steuert & liest --> BTN
+ESP2 -- steuert & liest --> BTN (8x8)
 
-ESP2 -- steuert --> LED
+ESP2 -- steuert --> LED (8x8)
 
 ESP2 -- liest --> ENC2
 
