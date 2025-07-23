@@ -21,7 +21,7 @@ Das Kernziel dieses Projekts ist die Schaffung eines physischen Bedienfelds, das
 
 ```mermaid
 
-graph TD
+graph TD;
 
 subgraph LinuxCNC-Umgebung
 
@@ -39,9 +39,9 @@ BTN
 
 LED
 
-ENC2\[max. 8 Quadratur-Encoder\]
+ENC2[max. 8 Quadratur-Encoder]
 
-POTS\[max. 6 Potentiometer\]
+POTS[max. 6 Potentiometer]
 
 ROT
 
@@ -55,7 +55,7 @@ ESP1
 
 subgraph ESP1 Peripherie
 
-ENC1\[max. 8 Quadratur-Encoder\]
+ENC1[max. 8 Quadratur-Encoder]
 
 HALL
 
@@ -65,9 +65,9 @@ end
 
 end
 
-LCNC &lt;--&gt;|EtherCAT| ESP1
+LCNC <--> |EtherCAT| ESP1
 
-ESP1 &lt;--&gt;|ESP-NOW| ESP2
+ESP1 <--> |ESP-NOW| ESP2
 
 ESP1 -- erfasst --> ENC1
 
