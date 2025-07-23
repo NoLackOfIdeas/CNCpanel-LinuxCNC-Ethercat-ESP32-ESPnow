@@ -14,6 +14,7 @@ Die Kommunikation zwischen den beiden ESP32-Einheiten erfolgt drahtlos über das
 Das Kernziel dieses Projekts ist die Schaffung eines physischen Bedienfelds, das die Flexibilität und Konfigurierbarkeit moderner Embedded-Systeme mit der Zuverlässigkeit und Leistung industrieller Steuerungsprotokolle verbindet.
 
 **System-Topologie:**
+test
 
 ```mermaid
 
