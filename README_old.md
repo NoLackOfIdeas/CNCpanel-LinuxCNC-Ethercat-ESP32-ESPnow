@@ -15,7 +15,7 @@ Das Kernziel dieses Projekts ist die Schaffung eines physischen Bedienfelds, das
 
 **System-Topologie:**
 
-````mermaid
+```mermaid
 
 graph TD
 
@@ -137,21 +137,21 @@ ESP1 ist die Schnittstelle zur Maschine und den direkt zugehörigen Sensoren. Di
 
 **Tabelle: ESP1 GPIO-Zuweisung**
 
-| Funktion | ESP32 GPIO | Verbunden mit | Anmerkungen |
-| --- | --- | --- | --- |
-| SPI MOSI | GPIO 23 | EasyCAT Pro MOSI | VSPI Standard |
-| SPI MISO | GPIO 19 | EasyCAT Pro MISO | VSPI Standard |
-| SPI SCK | GPIO 18 | EasyCAT Pro SCK | VSPI Standard |
-| SPI CS | GPIO 5 | EasyCAT Pro CS | VSPI Standard |
-| Encoder 1A | GPIO 34 | AS5311 Ch1 A | Nur Eingang, PCNT-fähig |
-| Encoder 1B | GPIO 35 | AS5311 Ch1 B | Nur Eingang, PCNT-fähig |
-| Encoder 2A | GPIO 32 | AS5311 Ch2 A | PCNT-fähig |
-| Encoder 2B | GPIO 33 | AS5311 Ch2 B | PCNT-fähig |
-| ... (bis zu 8 Encoder) | ... | ... | Bevorzugt PCNT-fähige Pins verwenden |
-| Hall-Sensor | GPIO 27 | NJK-5002C Signal | Interrupt-fähig, externer Pull-up erforderlich |
-| Sonde 1 | GPIO 26 | SN04-N Sonde 1 Signal | Interrupt-fähig, externer Pull-up erforderlich |
-| Sonde 2 | GPIO 25 | SN04-N Sonde 2 Signal | Interrupt-fähig, externer Pull-up erforderlich |
-| ... (bis zu 8 Sonden) | ... | ... | Interrupt-fähige Pins verwenden |
+| Funktion               | ESP32 GPIO | Verbunden mit         | Anmerkungen                                    |
+| ---------------------- | ---------- | --------------------- | ---------------------------------------------- |
+| SPI MOSI               | GPIO 23    | EasyCAT Pro MOSI      | VSPI Standard                                  |
+| SPI MISO               | GPIO 19    | EasyCAT Pro MISO      | VSPI Standard                                  |
+| SPI SCK                | GPIO 18    | EasyCAT Pro SCK       | VSPI Standard                                  |
+| SPI CS                 | GPIO 5     | EasyCAT Pro CS        | VSPI Standard                                  |
+| Encoder 1A             | GPIO 34    | AS5311 Ch1 A          | Nur Eingang, PCNT-fähig                        |
+| Encoder 1B             | GPIO 35    | AS5311 Ch1 B          | Nur Eingang, PCNT-fähig                        |
+| Encoder 2A             | GPIO 32    | AS5311 Ch2 A          | PCNT-fähig                                     |
+| Encoder 2B             | GPIO 33    | AS5311 Ch2 B          | PCNT-fähig                                     |
+| ... (bis zu 8 Encoder) | ...        | ...                   | Bevorzugt PCNT-fähige Pins verwenden           |
+| Hall-Sensor            | GPIO 27    | NJK-5002C Signal      | Interrupt-fähig, externer Pull-up erforderlich |
+| Sonde 1                | GPIO 26    | SN04-N Sonde 1 Signal | Interrupt-fähig, externer Pull-up erforderlich |
+| Sonde 2                | GPIO 25    | SN04-N Sonde 2 Signal | Interrupt-fähig, externer Pull-up erforderlich |
+| ... (bis zu 8 Sonden)  | ...        | ...                   | Interrupt-fähige Pins verwenden                |
 
 **Anbindung von Hochspannungssensoren (NJK-5002C, SN04-N)**
 
@@ -171,19 +171,19 @@ ESP2 verwaltet die komplexe Benutzeroberfläche und erfordert eine große Anzahl
 
 **Tabelle: ESP2 GPIO-Zuweisung**
 
-| Funktion | ESP32 GPIO | Verbunden mit | Anmerkungen |
-| --- | --- | --- | --- |
-| SPI MOSI | GPIO 23 | TXS0108E (3.3V Seite) -> MCPs | VSPI für I/O-Expander |
-| SPI MISO | GPIO 19 | TXS0108E (3.3V Seite) -> MCPs | VSPI für I/O-Expander |
-| SPI SCK | GPIO 18 | TXS0108E (3.3V Seite) -> MCPs | VSPI für I/O-Expander |
-| SPI CS (Shared) | GPIO 5 | TXS0108E (3.3V Seite) -> Alle MCPs | Gemeinsamer CS für Hardware-Adressierung |
-| Pegelwandler OE | GPIO 4 | Alle TXS0108E OE Pins | Steuert die Aktivierung der Pegelwandler |
-| ADC 1 | GPIO 36 (ADC1_CH0) | Potentiometer 1 | Nur Eingang |
-| ADC 2 | GPIO 39 (ADC1_CH3) | Potentiometer 2 | Nur Eingang |
-| ... (bis zu 6 Potis) | ... | ... | Pins von ADC1 verwenden |
-| Encoder A | GPIO 34 | Encoder A | Nur Eingang, PCNT-fähig |
-| Encoder B | GPIO 35 | Encoder B | Nur Eingang, PCNT-fähig |
-| ... (bis zu 8 Encoder) | ... | ... | Bevorzugt PCNT-fähige Pins verwenden |
+| Funktion               | ESP32 GPIO         | Verbunden mit                      | Anmerkungen                              |
+| ---------------------- | ------------------ | ---------------------------------- | ---------------------------------------- |
+| SPI MOSI               | GPIO 23            | TXS0108E (3.3V Seite) -> MCPs      | VSPI für I/O-Expander                    |
+| SPI MISO               | GPIO 19            | TXS0108E (3.3V Seite) -> MCPs      | VSPI für I/O-Expander                    |
+| SPI SCK                | GPIO 18            | TXS0108E (3.3V Seite) -> MCPs      | VSPI für I/O-Expander                    |
+| SPI CS (Shared)        | GPIO 5             | TXS0108E (3.3V Seite) -> Alle MCPs | Gemeinsamer CS für Hardware-Adressierung |
+| Pegelwandler OE        | GPIO 4             | Alle TXS0108E OE Pins              | Steuert die Aktivierung der Pegelwandler |
+| ADC 1                  | GPIO 36 (ADC1_CH0) | Potentiometer 1                    | Nur Eingang                              |
+| ADC 2                  | GPIO 39 (ADC1_CH3) | Potentiometer 2                    | Nur Eingang                              |
+| ... (bis zu 6 Potis)   | ...                | ...                                | Pins von ADC1 verwenden                  |
+| Encoder A              | GPIO 34            | Encoder A                          | Nur Eingang, PCNT-fähig                  |
+| Encoder B              | GPIO 35            | Encoder B                          | Nur Eingang, PCNT-fähig                  |
+| ... (bis zu 8 Encoder) | ...                | ...                                | Bevorzugt PCNT-fähige Pins verwenden     |
 
 **Ansteuerung der LED-Matrix**
 
@@ -332,7 +332,7 @@ chris--a/Keypad@^3.1.1
 
 build_flags = -DCORE_ESP2
 
-````
+```
 
 - \[env:esp1\] **und** \[env:esp2\]: Definieren separate Build-Ziele. src_dir weist PlatformIO an, den Code aus den jeweiligen Unterverzeichnissen zu kompilieren.
 - lib_deps: Listet die Abhängigkeiten auf, die PlatformIO automatisch aus seiner Registry herunterladen und verwalten soll.<sup>31</sup> Für ESP2 werden die Bibliotheken für den MCP23S17 <sup>33</sup>, den asynchronen Webserver <sup>34</sup>, OTA-Updates <sup>35</sup> und die Tastenmatrix <sup>36</sup> eingebunden.
