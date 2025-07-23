@@ -21,7 +21,7 @@ graph TD;
 
 subgraph LinuxCNC-Umgebung
 
-LCNC[LinuxCNC Host-PC]
+LCNC(LinuxCNC Host-PC)
 
 end
 
@@ -35,9 +35,9 @@ BTN(max 8x8 BTNs)
 
 LED(max 8x8 LEDs)
 
-ENC2[max. 8 Quadratur-Encoder]
+ENC2(max. 8 Quadratur-Encoder)
 
-POTS[max. 6 Potentiometer]
+POTS(max. 6 Potentiometer)
 
 ROT.Switches
 
@@ -51,7 +51,7 @@ ESP1
 
 subgraph ESP1 Peripherie
 
-ENC1[max. 8 Quadratur-Encoder]
+ENC1(max. 8 Quadratur-Encoder)
 
 HALL
 
