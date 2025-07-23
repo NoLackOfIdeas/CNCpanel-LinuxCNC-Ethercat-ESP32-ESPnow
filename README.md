@@ -39,7 +39,7 @@ ENC2[max. 8 Quadratur-Encoder]
 
 POTS[max. 6 Potentiometer]
 
-ROT.Encoder
+ROT.ENCODER
 
 end
 
