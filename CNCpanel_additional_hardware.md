@@ -13,29 +13,32 @@ Hier ist eine vollständige Liste aller passiven Bauteile, die Sie hinzufügen m
 
 **Detaillierte Erklärungen und Schaltskizzen**
 
-**1\. Pull-up-Widerstände für NPN-Sensoren (an ESP1)**
+**1. Pull-up-Widerstände für NPN-Sensoren (an ESP1)**
 
 Jeder Ihrer NPN-Sensoren (Hall-Sensor NJK-5002C, Sonden SN04-N) benötigt einen externen Pull-up-Widerstand.
 
 - **Schaltung:**
-- +3.3V (von ESP1)
 
-| (10kΩ) | ------+-------> ESP1 GPIO Pin | (Schwarzes Kabel) \`\`\`
+```mermaid
+graph LR
+A["+3.3V (von ESP1)"] -->|" 10kOhm "| B[ESP1 GPIO Pin]
+B --> |" -- Schwarzes Kabel --+--> "| C[Sensor]
+```
 
 - **Erklärung:** Wenn der Sensor kein Metall detektiert, ist sein Ausgang hochohmig. Der 10kΩ-Widerstand zieht den GPIO-Pin des ESP32 sicher auf 3.3V (HIGH). Wenn der Sensor Metall detektiert, schaltet sein interner Transistor durch und zieht den GPIO-Pin auf GND (LOW). Dies erzeugt ein sauberes, eindeutiges digitales Signal.
 
-**2\. Strombegrenzungswiderstände für die LED-Matrix (an ESP2)**
+**2. Strombegrenzungswiderstände für die LED-Matrix (an ESP2)**
 
 Sie benötigen **nicht** 64 Widerstände, sondern nur 8 – einen für jede Zeile.
 
 - **Schaltung (für eine Zeile):**
 - MCP23S17 Zeilen-Pin ---> (220Ω) --->+-- Anode LED 1
 
-|-- Anode LED 2 |--... +-- Anode LED 8 \`\`\`
+|-- Anode LED 2 |--... +-- Anode LED 8 ```
 
 - **Erklärung:** Die Ansteuerung der Matrix erfolgt per Multiplexing. Es wird immer nur eine Spalte gleichzeitig aktiviert (über die MOSFETs). Der Strom fließt vom MCP23S17 durch den Widerstand zu den Anoden der LEDs in der aktiven Zeile. Der 220Ω-Widerstand ist ein guter Allround-Wert für 5V-Systeme, um eine gute Helligkeit bei ca. 15mA zu erreichen.
 
-**3\. Dioden für die Tastenmatrix (an ESP2)**
+**3. Dioden für die Tastenmatrix (an ESP2)**
 
 Dies ist entscheidend für eine zuverlässige Tastatur, die auch mehrere gleichzeitige Tastendrücke korrekt erkennt.
 
@@ -44,14 +47,14 @@ Dies ist entscheidend für eine zuverlässige Tastatur, die auch mehrere gleichz
 - Diode
 - **Erklärung:** Die Diode (z.B. 1N4148) wird in Serie zu jedem Taster geschaltet. Der Strich auf der Diode (Kathode) muss in Richtung des Zeilen-Pins zeigen. Dies stellt sicher, dass der Strom nur von der Spalte zur Zeile fließen kann, wenn eine Taste gedrückt wird, und verhindert Rückflüsse, die zu "Ghosting" führen würden.
 
-**4\. Entkopplungskondensatoren (an allen ICs)**
+**4. Entkopplungskondensatoren (an allen ICs)**
 
 Dies ist nicht optional, sondern für einen stabilen Betrieb unerlässlich.
 
 - **Schaltung:**
 - VCC Pin des IC ----+---- VCC (3.3V oder 5V)
 
-| \[C\] (100nF) | GND Pin des IC ----+---- GND \`\`\`
+| [C] (100nF) | GND Pin des IC ----+---- GND ```
 
 - **Erklärung:** Platzieren Sie einen 100nF-Keramikkondensator so nah wie physisch möglich zwischen den VCC- und GND-Pins jedes einzelnen integrierten Schaltkreises (IC). Das gilt für beide ESP32, alle MCP23S17 und alle TXS0108E Pegelwandler.
 
