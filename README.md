@@ -16,9 +16,6 @@ Das Kernziel dieses Projekts ist die Schaffung eines physischen Bedienfelds, das
 **System-Topologie:**
 
 ```mermaid
-{
-  "theme": "dark"
-}
 graph TD;
 
 subgraph LinuxCNC-Umgebung
