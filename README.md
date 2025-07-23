@@ -27,7 +27,7 @@ end
 
 subgraph HMI-Einheit
 
-ESP2
+ESP2(ESP2)
 
 subgraph ESP2 Peripherie
 
@@ -47,7 +47,7 @@ end
 
 subgraph Kommunikationsbrücke
 
-ESP1
+ESP1(ESP1)
 
 subgraph ESP1 Peripherie
 
@@ -71,7 +71,7 @@ ESP1 -- erfasst --> HALL
 
 ESP1 -- erfasst --> PROBES
 
-ESP2 -- steuert & liest --> BTN
+ESP2 -- steuert & liest <--> BTN
 
 ESP2 -- steuert --> LED
 
