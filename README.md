@@ -31,7 +31,7 @@ subgraph Servos
 SERVO1(Servo 1)
 SERVO2(Servo 2)
 SERVO3(Servo ...)
-SERV4(Servo X)
+SERVO4(Servo X)
 end
 
 subgraph HMI-Einheit
