@@ -79,7 +79,7 @@ ESP2 -- liest --> ENC2
 
 ESP2 -- liest --> POTS
 
-ESP2 -- liest --> ROT
+ESP2 -- liest --> ROT.ENCODER
 ```
 
 **1.2. Datenfluss und Kommunikationslogik**
