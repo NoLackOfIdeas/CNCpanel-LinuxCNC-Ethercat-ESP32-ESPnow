@@ -16,10 +16,6 @@ Das Kernziel dieses Projekts ist die Schaffung eines physischen Bedienfelds, das
 **System-Topologie:**
 
 ```mermaid
-  info
-```
-
-```mermaid
 
 graph TD;
 
@@ -628,7 +624,7 @@ Die Firmware auf ESP2 implementiert einen leistungsstarken, asynchronen Webserve
 
 1. **Wi-Fi-Setup:** Das Gerät wird im Station-Modus initialisiert und verbindet sich mit dem in config_esp2.h definierten WLAN.
 2. **Webserver-Initialisierung:** Ein AsyncWebServer-Objekt wird auf Port 80 instanziiert.<sup>43</sup>
-3. **OTA-Integration:** Die AsyncElegantOTA-Bibliothek wird durch Hinzufügen von #include &lt;AsyncElegantOTA.h&gt; und dem Aufruf AsyncElegantOTA.begin(&server); vor server.begin(); nahtlos integriert. Dies erstellt automatisch den Endpunkt /update, über den neue Firmware (als .bin-Datei) oder Dateisystem-Images (LittleFS) hochgeladen werden können, ohne dass eine serielle Verbindung erforderlich ist.<sup>34</sup>
+3. **OTA-Integration:** Die AsyncElegantOTA-Bibliothek wird durch Hinzufügen von #include <AsyncElegantOTA.h> und dem Aufruf AsyncElegantOTA.begin(&server); vor server.begin(); nahtlos integriert. Dies erstellt automatisch den Endpunkt /update, über den neue Firmware (als .bin-Datei) oder Dateisystem-Images (LittleFS) hochgeladen werden können, ohne dass eine serielle Verbindung erforderlich ist.<sup>34</sup>
 4. **Dateisystem-Handler:** Ein Handler wird für die Root-URL (/) registriert, der die index.html aus dem LittleFS-Dateisystem des ESP32 an den Client sendet. Weitere Handler für /style.css und /script.js werden ebenfalls eingerichtet.
 5. **WebSocket-Server:** Ein AsyncWebSocket-Server wird initialisiert und an den Endpunkt /ws gebunden.<sup>43</sup>
 
@@ -648,7 +644,7 @@ Die serverseitige C++-Funktion onEvent ist der zentrale Punkt für die Echtzeitk
 - index.html: Die HTML-Datei definiert die Grundstruktur der Seite. Sie enthält Tabellen für die 8x8-Button- und LED-Matrizen, Eingabefelder für die Konfiguration (z.B. Tastenname, Toggle-Checkbox, Gruppenauswahl), Live-Statusanzeigen und Steuerelemente wie "Speichern"- und "Firmware-Update"-Buttons. Tooltips und Hilfe-Labels werden hinzugefügt, um die Bedienung zu erleichtern.
 - script.js: Die gesamte dynamische Logik befindet sich in dieser JavaScript-Datei.
   1. **WebSocket-Verbindung:** Beim Laden der Seite wird die Verbindung zum Server aufgebaut: var gateway = \\ws://${window.location.hostname}/ws\`; websocket = new WebSocket(gateway);.<sup>43</sup> Es werden Handler für onopen, oncloseundonmessage\` registriert.
-  2. onmessage**\-Handler:** Diese Funktion ist der Kern der Live-Anzeige. Sie empfängt JSON-Nachrichten vom ESP32, parst sie und aktualisiert die entsprechenden HTML-Elemente (z. B. ändert sie die Farbe eines &lt;div&gt;, das eine LED darstellt, oder den Text eines Statusfeldes).
+  2. onmessage**\-Handler:** Diese Funktion ist der Kern der Live-Anzeige. Sie empfängt JSON-Nachrichten vom ESP32, parst sie und aktualisiert die entsprechenden HTML-Elemente (z. B. ändert sie die Farbe eines <div>, das eine LED darstellt, oder den Text eines Statusfeldes).
   3. **Event-Listener:** An die Konfigurationselemente (Eingabefelder, Checkboxen) und den "Speichern"-Button werden Event-Listener angehängt.
   4. **Konfiguration senden:** Wenn der Benutzer auf "Speichern" klickt, liest eine Funktion alle Werte aus den Konfigurationsfeldern der Seite, baut daraus ein großes JSON-Objekt, das die gesamte Konfiguration repräsentiert, und sendet es mit websocket.send(JSON.stringify(configObject)) an den ESP32.
   5. **Clientseitige Validierung:** JavaScript-Logik validiert Eingaben direkt im Browser, z. B. um sicherzustellen, dass innerhalb einer als "Radio-Gruppe" definierten Tastengruppe immer nur eine Taste als aktiv markiert werden kann.
@@ -991,7 +987,7 @@ include/shared_structures.h
 
 # **define** SHARED_STRUCTURES_H
 
-# **include** &lt;stdint.h&gt;
+# **include** <stdint.h>
 
 // MAC-Adresse von ESP1 (EtherCAT Bridge), muss hier manuell eingetragen werden
 
@@ -1041,7 +1037,7 @@ src/esp1/config_esp1.h
 
 # **define** CONFIG_ESP1_H
 
-# **include** &lt;Arduino.h&gt;
+# **include** <Arduino.h>
 
 // =================================================================
 
@@ -1111,11 +1107,11 @@ src/esp1/main_esp1.cpp
 
 ```C++
 
-# **include** &lt;Arduino.h&gt;
+# **include** <Arduino.h>
 
-# **include** &lt;esp_now.h&gt;
+# **include** <esp_now.h>
 
-# **include** &lt;WiFi.h&gt;
+# **include** <WiFi.h>
 
 # **include** "config_esp1.h"
 
@@ -1373,7 +1369,7 @@ src/esp2/config_esp2.h
 
 # **define** CONFIG_ESP2_H
 
-# **include** &lt;Arduino.h&gt;
+# **include** <Arduino.h>
 
 // =================================================================
 
@@ -1481,17 +1477,17 @@ src/esp2/main_esp2.cpp
 
 ```C++
 
-# **include** &lt;Arduino.h&gt;
+# **include** <Arduino.h>
 
-# **include** &lt;WiFi.h&gt;
+# **include** <WiFi.h>
 
-# **include** &lt;ESPAsyncWebServer.h&gt;
+# **include** <ESPAsyncWebServer.h>
 
-# **include** &lt;AsyncElegantOTA.h&gt;
+# **include** <AsyncElegantOTA.h>
 
-# **include** &lt;esp_now.h&gt;
+# **include** <esp_now.h>
 
-# **include** &lt;ArduinoJson.h&gt;
+# **include** <ArduinoJson.h>
 
 # **include** "config_esp2.h"
 
@@ -1737,11 +1733,11 @@ src/esp2/hmi_handler.cpp
 
 # **include** "config_esp2.h"
 
-# **include** &lt;Adafruit_MCP23X17.h&gt;
+# **include** <Adafruit_MCP23X17.h>
 
-# **include** &lt;Keypad.h&gt;
+# **include** <Keypad.h>
 
-# **include** &lt;SPI.h&gt;
+# **include** <SPI.h>
 
 // MCP-Objekte
 
@@ -1865,117 +1861,117 @@ data/index.html
 
 ```HTML
 
-<!DOCTYPE **html**\>
+<!DOCTYPE html>
 
-&lt;html lang="de"&gt;
+<html lang="de">
 
-&lt;head&gt;
+<head>
 
-&lt;meta charset="UTF-8"&gt;
+<meta charset="UTF-8">
 
-&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-&lt;title&gt;LinuxCNC HMI Konfiguration&lt;/title&gt;
+<title>LinuxCNC HMI Konfiguration</title>
 
-&lt;link rel="stylesheet" href="style.css"&gt;
+<link rel="stylesheet" href="style.css">
 
-&lt;/head&gt;
+</head>
 
-&lt;body&gt;
+<body>
 
-&lt;header&gt;
+<header>
 
-&lt;h1&gt;LinuxCNC HMI Konfiguration & Status&lt;/h1&gt;
+<h1>LinuxCNC HMI Konfiguration & Status</h1>
 
-&lt;div id="ws-status"&gt;Verbindung wird hergestellt...&lt;/div&gt;
+<div id="ws-status">Verbindung wird hergestellt...</div>
 
-&lt;/header&gt;
+</header>
 
-&lt;main&gt;
+<main>
 
-&lt;section id="live-status"&gt;
+<section id="live-status">
 
-&lt;h2&gt;Live-Status&lt;/h2&gt;
+<h2>Live-Status</h2>
 
-&lt;div class="status-grid"&gt;
+<div class="status-grid">
 
-&lt;div&gt;
+<div>
 
-&lt;h3&gt;Tastenmatrix&lt;/h3&gt;
+<h3>Tastenmatrix</h3>
 
-&lt;div id="button-matrix-live" class="matrix-grid"&gt;&lt;/div&gt;
+<div id="button-matrix-live" class="matrix-grid"></div>
 
-&lt;/div&gt;
+</div>
 
-&lt;div&gt;
+<div>
 
-&lt;h3&gt;LED-Matrix&lt;/h3&gt;
+<h3>LED-Matrix</h3>
 
-&lt;div id="led-matrix-live" class="matrix-grid"&gt;&lt;/div&gt;
+<div id="led-matrix-live" class="matrix-grid"></div>
 
-&lt;/div&gt;
+</div>
 
-&lt;/div&gt;
+</div>
 
-&lt;/section&gt;
+</section>
 
-&lt;section id="configuration"&gt;
+<section id="configuration">
 
-&lt;h2&gt;Konfiguration&lt;/h2&gt;
+<h2>Konfiguration</h2>
 
-&lt;div id="config-tabs"&gt;
+<div id="config-tabs">
 
-&lt;button class="tab-link active" onclick="openTab(event, 'buttons')"&gt;Tasten&lt;/button&gt;
+<button class="tab-link active" onclick="openTab(event, 'buttons')">Tasten</button>
 
-&lt;button class="tab-link" onclick="openTab(event, 'leds')"&gt;LEDs&lt;/button&gt;
+<button class="tab-link" onclick="openTab(event, 'leds')">LEDs</button>
 
-&lt;button class="tab-link" onclick="openTab(event, 'other')"&gt;Weitere&lt;/button&gt;
+<button class="tab-link" onclick="openTab(event, 'other')">Weitere</button>
 
-&lt;/div&gt;
+</div>
 
-&lt;div id="buttons" class="tab-content" style="display: block;"&gt;
+<div id="buttons" class="tab-content" style="display: block;">
 
-&lt;h3&gt;Tastenkonfiguration&lt;/h3&gt;
+<h3>Tastenkonfiguration</h3>
 
-&lt;div id="button-config-table"&gt;
+<div id="button-config-table">
 
-&lt;/div&gt;
+</div>
 
-&lt;/div&gt;
+</div>
 
-&lt;div id="leds" class="tab-content"&gt;
+<div id="leds" class="tab-content">
 
-&lt;h3&gt;LED-Konfiguration&lt;/h3&gt;
+<h3>LED-Konfiguration</h3>
 
-&lt;div id="led-config-table"&gt;
+<div id="led-config-table">
 
-&lt;/div&gt;
+</div>
 
-&lt;/div&gt;
+</div>
 
-&lt;div id="other" class="tab-content"&gt;
+<div id="other" class="tab-content">
 
-&lt;h3&gt;Weitere Einstellungen&lt;/h3&gt;
+<h3>Weitere Einstellungen</h3>
 
-&lt;/div&gt;
+</div>
 
-&lt;div class="actions"&gt;
+<div class="actions">
 
-&lt;button id="save-config-btn"&gt;Konfiguration Speichern&lt;/button&gt;
+<button id="save-config-btn">Konfiguration Speichern</button>
 
-&lt;button onclick="window.location.href='/update'"&gt;Firmware Update&lt;/button&gt;
+<button onclick="window.location.href='/update'">Firmware Update</button>
 
-&lt;/div&gt;
+</div>
 
-&lt;/section&gt;
+</section>
 
-&lt;/main&gt;
+</main>
 
-&lt;script src="script.js"&gt;&lt;/script&gt;
+<script src="script.js"></script>
 
-&lt;/body&gt;
+</body>
 
-&lt;/html&gt;
+</html>
 
 ```
 
@@ -2219,11 +2215,11 @@ const btnContainer = document.getElementById('button-config-table');
 
 btnContainer.innerHTML = \`
 
-&lt;div class="config-table-header"&gt;
+<div class="config-table-header">
 
-&lt;div&gt;#&lt;/div&gt;&lt;div&gt;Name&lt;/div&gt;&lt;div&gt;Toggle&lt;/div&gt;&lt;div&gt;Radio Grp&lt;/div&gt;&lt;div&gt;&lt;/div&gt;
+<div>#</div><div>Name</div><div>Toggle</div><div>Radio Grp</div><div></div>
 
-&lt;/div&gt;
+</div>
 
 \`;
 
@@ -2235,15 +2231,15 @@ row.className = 'config-table-row';
 
 row.innerHTML = \`
 
-&lt;div&gt;${index}&lt;/div&gt;
+<div>${index}</div>
 
-&lt;div&gt;&lt;input type="text" id="btn-name-${index}" value="${btn.name}"&gt;&lt;/div&gt;
+<div><input type="text" id="btn-name-${index}" value="${btn.name}"></div>
 
-&lt;div&gt;&lt;input type="checkbox" id="btn-toggle-${index}" ${btn.is_toggle? 'checked' : ''}&gt;&lt;/div&gt;
+<div><input type="checkbox" id="btn-toggle-${index}" ${btn.is_toggle? 'checked' : ''}></div>
 
-&lt;div&gt;&lt;input type="number" id="btn-radio-${index}" value="${btn.radio_group_id}" min="0"&gt;&lt;/div&gt;
+<div><input type="number" id="btn-radio-${index}" value="${btn.radio_group_id}" min="0"></div>
 
-&lt;div&gt;&lt;span title="Row: ${btn.matrix_row}, Col: ${btn.matrix_col}"&gt;Pos: ${btn.matrix_row},${btn.matrix_col}&lt;/span&gt;&lt;/div&gt;
+<div><span title="Row: ${btn.matrix_row}, Col: ${btn.matrix_col}">Pos: ${btn.matrix_row},${btn.matrix_col}</span></div>
 
 \`;
 
