@@ -21,7 +21,7 @@ graph TD;
 
 subgraph LinuxCNC-Umgebung
 
-LCNC(LinuxCNC Host-PC)
+LCNC(LinuxCNC+Ethercat Host-PC)
 
 end
 
