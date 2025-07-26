@@ -5,6 +5,7 @@
 #include "shared_structures.h"
 #include "EasyCAT.h" // Lokale Bibliothek
 // #include "MyData.h" // WICHTIG: Binden Sie hier die vom Easy Configurator generierte Header-Datei ein
+#include "SM_Test_myCustomSlave.h"
 #include "ESP32Encoder.h"
 
 // Globale Objekte und Variablen
@@ -103,7 +104,7 @@ void setup()
     {
         if (ENCODER_A_PINS[i] != -1 && ENCODER_B_PINS[i] != -1)
         {
-            ESP32Encoder::useInternalWeakPullResistors = UP;
+            ESP32Encoder::useInternalWeakPullResistors = ESP32Encoder::UP;
             encoders[i].attachHalfQuad(ENCODER_A_PINS[i], ENCODER_B_PINS[i]);
             encoders[i].setFilter(ENCODER_GLITCH_FILTER);
             encoders[i].clearCount();

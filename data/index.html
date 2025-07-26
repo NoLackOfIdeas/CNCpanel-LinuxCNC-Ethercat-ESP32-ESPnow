@@ -1,61 +1,71 @@
 <!DOCTYPE html>
-<html lang="de">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LinuxCNC HMI Konfiguration</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LinuxCNC HMI Configuration</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
     <header>
-        <h1>LinuxCNC HMI Konfiguration & Status</h1>
-        <div id="ws-status">Verbindung wird hergestellt...</div>
+      <h1>LinuxCNC HMI Configuration & Status</h1>
+      <div id="ws-status">Connecting...</div>
     </header>
 
     <main>
-        <section id="live-status">
-            <h2>Live-Status</h2>
-            <div class="status-grid">
-                <div>
-                    <h3>Tastenmatrix</h3>
-                    <div id="button-matrix-live" class="matrix-grid"></div>
-                </div>
-                <div>
-                    <h3>LED-Matrix</h3>
-                    <div id="led-matrix-live" class="matrix-grid"></div>
-                </div>
-            </div>
-        </section>
+      <section id="live-status">
+        <h2>Live Status</h2>
+        <div class="status-grid">
+          <div>
+            <h3>Button Matrix</h3>
+            <div id="button-matrix-live" class="matrix-grid"></div>
+          </div>
+          <div>
+            <h3>LED Matrix</h3>
+            <div id="led-matrix-live" class="matrix-grid"></div>
+          </div>
+        </div>
+      </section>
 
-        <section id="configuration">
-            <h2>Konfiguration</h2>
-            <div id="config-tabs">
-                <button class="tab-link active" onclick="openTab(event, 'buttons')">Tasten</button>
-                <button class="tab-link" onclick="openTab(event, 'leds')">LEDs</button>
-                <button class="tab-link" onclick="openTab(event, 'other')">Weitere</button>
-            </div>
+      <section id="configuration">
+        <h2>Configuration</h2>
 
-            <div id="buttons" class="tab-content" style="display: block;">
-                <h3>Tastenkonfiguration</h3>
-                <div id="button-config-table"></div>
-            </div>
+        <div class="tab-bar">
+          <button class="tab-link active" onclick="openTab(event, 'buttons')">
+            Buttons
+          </button>
+          <button class="tab-link" onclick="openTab(event, 'leds')">
+            LEDs
+          </button>
+          <button class="tab-link" onclick="openTab(event, 'joysticks')">
+            Joysticks
+          </button>
+        </div>
 
-            <div id="leds" class="tab-content">
-                <h3>LED-Konfiguration</h3>
-                <div id="led-config-table"></div>
-            </div>
-            
-            <div id="other" class="tab-content">
-                <h3>Weitere Einstellungen</h3>
-            </div>
+        <div id="buttons" class="tab-content" style="display: block">
+          <h3>Button Configuration</h3>
+          <div id="button-config-table" class="config-container"></div>
+        </div>
 
-            <div class="actions">
-                <button id="save-config-btn">Konfiguration Speichern</button>
-                <button onclick="window.location.href='/update'">Firmware Update</button>
-            </div>
-        </section>
+        <div id="leds" class="tab-content">
+          <h3>LED Configuration</h3>
+          <div id="led-config-table" class="config-container"></div>
+        </div>
+
+        <div id="joysticks" class="tab-content">
+          <h3>Joystick Configuration</h3>
+          <div id="joystick-config-table" class="config-container"></div>
+        </div>
+
+        <div class="actions">
+          <button id="save-config-btn">Save Configuration</button>
+          <button onclick="window.location.href='/update'">
+            Firmware Update
+          </button>
+        </div>
+      </section>
     </main>
 
     <script src="script.js"></script>
-</body>
+  </body>
 </html>

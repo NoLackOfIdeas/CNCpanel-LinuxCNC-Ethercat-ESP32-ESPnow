@@ -10,10 +10,10 @@
 
 // --- MAC-Adressen ---
 // TRAGEN SIE HIER DIE MAC-ADRESSE IHRES ESP1 EIN
-static uint8_t esp1_mac_address = {0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED};
+static uint8_t esp1_mac_address[6] = {0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED};
 
 // TRAGEN SIE HIER DIE MAC-ADRESSE IHRES ESP2 EIN
-static uint8_t esp2_mac_address = {0xDE, 0xAD, 0xBE, 0xEF, 0xBE, 0xEF};
+static uint8_t esp2_mac_address[6] = {0xDE, 0xAD, 0xBE, 0xEF, 0xBE, 0xEF};
 
 // Datenstruktur, die von ESP2 (HMI) an ESP1 (Bridge) gesendet wird
 typedef struct struct_message_to_esp1

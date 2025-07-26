@@ -22,15 +22,15 @@
 #define HALL_SENSOR_PULLUP GPIO_PULLUP_ENABLE
 
 // Inductive Probes
-#define NUM_PROBES 8
-const int PROBE_PINS = {26, 25, 14, 12, 13, 15, 2, 4};
+#define NUM_PROBES 2
+const int PROBE_PINS[NUM_PROBES] = {26, 25};
 #define PROBE_PULLUP_MODE GPIO_PULLUP_ENABLE
 
 // Quadrature Encoders
-#define NUM_ENCODERS 8
-const int ENCODER_A_PINS = {34, 32, -1, -1, -1, -1, -1, -1}; // -1 for unused
-const int ENCODER_B_PINS = {35, 33, -1, -1, -1, -1, -1, -1}; // -1 for unused
-#define ENCODER_GLITCH_FILTER 1023                           // 0 to 1023, higher value = more filtering
+#define NUM_ENCODERS 2
+const int ENCODER_A_PINS[NUM_ENCODERS] = {34, 32}; // -1 for unused
+const int ENCODER_B_PINS[NUM_ENCODERS] = {35, 33}; // -1 for unused
+#define ENCODER_GLITCH_FILTER 1023                 // 0 to 1023, higher value = more filtering
 
 // =================================================================
 // TACHOMETER CONFIGURATION

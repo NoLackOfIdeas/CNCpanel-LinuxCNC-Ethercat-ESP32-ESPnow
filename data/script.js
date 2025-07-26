@@ -1,155 +1,332 @@
+/**
+ * @file script.js
+ * @brief Client-side JavaScript for the HMI web interface.
+ *
+ * This script handles:
+ * - Establishing and maintaining a WebSocket connection to the ESP32.
+ * - Receiving live status updates and rendering them.
+ * - Receiving the initial configuration and building the UI.
+ * - Reading user input from the config forms and sending it back to the ESP32.
+ * - Managing the tabbed interface and dynamic form elements.
+ */
+
+"use strict";
+
+// --- GLOBAL VARIABLES ---
 let websocket;
-const wsStatusElem = document.getElementById('ws-status');
+const wsStatusElem = document.getElementById("ws-status");
 
-window.addEventListener('load', onLoad);
+// --- INITIALIZATION ---
+window.addEventListener("load", onLoad);
 
+/**
+ * @brief Main function called when the page is fully loaded.
+ */
 function onLoad(event) {
-    initWebSocket();
-    initUI();
+  initWebSocket();
+  initUI();
 }
 
+/**
+ * @brief Initializes the WebSocket connection and sets up event handlers.
+ */
 function initWebSocket() {
-    console.log('Trying to open a WebSocket connection...');
-    const gateway = `ws://${window.location.hostname}/ws`;
-    websocket = new WebSocket(gateway);
-    websocket.onopen = onOpen;
-    websocket.onclose = onClose;
-    websocket.onmessage = onMessage;
+  console.log("Trying to open a WebSocket connection...");
+  const gateway = `ws://${window.location.hostname}/ws`;
+  websocket = new WebSocket(gateway);
+  websocket.onopen = onOpen;
+  websocket.onclose = onClose;
+  websocket.onmessage = onMessage;
 }
 
-function onOpen(event) {
-    console.log('Connection opened');
-    wsStatusElem.textContent = 'Verbunden';
-    wsStatusElem.className = 'status-connected';
-    websocket.send(JSON.stringify({ command: 'getInitialState' }));
-}
-
-function onClose(event) {
-    console.log('Connection closed');
-    wsStatusElem.textContent = 'Getrennt';
-    wsStatusElem.className = 'status-disconnected';
-    setTimeout(initWebSocket, 2000);
-}
-
-function onMessage(event) {
-    console.log('Received:', event.data);
-    const data = JSON.parse(event.data);
-
-    if (data.type === 'liveStatus') {
-        updateLiveStatus(data.payload);
-    } else if (data.type === 'initialState') {
-        buildConfigUI(data.payload.config);
-        updateLiveStatus(data.payload.status);
-    }
-}
-
+/**
+ * @brief Sets up static UI event listeners.
+ */
 function initUI() {
-    document.getElementById('save-config-btn').addEventListener('click', saveConfiguration);
-    createMatrixGrid('button-matrix-live', 'btn-live');
-    createMatrixGrid('led-matrix-live', 'led-live');
+  document
+    .getElementById("save-config-btn")
+    .addEventListener("click", saveConfiguration);
+  createMatrixGrid("button-matrix-live", "btn-live");
+  createMatrixGrid("led-matrix-live", "led-live");
 }
 
-function createMatrixGrid(containerId, prefix) {
-    const container = document.getElementById(containerId);
-    container.innerHTML = '';
-    for (let r = 0; r < 8; r++) {
-        for (let c = 0; c < 8; c++) {
-            const cell = document.createElement('div');
-            cell.className = 'matrix-cell';
-            cell.id = `${prefix}-${r}-${c}`;
-            container.appendChild(cell);
-        }
-    }
+// --- WEBSOCKET EVENT HANDLERS ---
+
+/**
+ * @brief Called when the WebSocket connection is successfully established.
+ */
+function onOpen(event) {
+  console.log("Connection opened");
+  wsStatusElem.textContent = "Connected";
+  wsStatusElem.className = "status-connected";
 }
 
+/**
+ * @brief Called when the WebSocket connection is closed.
+ * Attempts to reconnect after a delay.
+ */
+function onClose(event) {
+  console.log("Connection closed");
+  wsStatusElem.textContent = "Disconnected";
+  wsStatusElem.className = "status-disconnected";
+  setTimeout(initWebSocket, 2000); // Attempt to reconnect every 2 seconds
+}
+
+/**
+ * @brief Called when a message is received from the ESP32 via WebSocket.
+ * Distinguishes between an initial configuration message and a live status update.
+ * @param {MessageEvent} event The message event from the server.
+ */
+function onMessage(event) {
+  const data = JSON.parse(event.data);
+
+  if (data.type === "initialConfig") {
+    console.log("Received initial configuration.");
+    buildConfigUI(data.payload);
+  } else if (data.type === "liveStatus") {
+    updateLiveStatus(data.payload);
+  }
+}
+
+// --- UI RENDERING FUNCTIONS ---
+
+/**
+ * @brief Updates the live status grids (buttons and LEDs) based on a status payload.
+ * @param {object} status The payload containing button and LED state arrays.
+ */
 function updateLiveStatus(status) {
-    // Update button matrix
-    for (let i = 0; i < 8; i++) {
-        for (let j = 0; j < 8; j++) {
-            const cell = document.getElementById(`btn-live-${i}-${j}`);
-            if (cell) {
-                const buttonIndex = i * 8 + j;
-                if ((BigInt(status.buttons) >> BigInt(buttonIndex)) & 1n) {
-                    cell.classList.add('button-pressed');
-                } else {
-                    cell.classList.remove('button-pressed');
-                }
-            }
+  if (status.buttons) {
+    for (let r = 0; r < 8; r++) {
+      for (let c = 0; c < 8; c++) {
+        const cell = document.getElementById(`btn-live-${r}-${c}`);
+        if (cell) {
+          // Check the c-th bit of the r-th byte
+          if ((status.buttons[r] >> c) & 1) {
+            cell.classList.add("button-pressed");
+          } else {
+            cell.classList.remove("button-pressed");
+          }
         }
+      }
     }
-    // Update LED matrix
-    for (let i = 0; i < 8; i++) {
-        for (let j = 0; j < 8; j++) {
-            const cell = document.getElementById(`led-live-${i}-${j}`);
-            if (cell) {
-                const ledIndex = i * 8 + j;
-                if ((BigInt(status.leds) >> BigInt(ledIndex)) & 1n) {
-                    cell.classList.add('led-on');
-                } else {
-                    cell.classList.remove('led-on');
-                }
-            }
+  }
+  if (status.leds) {
+    for (let r = 0; r < 8; r++) {
+      for (let c = 0; c < 8; c++) {
+        const cell = document.getElementById(`led-live-${r}-${c}`);
+        if (cell) {
+          if ((status.leds[r] >> c) & 1) {
+            cell.classList.add("led-on");
+          } else {
+            cell.classList.remove("led-on");
+          }
         }
+      }
     }
+  }
 }
 
+/**
+ * @brief Creates an 8x8 grid of divs for the live status displays.
+ * @param {string} containerId The ID of the parent element.
+ * @param {string} prefix A prefix for the individual cell IDs.
+ */
+function createMatrixGrid(containerId, prefix) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  container.innerHTML = ""; // Clear previous content
+  for (let r = 0; r < 8; r++) {
+    for (let c = 0; c < 8; c++) {
+      const cell = document.createElement("div");
+      cell.className = "matrix-cell";
+      cell.id = `${prefix}-${r}-${c}`;
+      container.appendChild(cell);
+    }
+  }
+}
+
+/**
+ * @brief Populates all configuration forms based on the config object from the ESP32.
+ * @param {object} config The full configuration object.
+ */
 function buildConfigUI(config) {
-    // Build button config table
-    const btnContainer = document.getElementById('button-config-table');
-    btnContainer.innerHTML = `
-        <div class="config-table-header">
-            <div>#</div><div>Name</div><div>Toggle</div><div>Radio Grp</div><div>Position</div>
-        </div>
-    `;
+  if (!config) return;
+
+  // --- Build Button Config Table ---
+  if (config.buttons) {
+    const btnContainer = document.getElementById("button-config-table");
+    let btnHtml = `<div class="config-table-header"><div>#</div><div>Name</div><div>Toggle</div><div>Radio Grp</div></div>`;
     config.buttons.forEach((btn, index) => {
-        const row = document.createElement('div');
-        row.className = 'config-table-row';
-        const r = Math.floor(index / 8);
-        const c = index % 8;
-        row.innerHTML = `
-            <div>${index}</div>
-            <div><input type="text" id="btn-name-${index}" value="${btn.name}" title="Button Name"></div>
-            <div><input type="checkbox" id="btn-toggle-${index}" ${btn.is_toggle? 'checked' : ''} title="Toggle Mode"></div>
-            <div><input type="number" id="btn-radio-${index}" value="${btn.radio_group_id}" min="0" title="Radio Group ID (0 for none)"></div>
-            <div><span title="Row: ${r}, Col: ${c}">Pos: ${r},${c}</span></div>
-        `;
-        btnContainer.appendChild(row);
+      btnHtml += `<div class="config-table-row">
+                <div>${index}</div>
+                <div><input type="text" id="btn-name-${index}" value="${
+        btn.name
+      }"></div>
+                <div><input type="checkbox" id="btn-toggle-${index}" ${
+        btn.is_toggle ? "checked" : ""
+      }></div>
+                <div><input type="number" id="btn-radio-${index}" value="${
+        btn.radio_group_id
+      }" min="0"></div>
+            </div>`;
     });
-    // Build LED config table similarly...
+    btnContainer.innerHTML = btnHtml;
+  }
+
+  // --- Build LED Config Table ---
+  if (config.leds) {
+    const ledContainer = document.getElementById("led-config-table");
+    let ledHtml = `<div class="config-table-header"><div>#</div><div>Name</div><div>Binding Type</div><div>Bound To Button #</div><div>LCNC State Bit #</div></div>`;
+    config.leds.forEach((led, index) => {
+      ledHtml += `<div class="config-table-row">
+                <div>${index}</div>
+                <div><input type="text" id="led-name-${index}" value="${
+        led.name
+      }"></div>
+                <div>
+                    <select id="led-binding-${index}" onchange="toggleLedInputs(${index})">
+                        <option value="0" ${
+                          led.binding_type === 0 ? "selected" : ""
+                        }>Unbound</option>
+                        <option value="1" ${
+                          led.binding_type === 1 ? "selected" : ""
+                        }>Bound to Button</option>
+                        <option value="2" ${
+                          led.binding_type === 2 ? "selected" : ""
+                        }>Bound to LCNC</option>
+                    </select>
+                </div>
+                <div id="led-bound-button-wrapper-${index}">
+                    <input type="number" id="led-bound-button-${index}" value="${
+        led.bound_button_index
+      }" min="-1">
+                </div>
+                <div id="led-lcnc-bit-wrapper-${index}">
+                    <input type="number" id="led-lcnc-bit-${index}" value="${
+        led.lcnc_state_bit
+      }" min="-1">
+                </div>
+            </div>`;
+    });
+    ledContainer.innerHTML = ledHtml;
+    // After rendering, set the initial visibility for all conditional inputs
+    config.leds.forEach((led, index) => toggleLedInputs(index));
+  }
+
+  // --- Build Joystick Config Table ---
+  if (config.joysticks) {
+    const joyContainer = document.getElementById("joystick-config-table");
+    let joyHtml = ``;
+    config.joysticks.forEach((joy, index) => {
+      joyHtml += `<h3>${joy.name}</h3>
+                <div class="config-table-header"><div>Axis</div><div>Invert</div><div>Sensitivity</div><div>Deadzone</div></div>`;
+      joy.axes.forEach((axis, axis_idx) => {
+        const axis_name = ["X", "Y", "Z"][axis_idx];
+        joyHtml += `<div class="config-table-row">
+                    <div><b>${axis_name}</b></div>
+                    <div><input type="checkbox" id="joy-${index}-axis-${axis_idx}-inverted" ${
+          axis.is_inverted ? "checked" : ""
+        }></div>
+                    <div><input type="number" step="0.1" id="joy-${index}-axis-${axis_idx}-sensitivity" value="${
+          axis.sensitivity
+        }"></div>
+                    <div><input type="number" id="joy-${index}-axis-${axis_idx}-deadzone" value="${
+          axis.center_deadzone
+        }"></div>
+                </div>`;
+      });
+    });
+    joyContainer.innerHTML = joyHtml;
+  }
 }
 
+/**
+ * @brief Shows or hides conditional input fields for the LED configuration based on the selected binding type.
+ * @param {number} index The row index of the LED.
+ */
+function toggleLedInputs(index) {
+  const bindingType = document.getElementById(`led-binding-${index}`).value;
+  const buttonWrapper = document.getElementById(
+    `led-bound-button-wrapper-${index}`
+  );
+  const lcncWrapper = document.getElementById(`led-lcnc-bit-wrapper-${index}`);
+
+  // Binding type 1: "Bound to Button"
+  buttonWrapper.style.display = bindingType === "1" ? "block" : "none";
+  // Binding type 2: "Bound to LCNC"
+  lcncWrapper.style.display = bindingType === "2" ? "block" : "none";
+}
+
+// --- EVENT HANDLERS & LOGIC ---
+
+/**
+ * @brief Reads all values from the configuration forms, builds a JSON object,
+ * and sends it to the ESP32 to be saved.
+ */
 function saveConfiguration() {
-    const config = {
-        buttons:,
-        leds:
-    };
-    // Read button config from UI
-    for (let i = 0; i < 64; i++) { // Assuming MAX_BUTTONS
-        const nameEl = document.getElementById(`btn-name-${i}`);
-        if (!nameEl) break;
-        config.buttons.push({
-            name: nameEl.value,
-            is_toggle: document.getElementById(`btn-toggle-${i}`).checked,
-            radio_group_id: parseInt(document.getElementById(`btn-radio-${i}`).value)
-        });
-    }
-    // Read LED config from UI...
+  const config = { buttons: [], leds: [], joysticks: [] };
 
-    console.log('Sending config to save:', config);
-    websocket.send(JSON.stringify({ command: 'saveConfig', payload: config }));
-    alert('Konfiguration gesendet!');
+  // --- Read button config from UI ---
+  for (let i = 0; document.getElementById(`btn-name-${i}`); i++) {
+    config.buttons.push({
+      name: document.getElementById(`btn-name-${i}`).value,
+      is_toggle: document.getElementById(`btn-toggle-${i}`).checked,
+      radio_group_id: parseInt(document.getElementById(`btn-radio-${i}`).value),
+    });
+  }
+
+  // --- Read LED config from UI ---
+  for (let i = 0; document.getElementById(`led-name-${i}`); i++) {
+    config.leds.push({
+      name: document.getElementById(`led-name-${i}`).value,
+      binding_type: parseInt(document.getElementById(`led-binding-${i}`).value),
+      bound_button_index: parseInt(
+        document.getElementById(`led-bound-button-${i}`).value
+      ),
+      lcnc_state_bit: parseInt(
+        document.getElementById(`led-lcnc-bit-${i}`).value
+      ),
+    });
+  }
+
+  // --- Read Joystick config from UI ---
+  for (let i = 0; document.getElementById(`joy-${i}-axis-0-sensitivity`); i++) {
+    const joy_data = { axes: [] };
+    for (let j = 0; j < 3; j++) {
+      // Assuming 3 axes
+      joy_data.axes.push({
+        is_inverted: document.getElementById(`joy-${i}-axis-${j}-inverted`)
+          .checked,
+        sensitivity: parseFloat(
+          document.getElementById(`joy-${i}-axis-${j}-sensitivity`).value
+        ),
+        center_deadzone: parseInt(
+          document.getElementById(`joy-${i}-axis-${j}-deadzone`).value
+        ),
+      });
+    }
+    config.joysticks.push(joy_data);
+  }
+
+  console.log("Sending config to save:", config);
+  websocket.send(JSON.stringify({ command: "saveConfig", payload: config }));
+  alert("Configuration sent to HMI!");
 }
 
+/**
+ * @brief Handles the logic for switching between configuration tabs.
+ * @param {Event} evt The click event.
+ * @param {string} tabName The ID of the tab content to display.
+ */
 function openTab(evt, tabName) {
-    let i, tabcontent, tablinks;
-    tabcontent = document.getElementsByClassName("tab-content");
-    for (i = 0; i < tabcontent.length; i++) {
-        tabcontent[i].style.display = "none";
-    }
-    tablinks = document.getElementsByClassName("tab-link");
-    for (i = 0; i < tablinks.length; i++) {
-        tablinks[i].className = tablinks[i].className.replace(" active", "");
-    }
-    document.getElementById(tabName).style.display = "block";
-    evt.currentTarget.className += " active";
+  const tabcontent = document.getElementsByClassName("tab-content");
+  for (let i = 0; i < tabcontent.length; i++) {
+    tabcontent[i].style.display = "none";
+  }
+  const tablinks = document.getElementsByClassName("tab-link");
+  for (let i = 0; i < tablinks.length; i++) {
+    tablinks[i].className = tablinks[i].className.replace(" active", "");
+  }
+  document.getElementById(tabName).style.display = "block";
+  evt.currentTarget.className += " active";
 }
