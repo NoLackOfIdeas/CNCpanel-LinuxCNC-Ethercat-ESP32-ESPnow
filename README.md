@@ -7,7 +7,7 @@ The entire HMI logic is configured dynamically via an integrated **web interface
 ## System Architecture
 
 ```mermaid
-graph TD
+graph LR
     subgraph LinuxCNC Environment
         LCNC[LinuxCNC Host PC]
     end
