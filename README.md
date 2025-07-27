@@ -58,12 +58,12 @@ This project's design prioritizes the use of pre-built, multi-channel modules an
 
 The core components are selected for their channel density and ease of integration into a larger system.
 
-| Module                 | Function                    | Channels    | Required Quantity | Example Link                                                       |
-| :--------------------- | :-------------------------- | :---------- | :---------------- | :----------------------------------------------------------------- |
-| **EasyCAT PRO Shield** | EtherCAT Slave Interface    | N/A         | 1                 | [AliExpress](https://de.aliexpress.com/item/1005008174536853.html) |
-| **MCP23S17**           | SPI I/O Expander            | 16 Channels | 4                 | [AliExpress](https://de.aliexpress.com/item/1005006825918157.html) |
-| **TXS0108E**           | Bidirectional Level Shifter | 8 Channels  | 1                 | [AliExpress](https://de.aliexpress.com/item/1005008226957385.html) |
-| **XL4015**             | DC-DC Buck Converter        | 1 Channel   | 2                 | [AliExpress](https://de.aliexpress.com/item/1005006642757928.html) |
+| Module                 | Function                    | Channels    | Required Quantity | Example Link(s)                                                                                                                            |
+| :--------------------- | :-------------------------- | :---------- | :---------------- | :----------------------------------------------------------------------------------------------------------------------------------------- |
+| **EasyCAT PRO Shield** | EtherCAT Slave Interface    | N/A         | 1                 | [Official Page](http://www.bausano.net/en/hardware/easycat-pro.html) or [AliExpress](https://de.aliexpress.com/item/1005008174536853.html) |
+| **MCP23S17**           | SPI I/O Expander            | 16 Channels | 4                 | [AliExpress](https://de.aliexpress.com/item/1005006825918157.html)                                                                         |
+| **TXS0108E**           | Bidirectional Level Shifter | 8 Channels  | 1                 | [AliExpress](https://de.aliexpress.com/item/1005008226957385.html)                                                                         |
+| **XL4015**             | DC-DC Buck Converter        | 1 Channel   | 2                 | [AliExpress](https://de.aliexpress.com/item/1005006642757928.html)                                                                         |
 
 ### Hardware
 
