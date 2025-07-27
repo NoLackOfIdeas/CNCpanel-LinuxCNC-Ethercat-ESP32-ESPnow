@@ -52,16 +52,16 @@ graph LR
 
 The system is designed to connect a variety of high-speed and user-interface peripherals, which are strategically split between the two ESP32 controllers. The following table summarizes the maximum number of connectable devices for each controller based on the project's design.
 
-| Peripheral                     | Connected to | Maximum Number | Notes                                                                                                |
-| :----------------------------- | :----------- | :------------- | :--------------------------------------------------------------------------------------------------- |
-| **Quadrature Encoders**        | ESP1         | 8              | [cite_start]For high-speed position feedback directly tied to the machine controller[cite: 34, 421]. |
-| **Hall Sensor (Spindle)**      | ESP1         | 1              | [cite_start]For real-time spindle RPM measurement[cite: 35, 414].                                    |
-| **Inductive Probes**           | ESP1         | 8              | [cite_start]For homing, probing, and other high-priority machine inputs[cite: 36, 417].              |
-| **Button Matrix**              | ESP2         | 64 (8x8)       | [cite_start]The primary user input for commands and jogging[cite: 795].                              |
-| **LED Matrix**                 | ESP2         | 64 (8x8)       | [cite_start]Provides visual feedback on machine and HMI status[cite: 796].                           |
-| **Quadrature Encoders**        | ESP2         | 8              | [cite_start]For user inputs like jog wheels or overrides[cite: 26].                                  |
-| **Potentiometers / Joysticks** | ESP2         | 6              | [cite_start]Used for analog inputs like feedrate override or joystick axes[cite: 27, 455].           |
-| **Rotary Switches**            | ESP2         | 4 (Assumed)    | [cite_start]For selecting machine operating modes[cite: 28, 789].                                    |
+| Peripheral                     | Connected to | Maximum Number | Notes                                                                       |
+| :----------------------------- | :----------- | :------------- | :-------------------------------------------------------------------------- |
+| **Quadrature Encoders**        | ESP1         | 8              | For high-speed position feedback directly tied to the machine controller.   |
+| **Hall Sensor (Spindle)**      | ESP1         | 1              | For real-time spindle RPM measurement.                                      |
+| **Inductive Probes**           | ESP1         | 8              | For homing, probing, and other high-priority machine inputs[cite: 36, 417]. |
+| **Button Matrix**              | ESP2         | 64 (8x8)       | The primary user input for commands and jogging.                            |
+| **LED Matrix**                 | ESP2         | 64 (8x8)       | Provides visual feedback on machine and HMI status.                         |
+| **Quadrature Encoders**        | ESP2         | 8              | For user inputs like jog wheels or overrides.                               |
+| **Potentiometers / Joysticks** | ESP2         | 6              | Used for analog inputs like feedrate override or joystick axes.             |
+| **Rotary Switches**            | ESP2         | 4 (Assumed)    | For selecting machine operating modes.                                      |
 
 ---
 
