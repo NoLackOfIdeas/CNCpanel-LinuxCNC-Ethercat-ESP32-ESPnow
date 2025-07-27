@@ -41,11 +41,11 @@ graph LR
 ## Features
 
 - **Robust Dual-ESP32 Architecture:** Decoupling of real-time (ESP1) and non-time-critical (ESP2) tasks.
-- **Industrial Real-Time Communication:** Connection to LinuxCNC via deterministic **EtherCAT**.
-- **Low-Latency Wireless Link:** **ESP-NOW** for responsive communication between the controllers.
-- **Dynamic Web Interface:** Complete configuration of the HMI logic (buttons, LEDs, joysticks) in the browser without recompiling.
+- **Industrial Real-Time Communication:** Connection to LinuxCNC via deterministic EtherCAT.
+- **Low-Latency Wireless Link:** ESP-NOW for responsive communication between the controllers.
+- **Dynamic Web Interface:** Live status monitoring and complete run-time configuration of the HMI's functional logic (joystick tuning, button modes, LED bindings) without recompiling.
 - **Over-The-Air (OTA) Updates:** Conveniently update the HMI controller's firmware via Wi-Fi.
-- **Automated Configuration Generation:** A Python script automatically generates all system-critical mapping files (`MyData.h`, `ESI.xml`, `.hal` template), guaranteeing perfect consistency.
+- **Automated Helper File Generation:** A Python script parses your master `MyData.h` file to automatically generate a descriptive HAL template and Markdown documentation, preventing manual errors.
 - **Comprehensive Peripheral Support:** Direct connection of encoders, industrial sensors, button matrices, joysticks, potentiometers, and rotary switches.
 
 ---
