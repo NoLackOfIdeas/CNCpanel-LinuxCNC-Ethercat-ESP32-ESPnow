@@ -12,7 +12,7 @@ graph LR
         LCNC[LinuxCNC Host PC with Ethercat Master]
     end
 
-    subgraph Communication Bridge (Ethercat Slave)
+    subgraph Communication Bridge - Ethercat Slave;
         ESP1
         subgraph ESP1 Peripherals
             ENC1[Quadrature Encoders]
@@ -21,7 +21,7 @@ graph LR
         end
     end
 
-    subgraph HMI Unit (CNCpanel);
+    subgraph HMI Unit - CNCpanel;
         ESP2
         subgraph ESP2 Peripherals
             BTN[Button Matrix]
