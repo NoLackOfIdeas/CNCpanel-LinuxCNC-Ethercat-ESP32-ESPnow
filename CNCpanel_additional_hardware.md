@@ -27,15 +27,15 @@ B --> |" -- Black Wire --+--> "| C[Sensor]
 
 - **Explanation:** When the sensor does not detect metal, its output is high-impedance. The 10kΩ resistor reliably pulls the ESP32's GPIO pin to 3.3V (HIGH). When the sensor detects metal, its internal transistor switches on and pulls the GPIO pin to GND (LOW). This creates a clean, unambiguous digital signal.
 
-**2. Strombegrenzungswiderstände für die LED-Matrix (an ESP2)**
+**2. Current-Limiting Resistors for the LED Matrix (on ESP2)**
 
-Sie benötigen **nicht** 64 Widerstände, sondern nur 8 – einen für jede Zeile.
+You do **not** need 64 resistors, only 8—one for each row.
 
-- **Schaltung (für eine Zeile):**
+- **Circuit (for one row):**
 
 ```mermaid
 graph LR
-A[MCP23S17 Zeilen-Pin] --> B[220 Ohm]
+A[MCP23S17 Row-Pin] --> B[220 Ohm]
 B --> C[Anode LED 1]
 B --> D[Anode LED 2]
 B --> E[Anode LED ...]
@@ -43,74 +43,58 @@ B --> F[Anode LED 8]
 
 ```
 
-- **Erklärung:** Die Ansteuerung der Matrix erfolgt per Multiplexing. Es wird immer nur eine Spalte gleichzeitig aktiviert (über die MOSFETs). Der Strom fließt vom MCP23S17 durch den Widerstand zu den Anoden der LEDs in der aktiven Zeile. Der 220Ω-Widerstand ist ein guter Allround-Wert für 5V-Systeme, um eine gute Helligkeit bei ca. 15mA zu erreichen.
+- **Explanation:** The matrix is driven by multiplexing. Only one column is activated at a time (via the MOSFETs). The current flows from the MCP23S17 through the resistor to the anodes of the LEDs in the active row. The 220Ω resistor is a good all-around value for 5V systems to achieve good brightness at approx. 15mA.
 
-**3. Dioden für die Tastenmatrix (an ESP2)**
+**3. Diodes for the Button Matrix (on ESP2)**
 
-Dies ist entscheidend für eine zuverlässige Tastatur, die auch mehrere gleichzeitige Tastendrücke korrekt erkennt.
+This is crucial for a reliable keyboard that correctly recognizes multiple simultaneous key presses.
 
-- **Schaltung (für einen Taster):**
-
-```mermaid
-graph LR
-A[MCP23S17 Zeilen-Pin] -->|" 1N4148 Diode "| B["MCP23S17 Spalten-Pin (als Eingang mit Pull-up)"]
-```
-
-- **Erklärung:** Die Diode (z.B. 1N4148) wird in Serie zu jedem Taster geschaltet. Der Strich auf der Diode (Kathode) muss in Richtung des Zeilen-Pins zeigen. Dies stellt sicher, dass der Strom nur von der Spalte zur Zeile fließen kann, wenn eine Taste gedrückt wird, und verhindert Rückflüsse, die zu "Ghosting" führen würden.
-
-**4. Entkopplungskondensatoren (an allen ICs)**
-
-Dies ist nicht optional, sondern für einen stabilen Betrieb unerlässlich.
-
-- **Schaltung:**
+- **Circuit (for one switch):**
 
 ```mermaid
 graph LR
-A["VCC (3.3V oder 5V) des IC"] -->|" [C] (100nF) Keramikkondensator "| B["GND Pin des IC"]
+A[MCP23S17 Row Pin] -->|" 1N4148 Diode "| B["MCP23S17 Column Pin (as input with pull-up)"]
 ```
 
-- **Erklärung:** Platzieren Sie einen 100nF-Keramikkondensator so nah wie physisch möglich zwischen den VCC- und GND-Pins jedes einzelnen integrierten Schaltkreises (IC). Das gilt für beide ESP32, alle MCP23S17 und alle TXS0108E Pegelwandler.
+- **Explanation:** The diode (e.g., 1N4148) is placed in series with each switch. The stripe on the diode (cathode) must point towards the row pin. This ensures that current can only flow from the column to the row when a key is pressed, preventing backflow that would lead to "ghosting."
 
-**Optionale, aber empfohlene Bauteile**
+**4. Decoupling Capacitors (on all ICs)**
 
-| Bauteil                                  | Wo & Wie Viele?                                                                               | Funktion (Warum ist es nützlich?)                                                                                                                                                                                                                                                                                             |
-| ---------------------------------------- | --------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **10µF - 100µF Elektrolytkondensatoren** | 1x am Ausgang jedes XL4015-Moduls (also 2 Stück).                                             | **Glättung der Versorgungsspannung:** Diese größeren Kondensatoren helfen, niederfrequente Schwankungen und Restwelligkeit von den Schaltreglern (XL4015) zu filtern und sorgen für eine noch stabilere 3.3V- und 5V-Versorgung für das gesamte System.                                                                       |
-| **0.1µF (100nF) Keramikkondensatoren**   | 2x pro mechanischem Encoder (z.B. KY-040). Jeweils von Pin A nach GND und von Pin B nach GND. | **Hardware-Entprellung für Encoder:** Mechanische Encoder können stark "prellen" (elektrisches Rauschen erzeugen). Diese Kondensatoren bilden zusammen mit den internen Pull-up-Widerständen einen Tiefpassfilter, der hochfrequentes Rauschen unterdrückt und die Signalqualität für die ESP32Encoder-Bibliothek verbessert. |
+This is not optional but is essential for stable operation.
 
-In Google Sheets exportieren
+- **Circuit:**
 
-Wenn Sie all diese passiven Komponenten berücksichtigen, bauen Sie eine Hardware-Basis, die robust, stabil und deutlich weniger anfällig für unerklärliche Fehler ist.
+```mermaid
+graph LR
+A["VCC (3.3V or 5V) of the IC"] -->|" [C] (100nF) Ceramic Capacitor "| B["GND Pin of the  IC"]
+```
 
-Quellen und ähnliche Inhalte
+- **Explanation:** Place a 100nF ceramic capacitor as physically close as possible between the VCC and GND pins of every single integrated circuit (IC). This applies to both ESP32s, all MCP23S17s, and all TXS0108E level shifters.
 
-[SN04-N (Inductive Proximity Sensor, NPN, wires NO, 6-36V DC, 18x18x36mm)](https://www.techonicsltd.com/sn04-n-inductive-proximity-sensor-npn-wires-no-6-36v-dc-18x18x36mm/"%20\t%20"_blank)
+**Optional but Recommended Components**
 
-[techonicsltd.com/sn04-n-inductive-proximity-sensor-npn-wires-no-6-36v-dc-18x18x36mm](https://www.techonicsltd.com/sn04-n-inductive-proximity-sensor-npn-wires-no-6-36v-dc-18x18x36mm/"%20\t%20"_blank)
+| Component                                | Where & How Many?                                                                           | Function (Why is it useful?)                                                                                                                                                                                                                                                                          |
+| ---------------------------------------- | ------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **10µF - 100µF Electrolytic Capacitors** | 1x at the output of each XL4015 module (2 total).                                           | **Smoothing the Supply Voltage:** These larger capacitors help to filter out low-frequency fluctuations and ripple from the switching regulators (XL4015), ensuring an even more stable 3.3V and 5V supply for the entire system.                                                                     |
+| **0.1µF (100nF) Ceramic Capacitors**     | 2x per mechanical encoder (e.g., KY-040). One from pin A to GND, and one from pin B to GND. | **Hardware Debouncing for Encoders:** Mechanical encoders can "bounce" significantly (create electrical noise). These capacitors, together with the internal pull-up resistors, form a low-pass filter that suppresses high-frequency noise and improves signal quality for the ESP32Encoder library. |
 
-[RobTillaart/MCP23017_RT: Arduino library for I2C MCP23017 16 channel port expander - GitHub](https://github.com/RobTillaart/MCP23017_RT"%20\t%20"_blank)
+If you include all these passive components, you will build a hardware base that is robust, stable, and significantly less prone to unexplainable errors.
 
-[github.com/RobTillaart/MCP23017_RT](https://github.com/RobTillaart/MCP23017_RT"%20\t%20"_blank)
+**DrehschRotary Switchesalter**
 
-[ESP32 Save Data Permanently using Preferences Library - IoT Circuit Hub](https://iotcircuithub.com/esp32-preferences-library-tutorial/"%20\t%20"_blank)
+For the rotary switches connected to the digital inputs of the MCP23S17, **no external resistors are necessary**.
 
-[iotcircuithub.com/esp32-preferences-library-tutorial](https://iotcircuithub.com/esp32-preferences-library-tutorial/"%20\t%20"_blank)
+The reason for this is that the MCP23S17 chip has **internal pull-up resistors** for each of its inputs. These are activated directly in the code (mcp.pinMode(pin, INPUT_PULLUP);). The internal resistor (approx. 100 kΩ) ensures that the input pin has a stable HIGH signal as long as the switch is open. When the switch closes a position and connects the pin to ground (GND), the input is clearly recognized as LOW.
 
-**Drehschalter**
+**Potentiometers**
 
-Bei den Drehschaltern, die an die digitalen Eingänge des MCP23S17 angeschlossen werden, sind **keine externen Widerstände notwendig**.
+For the potentiometers, **no additional resistors are required for their basic function**.
 
-Der Grund dafür ist, dass der MCP23S17-Chip für jeden seiner Eingänge über **interne Pull-up-Widerstände** verfügt. Diese werden direkt im Code (mcp.pinMode(pin, INPUT_PULLUP);) aktiviert. Der interne Widerstand (ca. 100 kΩ) sorgt dafür, dass der Eingangspin ein stabiles HIGH-Signal hat, solange der Schalter offen ist. Wenn der Schalter eine Position schließt und den Pin mit Masse (GND) verbindet, wird der Eingang eindeutig als LOW erkannt.
+A potentiometer is essentially an adjustable resistor used here as a voltage divider:
 
-**Potentiometer**
+- The two outer terminals are connected directly to **3.3V and GND**.
+- The middle terminal (wiper) is connected directly to an analog input (ADC pin) of the ESP32.
 
-Für die Potentiometer sind ebenfalls **keine zusätzlichen Widerstände für die Grundfunktion erforderlich**.
+This setup provides a clean voltage between 0V and 3.3V to the ESP32 depending on the knob's position, without the need for further resistors.
 
-Ein Potentiometer ist im Grunde bereits ein verstellbarer Widerstand, der hier als Spannungsteiler verwendet wird:
-
-- Die beiden äußeren Anschlüsse werden direkt an **3.3V** und **GND** angeschlossen.
-- Der mittlere Anschluss (Schleifer) wird direkt mit dem analogen Eingang (ADC-Pin) des ESP32 verbunden.
-
-Dadurch liefert das Potentiometer je nach Drehposition eine saubere Spannung zwischen 0V und 3.3V an den ESP32, ohne dass weitere Widerstände nötig sind.
-
-💡 **Tipp für stabile Messwerte:** Um das Rauschen bei den Potentiometer-Messungen zu reduzieren, ist es empfehlenswert, einen kleinen **Keramikkondensator** (ca. 10 nF bis 100 nF) zwischen dem mittleren Anschluss (ADC-Pin) und GND zu schalten. Dies ist aber optional und kein Widerstand.
+💡 **Tip for Stable Readings:** o reduce noise on the potentiometer readings, it is advisable to place a small **ceramic capacitor** (approx. 10 nF to 100 nF) between the middle terminal (ADC pin) and GND. However, this is optional and is a capacitor, not a resistor.
