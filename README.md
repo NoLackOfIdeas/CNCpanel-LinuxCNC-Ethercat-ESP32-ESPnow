@@ -112,13 +112,13 @@ This is the most critical step and serves as the foundation for the project.
 2.  **Run the EasyCAT Configurator Tool:**
     - Launch the EasyCAT Configurator.
     - Define all your input and output variables according to your "Fixed Maximum" hardware plan. Use descriptive names (e.g., `enc_pos`, `spindle_rpm`, `button_matrix`).
-    - [cite_start]Click **"Create Files"** to generate the three master files: `MyData.h`, `MyData.xml`, and `MyData.bin` [cite: 386-389].
+    - Click **"Create Files"** to generate the three master files: `MyData.h`, `MyData.xml`, and `MyData.bin`.
 3.  **Place Files in Your Project:**
     - Copy the generated `MyData.h` file into the `src/esp1/` directory of your project.
     - Copy the generated `MyData.xml` (rename it to `HMI_Slave.xml` or similar if desired) to your LinuxCNC master's configuration folder.
 4.  **Program the EEPROM:**
     - Connect the EasyCAT shield directly to your PC's Ethernet port.
-    - [cite_start]Use the "Write EEPROM" function in the EasyCAT Configurator to upload the generated `MyData.bin` file to the shield [cite: 681-682, 689]. This only needs to be done once.
+    - Use the "Write EEPROM" function in the EasyCAT Configurator to upload the generated `MyData.bin` file to the shield. This only needs to be done once.
 
 ### Step 2: One-Time Project Setup
 
