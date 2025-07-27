@@ -25,7 +25,7 @@ A["+3.3V (from ESP1)"] -->|" 10kOhm "| B[ESP1 GPIO Pin]
 B --> |" -- Black Wire --+--> "| C[Sensor]
 ```
 
-- **Erklärung:** Wenn der Sensor kein Metall detektiert, ist sein Ausgang hochohmig. Der 10kΩ-Widerstand zieht den GPIO-Pin des ESP32 sicher auf 3.3V (HIGH). Wenn der Sensor Metall detektiert, schaltet sein interner Transistor durch und zieht den GPIO-Pin auf GND (LOW). Dies erzeugt ein sauberes, eindeutiges digitales Signal.
+- **Explanation:** When the sensor does not detect metal, its output is high-impedance. The 10kΩ resistor reliably pulls the ESP32's GPIO pin to 3.3V (HIGH). When the sensor detects metal, its internal transistor switches on and pulls the GPIO pin to GND (LOW). This creates a clean, unambiguous digital signal.
 
 **2. Strombegrenzungswiderstände für die LED-Matrix (an ESP2)**
 
