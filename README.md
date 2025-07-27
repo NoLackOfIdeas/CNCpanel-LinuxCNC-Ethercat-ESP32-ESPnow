@@ -43,14 +43,27 @@ graph LR
 - **Robust Dual-ESP32 Architecture:** Decoupling of real-time (ESP1) and non-time-critical (ESP2) tasks.
 - **Industrial Real-Time Communication:** Connection to LinuxCNC via deterministic EtherCAT.
 - **Low-Latency Wireless Link:** ESP-NOW for responsive communication between the controllers.
-- **Dynamic Web Interface:** Live status monitoring and complete run-time configuration of the HMI's functional logic (joystick tuning, button modes, LED bindings) without recompiling.
-- **Over-The-Air (OTA) Updates:** Conveniently update the HMI controller's firmware via Wi-Fi.
+- **Dynamic Web Interface:** Live status monitoring and complete run-time configuration of the HMI's (ESP2)functional logic (joystick tuning, button modes, LED bindings) without recompiling.
+- **Over-The-Air (OTA) Updates:** Conveniently update the HMI controller's firmware via Wi-Fi (ESP2).
 - **Automated Helper File Generation:** A Python script parses your master `MyData.h` file to automatically generate a descriptive HAL template and Markdown documentation, preventing manual errors.
 - **Comprehensive Peripheral Support:** Direct connection of encoders, industrial sensors, button matrices, joysticks, potentiometers, and rotary switches.
 
 ---
 
 ## Prerequisites
+
+## Hardware Philosophy: Modular and Accessible
+
+This project's design prioritizes the use of pre-built, multi-channel modules and breakout boards. This approach significantly simplifies the hardware implementation, minimizing the need for complex custom PCB design or extensive point-to-point soldering. By leveraging widely available modules, the system is faster to assemble, easier to debug, and more accessible for replication.
+
+The core components are selected for their channel density and ease of integration into a larger system.
+
+| Module                 | Function                    | Channels    | Example Link                                                                                          |
+| :--------------------- | :-------------------------- | :---------- | :---------------------------------------------------------------------------------------------------- |
+| **EasyCAT PRO Shield** | EtherCAT Slave Interface    | N/A         | [Bausano.net](http://www.bausano.net/en/hardware/easycat-pro.html)                                    |
+| **MCP23S17**           | SPI I/O Expander            | 16 Channels | [Adafruit MCP23S17 Board](https://www.adafruit.com/product/732)                                       |
+| **TXS0108E**           | Bidirectional Level Shifter | 8 Channels  | [Adafruit TXS0108E Board](https://www.adafruit.com/product/395)                                       |
+| **XL4015**             | DC-DC Buck Converter        | 1 Channel   | [Generic XL4015 Module](https://www.amazon.com/XL4015-Converter-Module-Lithium-Charger/dp/B01N0AD6P5) |
 
 ### Hardware
 
