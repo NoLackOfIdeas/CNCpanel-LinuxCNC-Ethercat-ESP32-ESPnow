@@ -9,9 +9,9 @@
 //                                                                   //
 //-------------------------------------------------------------------//
 
-#define CUST_BYTE_NUM_OUT 16
+#define CUST_BYTE_NUM_OUT 32
 #define CUST_BYTE_NUM_IN 93
-#define TOT_BYTE_NUM_ROUND_OUT 16
+#define TOT_BYTE_NUM_ROUND_OUT 32
 #define TOT_BYTE_NUM_ROUND_IN 94
 
 typedef union //---- output buffer ----
@@ -19,9 +19,15 @@ typedef union //---- output buffer ----
 	uint8_t Byte[TOT_BYTE_NUM_ROUND_OUT];
 	struct
 	{
-		uint8_t led_matrix[8];	   // 64 LED states (8 bytes)
-		uint32_t lcnc_status_word; // A 32-bit status word from LinuxCNC
-		float current_feedrate;	   // Current feedrate value for display
+		uint8_t led_matrix[8];			 // 64 LED states (8 bytes)
+		uint32_t lcnc_status_word;		 // A 32-bit status word from LinuxCNC
+		float current_feedrate;			 // Current feedrate value for display
+		uint16_t machine_status;		 // Bitmask for machine states (is_on, mode, etc.)
+		uint16_t spindle_coolant_status; // Bitmask for spindle/coolant states
+		float feed_override;			 // Current feed override percentage (e.g., 1.0 for 100%)
+		float rapid_override;			 // Current rapid override percentage
+		float spindle_override;			 // Current spindle override percentage
+
 	} Cust;
 } PROCBUFFER_OUT;
 

@@ -14,3 +14,8 @@ This document describes the exact byte-for-byte layout of the process data based
 | OUT | 0 | 8 | `uint8_t[8]` | `led_matrix` | 64 LED states (8 bytes) |
 | OUT | 8 | 4 | `uint32_t` | `lcnc_status_word` | A 32-bit status word from LinuxCNC |
 | OUT | 12 | 4 | `float` | `current_feedrate` | Current feedrate value for display |
+| OUT | 16 | 2 | `uint16_t` | `machine_status` | Bitmask for machine states (is_on, mode, etc.) |
+| OUT | 18 | 2 | `uint16_t` | `spindle_coolant_status` | Bitmask for spindle/coolant states |
+| OUT | 20 | 4 | `float` | `feed_override` | Current feed override percentage (e.g., 1.0 for 100%) |
+| OUT | 24 | 4 | `float` | `rapid_override` | Current rapid override percentage |
+| OUT | 28 | 4 | `float` | `spindle_override` | Current spindle override percentage |

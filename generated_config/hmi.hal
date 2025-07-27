@@ -148,3 +148,13 @@ net lcnc-lcnc_status_word => easycat.0.pdo-out.lcnc_status_word
 
 net lcnc-current_feedrate => easycat.0.pdo-out.current_feedrate
 
+net lcnc-machine_status => easycat.0.pdo-out.machine_status
+
+net lcnc-spindle_coolant_status => easycat.0.pdo-out.spindle_coolant_status
+
+net lcnc-feed_override => easycat.0.pdo-out.feed_override
+
+net lcnc-rapid_override => easycat.0.pdo-out.rapid_override
+
+net lcnc-spindle_override => easycat.0.pdo-out.spindle_override
+
