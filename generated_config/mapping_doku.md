@@ -1,0 +1,16 @@
+# Auto-Generated EtherCAT Data Mapping
+
+This document describes the exact byte-for-byte layout of the process data based on `C:\Users\Maasen.KHV-NB-MZ37\Documents\PlatformIO\Projects\CNCpanel-LinuxCNC-Ethercat-ESP32-ESPnow\CNCpanel-LinuxCNC-Ethercat-ESP32-ESPnow\src\esp1\MyData.h`.
+
+| Direction | Byte Offset | Size (Bytes) | C++ Type | Variable Name | Description |
+|:---|:---|:---|:---|:---|:---|
+| IN | 0 | 32 | `int32_t[8]` | `enc_pos` | Position of up to 8 encoders on ESP1 |
+| IN | 32 | 4 | `uint32_t` | `spindle_rpm` | Calculated spindle RPM from Hall sensor |
+| IN | 36 | 1 | `uint8_t` | `probe_states` | Bitmask for up to 8 probes on ESP1 |
+| IN | 37 | 8 | `uint8_t[8]` | `button_matrix` | 64 button states (8 bytes) |
+| IN | 45 | 12 | `int16_t[6]` | `joystick_axes` | 6 analog axes from up to 2 joysticks |
+| IN | 57 | 32 | `int32_t[8]` | `hmi_enc_pos` | Position of up to 8 encoders on ESP2 |
+| IN | 89 | 4 | `uint8_t[4]` | `rotary_pos` | Position of up to 4 rotary switches |
+| OUT | 0 | 8 | `uint8_t[8]` | `led_matrix` | 64 LED states (8 bytes) |
+| OUT | 8 | 4 | `uint32_t` | `lcnc_status_word` | A 32-bit status word from LinuxCNC |
+| OUT | 12 | 4 | `float` | `current_feedrate` | Current feedrate value for display |

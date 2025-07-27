@@ -7,14 +7,18 @@
  * 2. Hosting the asynchronous web server for dynamic configuration and status monitoring.
  * 3. Handling Over-The-Air (OTA) firmware updates.
  * 4. Communicating with the ESP1 bridge via the ESP-NOW protocol.
+ *
+ * Concepts are derived from the project document "Integriertes Dual-ESP32-Steuerungssystem".
  */
 
+// --- INCLUDES ---
 #include <Arduino.h>
 #include <WiFi.h>
 #include <ESPAsyncWebServer.h>
 #include <AsyncElegantOTA.h>
 #include <esp_now.h>
 #include <ArduinoJson.h>
+#include <LittleFS.h>
 #include "config_esp2.h"
 #include "shared_structures.h"
 #include "persistence.h"
@@ -62,18 +66,22 @@ void onWsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventTyp
 {
     if (type == WS_EVT_CONNECT)
     {
-        // A new web client connected. Send them the full current configuration.
         if (DEBUG_ENABLED)
             Serial.printf("WebSocket client #%u connected\n", client->id());
 
         StaticJsonDocument<4096> doc;
         doc["type"] = "initialConfig";
-        // The config JSON string is parsed and re-nested under the "payload" key
-        deserializeJson(doc["payload"], get_config_as_json());
+
+        // CORRECTED: Parse the config string into a temporary document first.
+        StaticJsonDocument<4096> payload_doc;
+        deserializeJson(payload_doc, get_config_as_json());
+
+        // Then, assign the parsed object to the "payload" key.
+        doc["payload"] = payload_doc;
 
         String json_output;
         serializeJson(doc, json_output);
-        client->text(json_output); // Send only to the newly connected client
+        client->text(json_output);
     }
     else if (type == WS_EVT_DISCONNECT)
     {
@@ -82,7 +90,6 @@ void onWsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventTyp
     }
     else if (type == WS_EVT_DATA)
     {
-        // Data received from a client. Parse it as a JSON command.
         StaticJsonDocument<4096> doc;
         if (deserializeJson(doc, (char *)data) == DeserializationError::Ok)
         {
@@ -114,13 +121,20 @@ void setup()
 {
     Serial.begin(115200);
 
-    // 1. Load the dynamic configuration from NVS into memory.
+    // 1. Initialize the LittleFS filesystem. Required before serving files.
+    if (!LittleFS.begin(true))
+    {
+        Serial.println("An Error has occurred while mounting LittleFS");
+        return;
+    }
+
+    // 2. Load the dynamic configuration from NVS into memory.
     load_configuration();
 
-    // 2. Initialize all HMI hardware (I/O expanders, pins).
+    // 3. Initialize all HMI hardware (I/O expanders, pins).
     hmi_init();
 
-    // 3. Connect to WiFi. This is required for both the web server and ESP-NOW.
+    // 4. Connect to WiFi. This is required for both the web server and ESP-NOW.
     WiFi.mode(WIFI_STA);
     WiFi.setHostname(OTA_HOSTNAME);
     WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
@@ -131,7 +145,7 @@ void setup()
     if (DEBUG_ENABLED)
         Serial.printf("WiFi Connected. IP: %s\n", WiFi.localIP().toString().c_str());
 
-    // 4. Initialize ESP-NOW communication and add ESP1 as a peer.
+    // 5. Initialize ESP-NOW communication and add ESP1 as a peer.
     esp_now_init();
     esp_now_register_send_cb(OnDataSent);
     esp_now_register_recv_cb(OnDataRecv);
@@ -139,7 +153,7 @@ void setup()
     memcpy(peerInfo.peer_addr, esp1_mac_address, 6);
     esp_now_add_peer(&peerInfo);
 
-    // 5. Set up the web server routes.
+    // 6. Set up the web server routes.
     ws.onEvent(onWsEvent);
     server.addHandler(&ws);
     // Serve the main web page and its assets from the LittleFS filesystem.
@@ -153,7 +167,7 @@ void setup()
     server.on("/get_config_json", HTTP_GET, [](AsyncWebServerRequest *request)
               { request->send(200, "application/json", get_config_as_json()); });
 
-    // 6. Start the OTA update server and the main web server.
+    // 7. Start the OTA update server and the main web server.
     AsyncElegantOTA.begin(&server);
     server.begin();
     if (DEBUG_ENABLED)

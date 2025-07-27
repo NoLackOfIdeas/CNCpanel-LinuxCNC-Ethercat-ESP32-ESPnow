@@ -1,35 +1,40 @@
+/**
+ * @file shared_structures.h
+ * @brief Defines data structures shared between ESP1 and ESP2.
+ * This file is crucial for ensuring data consistency for the ESP-NOW communication link.
+ */
+
 #ifndef SHARED_STRUCTURES_H
 #define SHARED_STRUCTURES_H
-
 #include <stdint.h>
 
-// --- Konfiguration der maximalen Peripherieanzahl ---
-// Diese Werte müssen mit den Werten in config_esp2.h übereinstimmen
-#define MAX_ENCODERS_ESP2 2
-#define MAX_POTIS 6
+// --- HARDWARE ADDRESSES ---
+// IMPORTANT: You must enter the MAC addresses of your specific ESP32 boards here.
+static uint8_t esp1_mac_address[] = {0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED}; // MAC address of ESP1 (Bridge)
+static uint8_t esp2_mac_address[] = {0xDE, 0xAD, 0xBE, 0xEF, 0xBE, 0xEF}; // MAC address of ESP2 (HMI)
 
-// --- MAC-Adressen ---
-// TRAGEN SIE HIER DIE MAC-ADRESSE IHRES ESP1 EIN
-static uint8_t esp1_mac_address[6] = {0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED};
+// --- CONFIGURATION CONSTANTS ---
+#define MAX_JOYSTICKS 1
 
-// TRAGEN SIE HIER DIE MAC-ADRESSE IHRES ESP2 EIN
-static uint8_t esp2_mac_address[6] = {0xDE, 0xAD, 0xBE, 0xEF, 0xBE, 0xEF};
+// --- ESP-NOW DATA STRUCTURES ---
 
-// Datenstruktur, die von ESP2 (HMI) an ESP1 (Bridge) gesendet wird
+/**
+ * @brief Data packet sent from ESP2 (HMI) to ESP1 (Bridge).
+ */
 typedef struct struct_message_to_esp1
 {
-    uint64_t logical_button_states; // 64 Tasten als 64-Bit-Bitmaske (logischer Zustand nach Toggle/Radio)
-    int32_t encoder_values;
-    uint16_t poti_values;
-    uint8_t rotary_switch_positions;
+    uint8_t button_matrix_states[8];
+    int16_t joystick_values[MAX_JOYSTICKS * 3];
+    bool data_changed;
 } struct_message_to_esp1;
 
-// Datenstruktur, die von ESP1 (Bridge) an ESP2 (HMI) gesendet wird
+/**
+ * @brief Data packet sent from ESP1 (Bridge) to ESP2 (HMI).
+ */
 typedef struct struct_message_to_esp2
 {
-    uint64_t led_states_from_lcnc; // 64 LEDs als 64-Bit-Bitmaske
+    uint8_t led_matrix_states[8];
     uint32_t linuxcnc_status;
-    // Weitere Daten von LinuxCNC für die Anzeige auf der HMI
 } struct_message_to_esp2;
 
 #endif // SHARED_STRUCTURES_H
