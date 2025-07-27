@@ -58,12 +58,12 @@ This project's design prioritizes the use of pre-built, multi-channel modules an
 
 The core components are selected for their channel density and ease of integration into a larger system.
 
-| Module                 | Function                    | Channels    | Example Link                                                                                          |
-| :--------------------- | :-------------------------- | :---------- | :---------------------------------------------------------------------------------------------------- |
-| **EasyCAT PRO Shield** | EtherCAT Slave Interface    | N/A         | [Bausano.net](http://www.bausano.net/en/hardware/easycat-pro.html)                                    |
-| **MCP23S17**           | SPI I/O Expander            | 16 Channels | [Adafruit MCP23S17 Board](https://www.adafruit.com/product/732)                                       |
-| **TXS0108E**           | Bidirectional Level Shifter | 8 Channels  | [Adafruit TXS0108E Board](https://www.adafruit.com/product/395)                                       |
-| **XL4015**             | DC-DC Buck Converter        | 1 Channel   | [Generic XL4015 Module](https://www.amazon.com/XL4015-Converter-Module-Lithium-Charger/dp/B01N0AD6P5) |
+| Module                 | Function                    | Channels    | Required Quantity | Example Link                                                            |
+| :--------------------- | :-------------------------- | :---------- | :---------------- | :---------------------------------------------------------------------- |
+| **EasyCAT PRO Shield** | EtherCAT Slave Interface    | N/A         | 1                 | [AliExpress](https://de.aliexpress.com/item/1005008174536853.html)      |
+| **MCP23S17**           | SPI I/O Expander            | 16 Channels | 4                 | [AliExpress](https://de.aliexpress.com/item/1005006825918157.html)      |
+| **TXS0108E**           | Bidirectional Level Shifter | 8 Channels  | 1                 | [AliExpress](httpshttps://de.aliexpress.com/item/1005008226957385.html) |
+| **XL4015**             | DC-DC Buck Converter        | 1 Channel   | 2                 | [AliExpress](https://de.aliexpress.com/item/1005006642757928.html)      |
 
 ### Hardware
 
