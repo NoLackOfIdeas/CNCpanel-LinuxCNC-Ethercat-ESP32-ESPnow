@@ -35,6 +35,9 @@ typedef struct struct_message_to_esp2
 {
     uint8_t led_matrix_states[8];
     uint32_t linuxcnc_status;
+    // --- NEW: Added fields to match the extended MyData.h ---
+    uint16_t machine_status;         // Bitmask for machine states (is_on, mode, etc.)
+    uint16_t spindle_coolant_status; // Bitmask for spindle/coolant states
 } struct_message_to_esp2;
 
 #endif // SHARED_STRUCTURES_H

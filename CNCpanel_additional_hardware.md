@@ -1,28 +1,28 @@
-Die passiven Bauteile sind das unsichtbare Fundament, das für die Stabilität und Zuverlässigkeit des gesamten Systems sorgt. Ihr Fehlen ist eine der häufigsten Ursachen für schwer diagnostizierbare Fehler wie "zufällige" Neustarts, falsche Sensorwerte oder "Geister"-Tastendrücke.
+The passive components are the invisible foundation that ensures the stability and reliability of the entire system. Their absence is one of the most common causes of difficult-to-diagnose errors such as "random" reboots, incorrect sensor values, or "ghost" key presses.
 
-Hier ist eine vollständige Liste aller passiven Bauteile, die Sie hinzufügen müssen, aufgeteilt nach ihrer Funktion, inklusive einer Erklärung, warum sie notwendig sind.
+Here is a complete list of all the passive components you need to add, divided by function, including an explanation of why they are necessary.
 
-**Zusammenfassung der notwendigen passiven Bauteile**
+**Summary of Necessary Passive Components**
 
-| Bauteil                                | Wo & Wie Viele?                                                                                                                 | Funktion (Warum ist es notwendig?)                                                                                                                                                                                                                                                       |
-| -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **10kΩ Widerstände**                   | **ESP1:** 1x pro NPN-Sensor (Hall-Sensor, Probes). Zwischen Signal-Pin und 3.3V.                                                | **Pull-up für NPN-Sensoren:** NPN-Sensoren haben einen "Open-Collector"-Ausgang. Ohne diesen Widerstand "schwebt" der Pin in einem undefinierten Zustand. Der Widerstand zieht den Pin auf einen klaren HIGH-Pegel (3.3V), wenn der Sensor inaktiv ist.                                  |
-| **220Ω Widerstände**                   | **ESP2:** 1x pro Zeile der LED-Matrix (insgesamt 8 Stück). In Serie zwischen dem MCP23S17-Pin und der Anoden-Leitung der Zeile. | **Strombegrenzung für LEDs:** LEDs sind keine Glühbirnen. Ohne einen Widerstand würden sie unbegrenzt Strom ziehen und sofort durchbrennen. Dieser Widerstand begrenzt den Strom auf ein sicheres Maß (ca. 15mA).                                                                        |
-| **1N4148 Dioden**                      | **ESP2:** 1x pro Taster in der Tastenmatrix (insgesamt 64 Stück). In Serie mit jedem einzelnen Taster.                          | **Anti-Ghosting / N-Key Rollover:** Verhindert "Geister"-Tastendrücke. Wenn Sie drei Tasten in einem Rechteck drücken, kann ohne Dioden die vierte Ecke als gedrückt erkannt werden. Die Diode wirkt wie ein Einwegventil für den Strom und verhindert dies.                             |
-| **100nF (0.1µF) Keramikkondensatoren** | 1x pro IC (2x ESP32, alle MCP23S17, alle TXS0108E). So nah wie möglich an den VCC/GND-Pins des Chips.                           | **Entkopplung / Decoupling:** Digitale Chips verursachen beim Schalten winzige, hochfrequente Stromspitzen. Diese Kondensatoren wirken als lokale Mini-Puffer, glätten diese Spikes und verhindern so Instabilitäten und Abstürze des Systems. Dies ist eine fundamentale Best Practice. |
+| Component                            | Where & How Many?                                                                                                   | Function (Why is it necessary?)                                                                                                                                                                                                                       |
+| ------------------------------------ | ------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **10kΩ Resistors**                   | **ESP1:** 1x per NPN sensor (Hall sensor, Probes). Between the signal pin and 3.3V.                                 | **Pull-up for NPN Sensors:** NPN sensors have an "open-collector" output. Without this resistor, the pin "floats" in an undefined state. The resistor pulls the pin to a clear HIGH level (3.3V) when the sensor is inactive.                         |
+| **220Ω Resistors**                   | **ESP2:** 1x per row of the LED matrix (8 total). In series between the MCP23S17 pin and the anode line of the row. | **Current Limiting for LEDs:** LEDs are not light bulbs. Without a resistor, they would draw unlimited current and burn out immediately. This resistor limits the current to a safe level (approx. 15mA).                                             |
+| **1N4148 Diodes**                    | **ESP2:** 1x per switch in the button matrix (64 total). In series with each individual switch.                     | **Anti-Ghosting / N-Key Rollover:** Prevents "ghost" key presses. If you press three keys that form a rectangle, the fourth corner can be detected as pressed without diodes. The diode acts as a one-way valve for the current, preventing this.     |
+| **100nF (0.1µF) Ceramic Capacitors** | 1x per IC (2x ESP32, all MCP23S17, all TXS0108E). As close as possible to the VCC/GND pins of the chip.             | **Decoupling:** Digital chips cause tiny, high-frequency current spikes when switching. These capacitors act as local mini-buffers, smoothing these spikes and thus preventing system instabilities and crashes. This is a fundamental best practice. |
 
-**Detaillierte Erklärungen und Schaltskizzen**
+**Detailed Explanations and Circuit Diagrams**
 
-**1. Pull-up-Widerstände für NPN-Sensoren (an ESP1)**
+**1. Pull-up Resistors for NPN Sensors (on ESP1)**
 
-Jeder Ihrer NPN-Sensoren (Hall-Sensor NJK-5002C, Sonden SN04-N) benötigt einen externen Pull-up-Widerstand.
+Each of your NPN sensors (Hall sensor NJK-5002C, Probes SN04-N) requires an external pull-up resistor.
 
-- **Schaltung:**
+- **Circuit:**
 
 ```mermaid
 graph LR
-A["+3.3V (von ESP1)"] -->|" 10kOhm "| B[ESP1 GPIO Pin]
-B --> |" -- Schwarzes Kabel --+--> "| C[Sensor]
+A["+3.3V (from ESP1)"] -->|" 10kOhm "| B[ESP1 GPIO Pin]
+B --> |" -- Black Wire --+--> "| C[Sensor]
 ```
 
 - **Erklärung:** Wenn der Sensor kein Metall detektiert, ist sein Ausgang hochohmig. Der 10kΩ-Widerstand zieht den GPIO-Pin des ESP32 sicher auf 3.3V (HIGH). Wenn der Sensor Metall detektiert, schaltet sein interner Transistor durch und zieht den GPIO-Pin auf GND (LOW). Dies erzeugt ein sauberes, eindeutiges digitales Signal.

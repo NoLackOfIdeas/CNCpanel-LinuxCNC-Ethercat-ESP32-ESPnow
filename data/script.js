@@ -12,9 +12,34 @@
 
 "use strict";
 
-// --- GLOBAL VARIABLES ---
+// --- GLOBAL VARIABLES & CONSTANTS ---
 let websocket;
 const wsStatusElem = document.getElementById("ws-status");
+
+// Dictionaries to map enum values from the firmware to human-readable strings
+const TRIGGER_TYPE_MAP = {
+  0: "Machine is ON",
+  1: "In AUTO Mode",
+  2: "In MDI Mode",
+  3: "In JOG Mode",
+  4: "Program is Running",
+  5: "Program is Paused",
+  6: "On Home Position",
+  16: "Spindle is ON",
+  17: "Spindle at Speed",
+  18: "Mist Coolant is ON",
+  19: "Flood Coolant is ON",
+};
+const ACTION_TYPE_MAP = {
+  0: "No Action",
+  1: "Enable Joystick 1",
+  2: "Disable Joystick 1",
+};
+const BINDING_TYPE_MAP = {
+  0: "Unbound",
+  1: "Bound to Button",
+  2: "Bound to LCNC",
+};
 
 // --- INITIALIZATION ---
 window.addEventListener("load", onLoad);
@@ -100,7 +125,6 @@ function updateLiveStatus(status) {
       for (let c = 0; c < 8; c++) {
         const cell = document.getElementById(`btn-live-${r}-${c}`);
         if (cell) {
-          // Check the c-th bit of the r-th byte
           if ((status.buttons[r] >> c) & 1) {
             cell.classList.add("button-pressed");
           } else {
@@ -154,10 +178,10 @@ function buildConfigUI(config) {
 
   // --- Build Button Config Table ---
   if (config.buttons) {
-    const btnContainer = document.getElementById("button-config-table");
-    let btnHtml = `<div class="config-table-header"><div>#</div><div>Name</div><div>Toggle</div><div>Radio Grp</div></div>`;
+    const container = document.getElementById("button-config-table");
+    let html = `<div class="config-table-header"><div>#</div><div>Name</div><div>Toggle</div><div>Radio Grp</div></div>`;
     config.buttons.forEach((btn, index) => {
-      btnHtml += `<div class="config-table-row">
+      html += `<div class="config-table-row">
                 <div>${index}</div>
                 <div><input type="text" id="btn-name-${index}" value="${
         btn.name
@@ -170,59 +194,42 @@ function buildConfigUI(config) {
       }" min="0"></div>
             </div>`;
     });
-    btnContainer.innerHTML = btnHtml;
+    container.innerHTML = html;
   }
 
   // --- Build LED Config Table ---
   if (config.leds) {
-    const ledContainer = document.getElementById("led-config-table");
-    let ledHtml = `<div class="config-table-header"><div>#</div><div>Name</div><div>Binding Type</div><div>Bound To Button #</div><div>LCNC State Bit #</div></div>`;
+    const container = document.getElementById("led-config-table");
+    let html = `<div class="config-table-header"><div>#</div><div>Name</div><div>Binding Type</div><div>Bound To Button #</div><div>LCNC State Bit #</div></div>`;
     config.leds.forEach((led, index) => {
-      ledHtml += `<div class="config-table-row">
+      let bindingOptions = "";
+      for (const [key, value] of Object.entries(BINDING_TYPE_MAP)) {
+        bindingOptions += `<option value="${key}" ${
+          led.binding_type == key ? "selected" : ""
+        }>${value}</option>`;
+      }
+      html += `<div class="config-table-row">
                 <div>${index}</div>
-                <div><input type="text" id="led-name-${index}" value="${
-        led.name
-      }"></div>
-                <div>
-                    <select id="led-binding-${index}" onchange="toggleLedInputs(${index})">
-                        <option value="0" ${
-                          led.binding_type === 0 ? "selected" : ""
-                        }>Unbound</option>
-                        <option value="1" ${
-                          led.binding_type === 1 ? "selected" : ""
-                        }>Bound to Button</option>
-                        <option value="2" ${
-                          led.binding_type === 2 ? "selected" : ""
-                        }>Bound to LCNC</option>
-                    </select>
-                </div>
-                <div id="led-bound-button-wrapper-${index}">
-                    <input type="number" id="led-bound-button-${index}" value="${
-        led.bound_button_index
-      }" min="-1">
-                </div>
-                <div id="led-lcnc-bit-wrapper-${index}">
-                    <input type="number" id="led-lcnc-bit-${index}" value="${
-        led.lcnc_state_bit
-      }" min="-1">
-                </div>
+                <div><input type="text" id="led-name-${index}" value="${led.name}"></div>
+                <div><select id="led-binding-${index}" onchange="toggleLedInputs(${index})">${bindingOptions}</select></div>
+                <div id="led-bound-button-wrapper-${index}"><input type="number" id="led-bound-button-${index}" value="${led.bound_button_index}" min="-1"></div>
+                <div id="led-lcnc-bit-wrapper-${index}"><input type="number" id="led-lcnc-bit-${index}" value="${led.lcnc_state_bit}" min="-1"></div>
             </div>`;
     });
-    ledContainer.innerHTML = ledHtml;
-    // After rendering, set the initial visibility for all conditional inputs
+    container.innerHTML = html;
     config.leds.forEach((led, index) => toggleLedInputs(index));
   }
 
   // --- Build Joystick Config Table ---
   if (config.joysticks) {
-    const joyContainer = document.getElementById("joystick-config-table");
-    let joyHtml = ``;
+    const container = document.getElementById("joystick-config-table");
+    let html = ``;
     config.joysticks.forEach((joy, index) => {
-      joyHtml += `<h3>${joy.name}</h3>
+      html += `<h3>${joy.name}</h3>
                 <div class="config-table-header"><div>Axis</div><div>Invert</div><div>Sensitivity</div><div>Deadzone</div></div>`;
       joy.axes.forEach((axis, axis_idx) => {
         const axis_name = ["X", "Y", "Z"][axis_idx];
-        joyHtml += `<div class="config-table-row">
+        html += `<div class="config-table-row">
                     <div><b>${axis_name}</b></div>
                     <div><input type="checkbox" id="joy-${index}-axis-${axis_idx}-inverted" ${
           axis.is_inverted ? "checked" : ""
@@ -236,7 +243,35 @@ function buildConfigUI(config) {
                 </div>`;
       });
     });
-    joyContainer.innerHTML = joyHtml;
+    container.innerHTML = html;
+  }
+
+  // --- Build Action Binding Table ---
+  if (config.bindings) {
+    const container = document.getElementById("action-binding-table");
+    let html = `<div class="config-table-header"><div>Active</div><div>IF (Machine State Is...)</div><div>THEN (Perform Action...)</div></div>`;
+    config.bindings.forEach((binding, index) => {
+      let triggerOptions = "";
+      for (const [key, value] of Object.entries(TRIGGER_TYPE_MAP)) {
+        triggerOptions += `<option value="${key}" ${
+          binding.trigger == key ? "selected" : ""
+        }>${value}</option>`;
+      }
+      let actionOptions = "";
+      for (const [key, value] of Object.entries(ACTION_TYPE_MAP)) {
+        actionOptions += `<option value="${key}" ${
+          binding.action == key ? "selected" : ""
+        }>${value}</option>`;
+      }
+      html += `<div class="config-table-row">
+                <div><input type="checkbox" id="binding-active-${index}" ${
+        binding.is_active ? "checked" : ""
+      }></div>
+                <div><select id="binding-trigger-${index}">${triggerOptions}</select></div>
+                <div><select id="binding-action-${index}">${actionOptions}</select></div>
+            </div>`;
+    });
+    container.innerHTML = html;
   }
 }
 
@@ -251,9 +286,7 @@ function toggleLedInputs(index) {
   );
   const lcncWrapper = document.getElementById(`led-lcnc-bit-wrapper-${index}`);
 
-  // Binding type 1: "Bound to Button"
   buttonWrapper.style.display = bindingType === "1" ? "block" : "none";
-  // Binding type 2: "Bound to LCNC"
   lcncWrapper.style.display = bindingType === "2" ? "block" : "none";
 }
 
@@ -264,7 +297,7 @@ function toggleLedInputs(index) {
  * and sends it to the ESP32 to be saved.
  */
 function saveConfiguration() {
-  const config = { buttons: [], leds: [], joysticks: [] };
+  const config = { buttons: [], leds: [], joysticks: [], bindings: [] };
 
   // --- Read button config from UI ---
   for (let i = 0; document.getElementById(`btn-name-${i}`); i++) {
@@ -306,6 +339,15 @@ function saveConfiguration() {
       });
     }
     config.joysticks.push(joy_data);
+  }
+
+  // --- Read Action Bindings config from UI ---
+  for (let i = 0; document.getElementById(`binding-active-${i}`); i++) {
+    config.bindings.push({
+      is_active: document.getElementById(`binding-active-${i}`).checked,
+      trigger: parseInt(document.getElementById(`binding-trigger-${i}`).value),
+      action: parseInt(document.getElementById(`binding-action-${i}`).value),
+    });
   }
 
   console.log("Sending config to save:", config);

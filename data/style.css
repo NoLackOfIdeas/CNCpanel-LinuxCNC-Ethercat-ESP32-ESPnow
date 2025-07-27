@@ -1,7 +1,5 @@
 /* --------------------------------------------------------------------------
  * Main Stylesheet for the HMI Web Interface
- * * This file provides the visual styling for all elements on the HMI 
- * configuration page, ensuring a clean, modern, and responsive layout.
  * -------------------------------------------------------------------------- */
 
 /* --- Global Styles & Layout --- */
@@ -34,6 +32,10 @@ h2 {
   border-bottom: 2px solid #eee;
   padding-bottom: 0.75rem;
   margin-top: 0;
+}
+p {
+  font-size: 0.95rem;
+  color: #555;
 }
 
 /* --- Header Styles --- */
@@ -90,11 +92,11 @@ header {
   transition: background-color 0.1s ease-in-out;
 }
 .button-pressed {
-  background-color: #3498db !important; /* Blue for pressed button. !important to override other states. */
+  background-color: #3498db !important;
 }
 .led-on {
-  background-color: #f1c40f; /* Yellow for active LED */
-  box-shadow: 0 0 10px #f1c40f, inset 0 0 5px rgba(255, 255, 255, 0.5); /* Glow effect */
+  background-color: #f1c40f;
+  box-shadow: 0 0 10px #f1c40f, inset 0 0 5px rgba(255, 255, 255, 0.5);
 }
 
 /* --- Configuration Panel & Tabs --- */
@@ -149,19 +151,14 @@ header {
   border-radius: 5px 5px 0 0;
   padding-left: 10px;
 }
-/* Grid layout for the button configuration table */
 #button-config-table .config-table-header,
 #button-config-table .config-table-row {
   grid-template-columns: 50px 2fr 100px 100px;
 }
-
-/* Grid layout for the LED configuration table */
 #led-config-table .config-table-header,
 #led-config-table .config-table-row {
   grid-template-columns: 50px 1.5fr 1.5fr 1fr 1fr;
 }
-
-/* Grid layout for the joystick configuration table */
 #joystick-config-table h3 {
   margin-top: 1.5rem;
   border-top: 1px solid #eee;
@@ -170,6 +167,11 @@ header {
 #joystick-config-table .config-table-header,
 #joystick-config-table .config-table-row {
   grid-template-columns: 100px 100px 1fr 1fr;
+}
+/* NEW: Grid layout for the action binding table */
+#action-binding-table .config-table-header,
+#action-binding-table .config-table-row {
+  grid-template-columns: 100px 2fr 2fr;
 }
 
 input[type="text"],
@@ -185,7 +187,7 @@ select {
 input[type="checkbox"] {
   width: 20px;
   height: 20px;
-  justify-self: center; /* Center checkbox in its grid cell */
+  justify-self: center;
 }
 
 /* --- Action Buttons --- */
@@ -208,13 +210,13 @@ input[type="checkbox"] {
 }
 #save-config-btn {
   background-color: #27ae60;
-} /* Green for primary action */
+}
 #save-config-btn:hover {
   background-color: #2ecc71;
 }
 .actions button:last-child {
   background-color: #7f8c8d;
-} /* Grey for secondary action */
+}
 .actions button:last-child:hover {
   background-color: #95a5a6;
 }

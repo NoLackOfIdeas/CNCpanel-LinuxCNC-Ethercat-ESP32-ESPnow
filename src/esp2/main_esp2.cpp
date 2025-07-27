@@ -34,7 +34,6 @@ struct_message_to_esp2 incoming_lcnc_data; // Data received from ESP1
 
 /**
  * @brief Creates a JSON string with the current HMI status and broadcasts it to all web clients.
- * This function is called whenever a button is pressed or an LED state changes.
  */
 void broadcast_live_status()
 {
@@ -60,7 +59,6 @@ void broadcast_live_status()
 
 /**
  * @brief Handles all WebSocket events (connect, disconnect, data received).
- * This is the primary interface between the web UI and the firmware.
  */
 void onWsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType type, void *arg, uint8_t *data, size_t len)
 {
@@ -107,11 +105,22 @@ void onWsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventTyp
 // --- ESP-NOW CALLBACKS ---
 void OnDataSent(const uint8_t *mac_addr, esp_now_send_status_t status) {}
 
+/**
+ * @brief Callback executed when new data arrives from ESP1.
+ */
 void OnDataRecv(const uint8_t *mac, const uint8_t *incomingData, int len)
 {
     memcpy(&incoming_lcnc_data, incomingData, sizeof(incoming_lcnc_data));
+
+    // --- NEW: Evaluate Action Bindings ---
+    // This new function call triggers the HMI to re-evaluate its state
+    // based on the new machine status received from LinuxCNC.
+    evaluate_action_bindings(incoming_lcnc_data);
+
+    // Update the physical LEDs based on the new data.
     update_leds_from_lcnc(incoming_lcnc_data);
-    // After receiving a new LED state from LinuxCNC, update the web UI
+
+    // Broadcast the new status to the web UI.
     broadcast_live_status();
 }
 
@@ -121,20 +130,15 @@ void setup()
 {
     Serial.begin(115200);
 
-    // 1. Initialize the LittleFS filesystem. Required before serving files.
     if (!LittleFS.begin(true))
     {
         Serial.println("An Error has occurred while mounting LittleFS");
         return;
     }
 
-    // 2. Load the dynamic configuration from NVS into memory.
     load_configuration();
-
-    // 3. Initialize all HMI hardware (I/O expanders, pins).
     hmi_init();
 
-    // 4. Connect to WiFi. This is required for both the web server and ESP-NOW.
     WiFi.mode(WIFI_STA);
     WiFi.setHostname(OTA_HOSTNAME);
     WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
@@ -145,7 +149,6 @@ void setup()
     if (DEBUG_ENABLED)
         Serial.printf("WiFi Connected. IP: %s\n", WiFi.localIP().toString().c_str());
 
-    // 5. Initialize ESP-NOW communication and add ESP1 as a peer.
     esp_now_init();
     esp_now_register_send_cb(OnDataSent);
     esp_now_register_recv_cb(OnDataRecv);
@@ -153,21 +156,17 @@ void setup()
     memcpy(peerInfo.peer_addr, esp1_mac_address, 6);
     esp_now_add_peer(&peerInfo);
 
-    // 6. Set up the web server routes.
     ws.onEvent(onWsEvent);
     server.addHandler(&ws);
-    // Serve the main web page and its assets from the LittleFS filesystem.
     server.on("/", HTTP_GET, [](AsyncWebServerRequest *request)
               { request->send(LittleFS, "/index.html", "text/html"); });
     server.on("/style.css", HTTP_GET, [](AsyncWebServerRequest *request)
               { request->send(LittleFS, "/style.css", "text/css"); });
     server.on("/script.js", HTTP_GET, [](AsyncWebServerRequest *request)
               { request->send(LittleFS, "/script.js", "application/javascript"); });
-    // This endpoint provides the current configuration as a JSON object for the generator script.
     server.on("/get_config_json", HTTP_GET, [](AsyncWebServerRequest *request)
               { request->send(200, "application/json", get_config_as_json()); });
 
-    // 7. Start the OTA update server and the main web server.
     AsyncElegantOTA.begin(&server);
     server.begin();
     if (DEBUG_ENABLED)
@@ -176,11 +175,9 @@ void setup()
 
 void loop()
 {
-    // The main loop is non-blocking and continuously runs these tasks.
-    hmi_task();          // Poll all HMI inputs
-    ws.cleanupClients(); // Maintain WebSocket connections
+    hmi_task();
+    ws.cleanupClients();
 
-    // If HMI input state has changed, send data to ESP1 and broadcast status to web UI.
     if (hmi_data_has_changed())
     {
         get_hmi_data(&outgoing_hmi_data);

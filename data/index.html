@@ -29,7 +29,6 @@
 
       <section id="configuration">
         <h2>Configuration</h2>
-
         <div class="tab-bar">
           <button class="tab-link active" onclick="openTab(event, 'buttons')">
             Buttons
@@ -39,6 +38,9 @@
           </button>
           <button class="tab-link" onclick="openTab(event, 'joysticks')">
             Joysticks
+          </button>
+          <button class="tab-link" onclick="openTab(event, 'actions')">
+            Actions
           </button>
         </div>
 
@@ -55,6 +57,14 @@
         <div id="joysticks" class="tab-content">
           <h3>Joystick Configuration</h3>
           <div id="joystick-config-table" class="config-container"></div>
+        </div>
+
+        <div id="actions" class="tab-content">
+          <h3>Action Bindings</h3>
+          <p>
+            Create rules to make the HMI react to machine states from LinuxCNC.
+          </p>
+          <div id="action-binding-table" class="config-container"></div>
         </div>
 
         <div class="actions">
