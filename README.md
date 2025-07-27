@@ -106,19 +106,86 @@ The core components are selected for their channel density and ease of integrati
 
 ### Step 1: Create the Master Data Configuration
 
-This is the most critical step and serves as the foundation for the project.
+This is the most critical step and serves as the foundation for the project. The goal is to create a single, fixed data definition that covers the **maximum possible hardware configuration** this project can support. This means you will perform these steps only once.
 
-1.  **Define Your Hardware:** Decide on the **maximum** number of peripherals your system will ever support (e.g., 8 encoders, 2 joysticks, etc.).
-2.  **Run the EasyCAT Configurator Tool:**
-    - Launch the EasyCAT Configurator.
-    - Define all your input and output variables according to your "Fixed Maximum" hardware plan. Use descriptive names (e.g., `enc_pos`, `spindle_rpm`, `button_matrix`).
+**There is no need to configure fewer variables if you use less hardware.** The firmware is designed to only use the parts of this master definition that are enabled in your `config.h` files.
+
+1.  **Launch the EasyCAT Configurator Tool.**
+2.  Define all your input and output variables exactly as specified in the tables below. This ensures perfect compatibility with the firmware.
+
+---
+
+#### **Input PDO Entries (HMI -> LinuxCNC)**
+
+Enter these variables into the "INPUT PDO ENTRIES" list.
+
+| Variable Name   | Data Type |
+| :-------------- | :-------- |
+| `enc_pos_1`     | `INT32`   |
+| `enc_pos_2`     | `INT32`   |
+| `enc_pos_3`     | `INT32`   |
+| `enc_pos_4`     | `INT32`   |
+| `enc_pos_5`     | `INT32`   |
+| `enc_pos_6`     | `INT32`   |
+| `enc_pos_7`     | `INT32`   |
+| `enc_pos_8`     | `INT32`   |
+| `spindle_rpm`   | `UINT32`  |
+| `probe_states`  | `USINT`   |
+| `button_byte_0` | `USINT`   |
+| `button_byte_1` | `USINT`   |
+| `button_byte_2` | `USINT`   |
+| `button_byte_3` | `USINT`   |
+| `button_byte_4` | `USINT`   |
+| `button_byte_5` | `USINT`   |
+| `button_byte_6` | `USINT`   |
+| `button_byte_7` | `USINT`   |
+| `joy_axis_1`    | `INT16`   |
+| `joy_axis_2`    | `INT16`   |
+| `joy_axis_3`    | `INT16`   |
+| `joy_axis_4`    | `INT16`   |
+| `joy_axis_5`    | `INT16`   |
+| `joy_axis_6`    | `INT16`   |
+| `hmi_enc_pos_1` | `INT32`   |
+| `hmi_enc_pos_2` | `INT32`   |
+| `hmi_enc_pos_3` | `INT32`   |
+| `hmi_enc_pos_4` | `INT32`   |
+| `hmi_enc_pos_5` | `INT32`   |
+| `hmi_enc_pos_6` | `INT32`   |
+| `hmi_enc_pos_7` | `INT32`   |
+| `hmi_enc_pos_8` | `INT32`   |
+| `rotary_pos_1`  | `USINT`   |
+| `rotary_pos_2`  | `USINT`   |
+| `rotary_pos_3`  | `USINT`   |
+| `rotary_pos_4`  | `USINT`   |
+
+---
+
+#### **Output PDO Entries (LinuxCNC -> HMI)**
+
+Enter these variables into the "OUTPUT PDO ENTRIES" list.
+
+| Variable Name      | Data Type |
+| :----------------- | :-------- |
+| `led_byte_0`       | `USINT`   |
+| `led_byte_1`       | `USINT`   |
+| `led_byte_2`       | `USINT`   |
+| `led_byte_3`       | `USINT`   |
+| `led_byte_4`       | `USINT`   |
+| `led_byte_5`       | `USINT`   |
+| `led_byte_6`       | `USINT`   |
+| `led_byte_7`       | `USINT`   |
+| `lcnc_status_word` | `UINT32`  |
+| `current_feedrate` | `REAL`    |
+
+---
+
+3.  **Generate and Place Files:**
     - Click **"Create Files"** to generate the three master files: `MyData.h`, `MyData.xml`, and `MyData.bin`.
-3.  **Place Files in Your Project:**
     - Copy the generated `MyData.h` file into the `src/esp1/` directory of your project.
     - Copy the generated `MyData.xml` (rename it to `HMI_Slave.xml` or similar if desired) to your LinuxCNC master's configuration folder.
 4.  **Program the EEPROM:**
     - Connect the EasyCAT shield directly to your PC's Ethernet port.
-    - Use the "Write EEPROM" function in the EasyCAT Configurator to upload the generated `MyData.bin` file to the shield. This only needs to be done once.
+    - Use the "Write EEPROM" function in the EasyCAT Configurator to upload the generated `MyData.bin` file to the shield. This only needs to be done once for your hardware.
 
 ### Step 2: One-Time Project Setup
 
