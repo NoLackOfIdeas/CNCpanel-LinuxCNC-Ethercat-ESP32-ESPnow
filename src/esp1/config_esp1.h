@@ -36,9 +36,26 @@ const int PROBE_PINS[NUM_PROBES] = {26, 25, 14, 12}; // The GPIO pins for each p
 const int ENCODER_A_PINS[NUM_ENCODERS] = {34, 32}; // GPIO pins for Channel A of each encoder.
 const int ENCODER_B_PINS[NUM_ENCODERS] = {35, 33}; // GPIO pins for Channel B of each encoder.
 
-// --- TACHOMETER PARAMETERS ---
-// The number of magnets attached to the rotating part for RPM calculation.
+// --- TACHOMETER CONFIGURATION ---
+// Use this section to define the spindle speed sensor.
+
+// Step 1: Choose the sensor type. Options are HALL_SENSOR or ENCODER.
+#define SPINDLE_SENSOR_TYPE ENCODER
+
+// Step 2: Configure the parameters for your chosen sensor type.
+
+#if SPINDLE_SENSOR_TYPE == HALL_SENSOR
+                                                   // -- Configuration for Hall Sensor --
+#define HALL_SENSOR_PIN 27
 #define TACHO_MAGNETS_PER_REVOLUTION 2
+
+#elif SPINDLE_SENSOR_TYPE == ENCODER
+                                                   // -- Configuration for Quadrature Encoder --
+// Note: This uses one of the available encoder slots from the main encoder config.
+#define SPINDLE_ENCODER_INDEX 0  // Use Encoder #0 for the spindle
+#define SPINDLE_ENCODER_PPR 1024 // Pulses Per Revolution of your spindle encoder
+#endif
+
 // The interval in milliseconds at which to calculate a new RPM value.
 #define TACHO_UPDATE_INTERVAL_MS 500
 
