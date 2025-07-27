@@ -38,7 +38,7 @@ graph LR
     ESP2 -- manages --> BTN & LED & JOY & POTS & ROT
 ```
 
-    ## Features
+## Features
 
 - **Robust Dual-ESP32 Architecture:** Decoupling of real-time (ESP1) and non-time-critical (ESP2) tasks.
 - **Industrial Real-Time Communication:** Connection to LinuxCNC via deterministic **EtherCAT**.
