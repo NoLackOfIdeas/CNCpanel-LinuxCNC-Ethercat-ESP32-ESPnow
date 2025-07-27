@@ -68,7 +68,7 @@ graph LR
 
 - [Visual Studio Code](https://code.visualstudio.com/) with the [PlatformIO IDE extension](https://platformio.org/platformio-ide)
 - [Python 3.x](https://www.python.org/downloads/)
-- The Python library `requests`: `pip install requests`
+  The Python library `requests`: `pip install requests`
 - The [EasyCAT Configurator Tool](http://www.bausano.net/en/hardware/easycat-pro.html) (required once to create the template)
 
 ---
