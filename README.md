@@ -119,44 +119,44 @@ This is the most critical step and serves as the foundation for the project. The
 
 Enter these variables into the "INPUT PDO ENTRIES" list.
 
-| Variable Name   | Data Type |
-| :-------------- | :-------- |
-| `enc_pos_1`     | `INT32`   |
-| `enc_pos_2`     | `INT32`   |
-| `enc_pos_3`     | `INT32`   |
-| `enc_pos_4`     | `INT32`   |
-| `enc_pos_5`     | `INT32`   |
-| `enc_pos_6`     | `INT32`   |
-| `enc_pos_7`     | `INT32`   |
-| `enc_pos_8`     | `INT32`   |
-| `spindle_rpm`   | `UINT32`  |
-| `probe_states`  | `USINT`   |
-| `button_byte_0` | `USINT`   |
-| `button_byte_1` | `USINT`   |
-| `button_byte_2` | `USINT`   |
-| `button_byte_3` | `USINT`   |
-| `button_byte_4` | `USINT`   |
-| `button_byte_5` | `USINT`   |
-| `button_byte_6` | `USINT`   |
-| `button_byte_7` | `USINT`   |
-| `joy_axis_1`    | `INT16`   |
-| `joy_axis_2`    | `INT16`   |
-| `joy_axis_3`    | `INT16`   |
-| `joy_axis_4`    | `INT16`   |
-| `joy_axis_5`    | `INT16`   |
-| `joy_axis_6`    | `INT16`   |
-| `hmi_enc_pos_1` | `INT32`   |
-| `hmi_enc_pos_2` | `INT32`   |
-| `hmi_enc_pos_3` | `INT32`   |
-| `hmi_enc_pos_4` | `INT32`   |
-| `hmi_enc_pos_5` | `INT32`   |
-| `hmi_enc_pos_6` | `INT32`   |
-| `hmi_enc_pos_7` | `INT32`   |
-| `hmi_enc_pos_8` | `INT32`   |
-| `rotary_pos_1`  | `USINT`   |
-| `rotary_pos_2`  | `USINT`   |
-| `rotary_pos_3`  | `USINT`   |
-| `rotary_pos_4`  | `USINT`   |
+| Variable Name   | Data Type (in Configurator) |
+| :-------------- | :-------------------------- |
+| `enc_pos_1`     | `int32_t`                   |
+| `enc_pos_2`     | `int32_t`                   |
+| `enc_pos_3`     | `int32_t`                   |
+| `enc_pos_4`     | `int32_t`                   |
+| `enc_pos_5`     | `int32_t`                   |
+| `enc_pos_6`     | `int32_t`                   |
+| `enc_pos_7`     | `int32_t`                   |
+| `enc_pos_8`     | `int32_t`                   |
+| `spindle_rpm`   | `uint32_t`                  |
+| `probe_states`  | `uint8_t`                   |
+| `button_byte_0` | `uint8_t`                   |
+| `button_byte_1` | `uint8_t`                   |
+| `button_byte_2` | `uint8_t`                   |
+| `button_byte_3` | `uint8_t`                   |
+| `button_byte_4` | `uint8_t`                   |
+| `button_byte_5` | `uint8_t`                   |
+| `button_byte_6` | `uint8_t`                   |
+| `button_byte_7` | `uint8_t`                   |
+| `joy_axis_1`    | `int16_t`                   |
+| `joy_axis_2`    | `int16_t`                   |
+| `joy_axis_3`    | `int16_t`                   |
+| `joy_axis_4`    | `int16_t`                   |
+| `joy_axis_5`    | `int16_t`                   |
+| `joy_axis_6`    | `int16_t`                   |
+| `hmi_enc_pos_1` | `int32_t`                   |
+| `hmi_enc_pos_2` | `int32_t`                   |
+| `hmi_enc_pos_3` | `int32_t`                   |
+| `hmi_enc_pos_4` | `int32_t`                   |
+| `hmi_enc_pos_5` | `int32_t`                   |
+| `hmi_enc_pos_6` | `int32_t`                   |
+| `hmi_enc_pos_7` | `int32_t`                   |
+| `hmi_enc_pos_8` | `int32_t`                   |
+| `rotary_pos_1`  | `uint8_t`                   |
+| `rotary_pos_2`  | `uint8_t`                   |
+| `rotary_pos_3`  | `uint8_t`                   |
+| `rotary_pos_4`  | `uint8_t`                   |
 
 ---
 
@@ -164,18 +164,23 @@ Enter these variables into the "INPUT PDO ENTRIES" list.
 
 Enter these variables into the "OUTPUT PDO ENTRIES" list.
 
-| Variable Name      | Data Type |
-| :----------------- | :-------- |
-| `led_byte_0`       | `USINT`   |
-| `led_byte_1`       | `USINT`   |
-| `led_byte_2`       | `USINT`   |
-| `led_byte_3`       | `USINT`   |
-| `led_byte_4`       | `USINT`   |
-| `led_byte_5`       | `USINT`   |
-| `led_byte_6`       | `USINT`   |
-| `led_byte_7`       | `USINT`   |
-| `lcnc_status_word` | `UINT32`  |
-| `current_feedrate` | `REAL`    |
+| Variable Name            | Data Type (in Configurator) |
+| :----------------------- | :-------------------------- |
+| `led_byte_0`             | `uint8_t`                   |
+| `led_byte_1`             | `uint8_t`                   |
+| `led_byte_2`             | `uint8_t`                   |
+| `led_byte_3`             | `uint8_t`                   |
+| `led_byte_4`             | `uint8_t`                   |
+| `led_byte_5`             | `uint8_t`                   |
+| `led_byte_6`             | `uint8_t`                   |
+| `led_byte_7`             | `uint8_t`                   |
+| `lcnc_status_word`       | `uint32_t`                  |
+| `current_feedrate`       | `float`                     |
+| `machine_status`         | `uint16_t`                  |
+| `spindle_coolant_status` | `uint16_t`                  |
+| `feed_override`          | `float`                     |
+| `rapid_override`         | `float`                     |
+| `spindle_override`       | `float`                     |
 
 ---
 
