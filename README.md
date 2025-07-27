@@ -52,7 +52,7 @@ graph LR
 
 ## Prerequisites
 
-## Hardware Philosophy: Modular and Accessible
+### Hardware Philosophy: Modular and Accessible
 
 This project's design prioritizes the use of pre-built, multi-channel modules and breakout boards. This approach significantly simplifies the hardware implementation, minimizing the need for complex custom PCB design or extensive point-to-point soldering. By leveraging widely available modules, the system is faster to assemble, easier to debug, and more accessible for replication.
 
