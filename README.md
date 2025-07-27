@@ -2,17 +2,17 @@
 
 An advanced, modular Human-Machine Interface (HMI) for LinuxCNC-controlled machines. The system utilizes a dual-ESP32 architecture to decouple real-time machine communication from the complex HMI logic. The connection to LinuxCNC is handled by the industrial **EtherCAT** protocol, while the two controllers communicate wirelessly with low latency via **ESP-NOW**.
 
-The core of this project is the **"Fixed Maximum"** approach. A master data structure (`MyData.h`) is created once with the official EasyCAT Configurator tool, defining all possible inputs and outputs. The firmware is then configured at compile-time to use a specific subset of this hardware, providing stability and simplicity. The HMI's functional logic (joystick tuning, button modes) remains fully configurable via a dynamic **web interface**.
+The core of this project is the **"Fixed Maximum"** approach. A master data structure (`MyData.h`) is created once with the official EasyCAT Configurator tool, defining all possible inputs and outputs. The firmware is then configured at compile-time to use a specific subset of this hardware (CNCpanel), providing stability and simplicity. The HMI's functional logic (joystick tuning, button modes) remains fully configurable via a dynamic **web interface** (hosted by ESP2).
 
 ## System Architecture
 
 ```mermaid
 graph LR
     subgraph LinuxCNC Environment
-        LCNC[LinuxCNC Host PC]
+        LCNC[LinuxCNC Host PC with Ethercat Master]
     end
 
-    subgraph Communication Bridge
+    subgraph Communication Bridge (Ethercat Slave)
         ESP1
         subgraph ESP1 Peripherals
             ENC1[Quadrature Encoders]
@@ -21,7 +21,7 @@ graph LR
         end
     end
 
-    subgraph HMI Unit
+    subgraph HMI Unit (CNCpanel);
         ESP2
         subgraph ESP2 Peripherals
             BTN[Button Matrix]
@@ -52,16 +52,16 @@ graph LR
 
 The system is designed to connect a variety of high-speed and user-interface peripherals, which are strategically split between the two ESP32 controllers. The following table summarizes the maximum number of connectable devices for each controller based on the project's design.
 
-| Peripheral                     | Connected to | Maximum Number | Notes                                                                     |
-| :----------------------------- | :----------- | :------------- | :------------------------------------------------------------------------ |
-| **Quadrature Encoders**        | ESP1         | 8              | For high-speed position feedback directly tied to the machine controller. |
-| **Hall Sensor (Spindle)**      | ESP1         | 1              | For real-time spindle RPM measurement.                                    |
-| **Inductive Probes**           | ESP1         | 8              | For homing, probing, and other high-priority machine inputs.              |
-| **Button Matrix**              | ESP2         | 64 (8x8)       | The primary user input for commands and jogging.                          |
-| **LED Matrix**                 | ESP2         | 64 (8x8)       | Provides visual feedback on machine and HMI status.                       |
-| **Quadrature Encoders**        | ESP2         | 8              | For user inputs like jog wheels or overrides.                             |
-| **Potentiometers / Joysticks** | ESP2         | 6              | Used for analog inputs like feedrate override or joystick axes.           |
-| **Rotary Switches**            | ESP2         | 4 (Assumed)    | For selecting machine operating modes.                                    |
+| Peripheral                     | Connected to | Maximum Number | Notes                                                                                           |
+| :----------------------------- | :----------- | :------------- | :---------------------------------------------------------------------------------------------- |
+| **Quadrature Encoders**        | ESP1         | 8              | For high-speed position feedback directly tied to the machine controller.                       |
+| **Hall Sensor (Spindle)**      | ESP1         | 1              | For real-time spindle RPM measurement.                                                          |
+| **Inductive Probes**           | ESP1         | 8              | For homing, probing, and other high-priority machine inputs.                                    |
+| **Button Matrix**              | ESP2         | 64 (8x8)       | The primary user input for commands and jogging.                                                |
+| **LED Matrix**                 | ESP2         | 64 (8x8)       | Provides visual feedback on machine and HMI status.                                             |
+| **Quadrature Encoders**        | ESP2         | 8              | For user inputs like jog wheels or overrides.                                                   |
+| **Potentiometers / Joysticks** | ESP2         | 6              | Used for analog inputs like feedrate override or joystick axes.                                 |
+| **Rotary Switches**            | ESP2         | 4              | For selecting machine operating modes. Each Rotary Switch with up to 8 positions (configurable) |
 
 ---
 
