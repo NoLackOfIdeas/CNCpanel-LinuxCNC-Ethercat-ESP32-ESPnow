@@ -1,10 +1,10 @@
 /**
  * @file hmi_handler.cpp
- * @brief Implements the core logic for managing all HMI peripherals. (Fully Implemented)
+ * @brief Implements the core logic for managing all HMI peripherals for the Main Panel (ESP2).
  *
  * This file contains the state machine for debouncing the button matrix,
  * the processing pipeline for the analog joysticks, the multiplexing
- * logic for the physical LED matrix, and the evaluation logic for
+ * logic for driving the physical LED matrix, and the evaluation logic for
  * user-defined action bindings.
  */
 
@@ -45,9 +45,7 @@ static int32_t hmi_encoder_values[NUM_ENCODERS_ESP2] = {0};
 static bool joystick_axis_locked[NUM_JOYSTICKS][NUM_JOYSTICK_AXES] = {false};
 static bool data_changed_flag = false;
 static uint8_t current_led_scan_col = 0;
-
-// --- NEW: Global flags controlled by the action bindings ---
-static bool joystick_1_enabled = true; // Default to enabled
+static bool joystick_1_enabled = true;
 
 // --- PRIVATE FUNCTIONS: CORE LOGIC ---
 
@@ -56,7 +54,18 @@ static bool joystick_1_enabled = true; // Default to enabled
  */
 void update_led_matrix()
 {
-    // ... (Implementation remains the same as previous complete version) ...
+    mcp_led_cols.writeGPIOAB(0x0000);
+    uint16_t row_data = 0;
+    for (int i = 0; i < MATRIX_ROWS; i++)
+    {
+        if (bitRead(current_led_states[i], current_led_scan_col))
+        {
+            bitSet(row_data, i);
+        }
+    }
+    mcp_led_rows.writeGPIOAB(row_data);
+    mcp_led_cols.digitalWrite(current_led_scan_col, HIGH);
+    current_led_scan_col = (current_led_scan_col + 1) % MATRIX_COLS;
 }
 
 /**
@@ -64,33 +73,104 @@ void update_led_matrix()
  */
 void update_keypad_states()
 {
-    // ... (Implementation remains the same as previous complete version) ...
+    bool state_has_changed = false;
+    for (int row = 0; row < MATRIX_ROWS; row++)
+    {
+        mcp_buttons.digitalWrite(row, LOW);
+        for (int col = 0; col < MATRIX_COLS; col++)
+        {
+            int button_idx = row * MATRIX_COLS + col;
+            if (button_idx >= MAX_BUTTONS_DEFINED)
+                continue;
+
+            bool is_pressed = (mcp_buttons.digitalRead(col + 8) == LOW);
+            KeyInfo &key = key_matrix[row][col];
+            KeyState old_state = key.state;
+
+            switch (key.state)
+            {
+            case KeyState::IDLE:
+                if (is_pressed)
+                    key.state = KeyState::PRESSED;
+                break;
+            case KeyState::PRESSED:
+                key.state = is_pressed ? KeyState::HELD : KeyState::RELEASED;
+                break;
+            case KeyState::HELD:
+                if (!is_pressed)
+                    key.state = KeyState::RELEASED;
+                break;
+            case KeyState::RELEASED:
+                key.state = KeyState::IDLE;
+                break;
+            }
+
+            if (key.state != old_state)
+            {
+                state_has_changed = true;
+                if (key.state == KeyState::PRESSED)
+                {
+                    bitSet(current_button_bitmask[row], col);
+                    const auto &btn_cfg = button_configs[button_idx];
+                    if (btn_cfg.extra_action == ButtonExtraAction::TOGGLE_JOYSTICK_AXIS_LOCK)
+                    {
+                        joystick_axis_locked[btn_cfg.target_joystick_index][btn_cfg.target_axis_index] = !joystick_axis_locked[btn_cfg.target_joystick_index][btn_cfg.target_axis_index];
+                    }
+                }
+                else if (key.state == KeyState::RELEASED)
+                {
+                    bitClear(current_button_bitmask[row], col);
+                }
+            }
+        }
+        mcp_buttons.digitalWrite(row, HIGH);
+    }
+    if (state_has_changed)
+        data_changed_flag = true;
 }
 
 /**
  * @brief Reads all potentiometers and processes them.
- * Now respects the joystick_1_enabled flag set by the action bindings.
  */
 void process_joysticks()
 {
-    // If joystick 1 is disabled by a binding, set all its axes to 0 and exit.
     if (!joystick_1_enabled)
     {
         for (int j = 0; j < NUM_JOYSTICK_AXES; j++)
         {
             processed_joystick_values[0][j] = 0;
         }
-        // Skip further processing for this joystick
     }
     else
     {
-        // ... (The existing joystick processing logic remains here) ...
-        // Example for joystick 0:
-        for (int j = 0; j < NUM_JOYSTICK_AXES; j++)
+        for (int i = 0; i < NUM_JOYSTICKS; i++)
         {
-            const auto &static_cfg = joystick_configs[0].axes[j];
-            const auto &dynamic_cfg = web_cfg.joysticks[0][j];
-            // ... processing logic ...
+            for (int j = 0; j < NUM_JOYSTICK_AXES; j++)
+            {
+                if (joystick_axis_locked[i][j])
+                {
+                    processed_joystick_values[i][j] = 0;
+                    continue;
+                }
+                const auto &static_cfg = joystick_configs[i].axes[j];
+                const auto &dynamic_cfg = web_cfg.joysticks[i][j];
+                int raw_value = analogRead(POTI_PINS[static_cfg.poti_index]);
+                int center_value = 2048;
+                if (abs(raw_value - center_value) < dynamic_cfg.center_deadzone)
+                {
+                    processed_joystick_values[i][j] = 0;
+                    continue;
+                }
+                long mapped_value = (raw_value > center_value)
+                                        ? map(raw_value, center_value + dynamic_cfg.center_deadzone, 4095, 0, 512)
+                                        : map(raw_value, 0, center_value - dynamic_cfg.center_deadzone, -512, 0);
+                mapped_value *= dynamic_cfg.sensitivity;
+                if (dynamic_cfg.is_inverted)
+                {
+                    mapped_value *= -1;
+                }
+                processed_joystick_values[i][j] = constrain(mapped_value, -512, 512);
+            }
         }
     }
     data_changed_flag = true;
@@ -101,14 +181,45 @@ void process_joysticks()
  */
 void read_hmi_encoders()
 {
-    // ... (Implementation remains the same as previous complete version) ...
+    for (int i = 0; i < NUM_ENCODERS_ESP2; i++)
+    {
+        long new_count = encoders[i].getCount();
+        if (new_count != hmi_encoder_values[i])
+        {
+            hmi_encoder_values[i] = new_count;
+            data_changed_flag = true;
+        }
+    }
 }
 
 // --- PUBLIC FUNCTIONS: INTERFACE FOR MAIN APP ---
 
 void hmi_init()
 {
-    // ... (Implementation remains the same as previous complete version) ...
+    pinMode(PIN_LEVEL_SHIFTER_OE, OUTPUT);
+    digitalWrite(PIN_LEVEL_SHIFTER_OE, HIGH);
+    SPI.begin();
+    mcp_buttons.begin_SPI(PIN_MCP_CS, &SPI, MCP_ADDR_BUTTONS);
+    mcp_led_rows.begin_SPI(PIN_MCP_CS, &SPI, MCP_ADDR_LED_ROWS);
+    mcp_led_cols.begin_SPI(PIN_MCP_CS, &SPI, MCP_ADDR_LED_COLS);
+
+    for (int i = 0; i < 8; i++)
+        mcp_buttons.pinMode(i, OUTPUT);
+    for (int i = 8; i < 16; i++)
+        mcp_buttons.pinMode(i, INPUT_PULLUP);
+
+    for (int i = 0; i < 16; i++)
+    {
+        mcp_led_rows.pinMode(i, OUTPUT);
+        mcp_led_cols.pinMode(i, OUTPUT);
+    }
+
+    ESP32Encoder::useInternalWeakPullResistors = puType::up;
+    for (int i = 0; i < NUM_ENCODERS_ESP2; i++)
+    {
+        encoders[i].attachFullQuad(ENC2_A_PINS[i], ENC2_B_PINS[i]);
+        encoders[i].clearCount();
+    }
 }
 
 void hmi_task()
@@ -129,13 +240,14 @@ bool hmi_data_has_changed()
     return false;
 }
 
-void get_hmi_data(struct_message_to_esp1 *data)
+void get_hmi_data(struct_message_from_esp2 *data)
 {
-    // ... (Implementation remains the same, but now sends joystick values that
-    // have been processed according to the enabled/disabled state) ...
+    memcpy(data->button_matrix_states, current_button_bitmask, sizeof(data->button_matrix_states));
+    memcpy(data->joystick_values, processed_joystick_values, sizeof(data->joystick_values));
+    // memcpy(data->hmi_encoder_values, hmi_encoder_values, sizeof(data->hmi_encoder_values)); // Uncomment if added to struct
 }
 
-void update_leds_from_lcnc(const struct_message_to_esp2 &data)
+void update_leds_from_lcnc(const struct_message_to_hmi &data)
 {
     if (memcmp(current_led_states, data.led_matrix_states, sizeof(current_led_states)) != 0)
     {
@@ -146,56 +258,35 @@ void update_leds_from_lcnc(const struct_message_to_esp2 &data)
 
 void get_live_status_data(uint8_t *btn_buf, uint8_t *led_buf)
 {
-    // ... (Implementation remains the same as previous complete version) ...
+    memcpy(btn_buf, current_button_bitmask, sizeof(current_button_bitmask));
+    memcpy(led_buf, current_led_states, sizeof(current_led_states));
 }
 
-/**
- * @brief NEW: Evaluates all active action bindings based on the current machine state.
- * This function updates the internal state flags (e.g., joystick_1_enabled)
- * that control the behavior of other parts of the HMI handler.
- * It is called by main_esp2.cpp every time a new status packet is received.
- */
-void evaluate_action_bindings(const struct_message_to_esp2 &lcnc_data)
+void evaluate_action_bindings(const struct_message_to_hmi &lcnc_data)
 {
-    // --- Set default states before evaluating rules ---
-    joystick_1_enabled = true; // By default, the joystick is enabled. A rule must actively disable it.
-    // ... (set other default states for other actions here) ...
+    joystick_1_enabled = true;
 
-    // --- Iterate through all user-defined binding rules ---
     for (int i = 0; i < MAX_ACTION_BINDINGS; i++)
     {
         const auto &binding = web_cfg.bindings[i];
         if (!binding.is_active)
-            continue; // Skip rules that are disabled in the web UI.
+            continue;
 
-        // Determine which status word to check based on the trigger's integer value
         uint16_t status_word_to_check = (binding.trigger < 16)
                                             ? lcnc_data.machine_status
                                             : lcnc_data.spindle_coolant_status;
 
-        // Calculate the bit position within that 16-bit word
         uint8_t bit_to_check = binding.trigger % 16;
 
-        // Check if the trigger condition is met (if the corresponding bit is set)
         if (bitRead(status_word_to_check, bit_to_check))
         {
-            // If the trigger is active, apply the specified action
             switch (binding.action)
             {
             case DISABLE_JOYSTICK_1:
                 joystick_1_enabled = false;
                 break;
-
             case ENABLE_JOYSTICK_1:
-                // Note: An explicit "ENABLE" rule could be used to override a
-                // "DISABLE" rule if more complex logic is needed. For now,
-                // we can just let it be handled by the default.
                 break;
-
-                // Add cases for other actions here, e.g.:
-                // case DISABLE_BUTTON_GROUP_1:
-                //     button_group_1_enabled = false;
-                //     break;
             }
         }
     }

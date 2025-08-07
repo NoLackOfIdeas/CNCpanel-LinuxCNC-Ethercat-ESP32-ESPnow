@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pendant Configuration</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 2rem;
+        background: #f5f5f5;
+        color: #333;
+      }
+      h1 {
+        margin-bottom: 1rem;
+      }
+
+      /* Tab styles */
+      .tabs {
+        margin-bottom: 1rem;
+      }
+      .tabs button {
+        padding: 0.5rem 1rem;
+        margin-right: 0.5rem;
+        border: none;
+        background: #ddd;
+        cursor: pointer;
+      }
+      .tabs button.active {
+        background: #007acc;
+        color: #fff;
+      }
+
+      .tab-content {
+        display: none;
+      }
+      .tab-content.active {
+        display: block;
+      }
+
+      .form-group {
+        margin-bottom: 1.5rem;
+      }
+      label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: bold;
+      }
+      select,
+      button {
+        font-size: 1rem;
+        padding: 0.5rem;
+      }
+
+      button {
+        cursor: pointer;
+        background: #007acc;
+        border: none;
+        color: #fff;
+        border-radius: 4px;
+      }
+      button:disabled {
+        background: #aaa;
+        cursor: not-allowed;
+      }
+
+      #status {
+        margin-top: 1rem;
+        font-size: 0.9rem;
+      }
+      #status.success {
+        color: green;
+      }
+      #status.error {
+        color: red;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Pendant Web Configuration</h1>
+
+    <!-- Tab Navigation -->
+    <div class="tabs">
+      <button data-tab="settings" class="active">Settings</button>
+      <button data-tab="selectors">Selectors</button>
+    </div>
+
+    <!-- Settings Tab -->
+    <div id="settings" class="tab-content active">
+      <div class="form-group">
+        <label for="axes-select">Number of DRO Axes</label>
+        <select id="axes-select">
+          <option value="1">1 Axis</option>
+          <option value="2">2 Axes</option>
+          <option value="3">3 Axes</option>
+          <option value="4">4 Axes</option>
+          <option value="5">5 Axes</option>
+          <option value="6">6 Axes</option>
+        </select>
+      </div>
+      <button id="save-btn">Save Configuration</button>
+      <div id="status"></div>
+    </div>
+
+    <!-- Selectors Tab -->
+    <div id="selectors" class="tab-content">
+      <!-- Placeholder for dynamic selector config -->
+      <div id="selector-config"></div>
+    </div>
+
+    <script>
+      // --- Tab switching logic ---
+      document.querySelectorAll(".tabs button").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          document
+            .querySelectorAll(".tabs button")
+            .forEach((b) => b.classList.remove("active"));
+          document
+            .querySelectorAll(".tab-content")
+            .forEach((tc) => tc.classList.remove("active"));
+          btn.classList.add("active");
+          document.getElementById(btn.dataset.tab).classList.add("active");
+        });
+      });
+
+      // --- Settings tab logic (axes picker + save) ---
+      document.addEventListener("DOMContentLoaded", () => {
+        const selectEl = document.getElementById("axes-select");
+        const saveBtn = document.getElementById("save-btn");
+        const statusEl = document.getElementById("status");
+
+        // Load existing config
+        fetch("/config")
+          .then((res) => {
+            if (!res.ok) throw new Error("Fetch failed");
+            return res.json();
+          })
+          .then((cfg) => {
+            if (cfg.num_dro_axes >= 1 && cfg.num_dro_axes <= 6) {
+              selectEl.value = cfg.num_dro_axes;
+            }
+          })
+          .catch((err) => {
+            statusEl.textContent = err.message;
+            statusEl.className = "error";
+          });
+
+        // Save new config
+        saveBtn.addEventListener("click", () => {
+          saveBtn.disabled = true;
+          statusEl.textContent = "";
+          const payload = { num_dro_axes: parseInt(selectEl.value, 10) };
+
+          fetch("/config", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          })
+            .then((res) => {
+              if (!res.ok) throw new Error("Save failed");
+              return res.json();
+            })
+            .then(() => {
+              statusEl.textContent = "Configuration saved!";
+              statusEl.className = "success";
+            })
+            .catch((err) => {
+              statusEl.textContent = err.message;
+              statusEl.className = "error";
+            })
+            .finally(() => {
+              saveBtn.disabled = false;
+            });
+        });
+      });
+    </script>
+  </body>
+</html>

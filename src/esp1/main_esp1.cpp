@@ -5,13 +5,11 @@
  * This code is responsible for:
  * 1. Communicating with LinuxCNC via EtherCAT using the EasyCAT library.
  * 2. Reading high-speed local sensors (encoders, probes) and calculating values (RPM).
- * 3. Bridging data to and from the ESP2 HMI controller via the ESP-NOW protocol.
+ * 3. Acting as a central hub for ESP-NOW communication, bridging data to and from
+ * the main HMI panel (ESP2) and the optional handheld pendant (ESP3).
  *
  * The data structures for EtherCAT are defined in MyData.h, which is
  * manually created by the user from the EasyCAT Configurator tool.
- *
- * This version includes a compile-time option in config_esp1.h to select
- * between a Hall sensor or a Quadrature Encoder for spindle RPM measurement.
  */
 
 // --- DEFINES & INCLUDES ---
@@ -23,7 +21,7 @@
 #include "ESP32Encoder.h"
 
 // --- CRITICAL SECTION FOR EASYCAT CUSTOMIZATION ---
-[cite_start] // This sequence is based on the official EasyCAT documentation (Fig. 26) [cite: 634-637]
+// This sequence is based on the official EasyCAT documentation (Fig. 26) [cite: 634-637]
 
 // STEP 1: Define CUSTOM to enable custom mode in the library.
 #define CUSTOM
@@ -34,13 +32,16 @@
 // STEP 3: Now include the EasyCAT library.
 #include "EasyCAT.h"
 
-    // --- GLOBAL OBJECTS AND STATE VARIABLES ---
-    EasyCAT EASYCAT;                              // The EasyCAT library instance
+// --- GLOBAL OBJECTS AND STATE VARIABLES ---
+EasyCAT EASYCAT;                                  // The EasyCAT library instance
 ESP32Encoder encoders[NUM_ENCODERS];              // Encoder objects
 volatile bool probe_states[NUM_PROBES] = {false}; // Array to hold probe states, modified by ISRs
 unsigned long last_rpm_calc_time = 0;             // Timer for non-blocking RPM calculation
-struct_message_to_esp1 incoming_hmi_data;         // Buffer for data received from ESP2
-struct_message_to_esp2 outgoing_lcnc_data;        // Buffer for data to be sent to ESP2
+
+// Buffers for ESP-NOW communication
+struct_message_from_esp2 incoming_esp2_data; // Buffer for data received from ESP2
+struct_message_from_esp3 incoming_esp3_data; // Buffer for data received from ESP3 (pendant)
+struct_message_to_hmi outgoing_lcnc_data;    // Buffer for data to be sent to both HMIs
 
 // Conditional global variables based on sensor choice in config_esp1.h
 #if SPINDLE_SENSOR_TYPE == HALL_SENSOR
@@ -50,17 +51,24 @@ volatile uint32_t hall_pulse_count = 0; // Pulse counter for RPM, modified by an
 // --- ESP-NOW CALLBACKS ---
 
 /**
- * @brief Callback function executed when data is received from ESP2.
- * Copies the incoming HMI data into a local buffer for processing in the main loop.
+ * @brief Callback function executed when data is received from any ESP-NOW peer.
+ * It checks the sender's MAC address to determine the source (ESP2 or ESP3)
+ * and copies the data into the appropriate buffer.
  */
-void OnDataRecv(const uint8_t *mac, const uint8_t *incomingData, int len)
+void OnDataRecv(const uint8_t *mac_addr, const uint8_t *incomingData, int len)
 {
-    memcpy(&incoming_hmi_data, incomingData, sizeof(incoming_hmi_data));
+    if (memcmp(mac_addr, esp2_mac_address, 6) == 0)
+    {
+        memcpy(&incoming_esp2_data, incomingData, sizeof(incoming_esp2_data));
+    }
+    else if (memcmp(mac_addr, esp3_mac_address, 6) == 0)
+    {
+        memcpy(&incoming_esp3_data, incomingData, sizeof(incoming_esp3_data));
+    }
 }
 
 /**
  * @brief Callback function executed after an ESP-NOW packet has been sent.
- * Can be used for debugging send status.
  */
 void OnDataSent(const uint8_t *mac_addr, esp_now_send_status_t status)
 {
@@ -71,24 +79,13 @@ void OnDataSent(const uint8_t *mac_addr, esp_now_send_status_t status)
 }
 
 // --- INTERRUPT SERVICE ROUTINES (ISRs) ---
-// These functions are designed to be extremely fast to avoid delaying the main program.
-
 #if SPINDLE_SENSOR_TYPE == HALL_SENSOR
 void IRAM_ATTR hall_sensor_isr() { hall_pulse_count++; }
 #endif
 
-/**
- * @brief Generic ISR for all probes.
- * This single function handles interrupts from any probe pin, making the code
- * flexible and scalable. It uses the 'arg' parameter to identify which probe triggered it.
- * @param arg A void pointer to the index of the probe (0, 1, 2, etc.).
- */
 void IRAM_ATTR probe_isr_handler(void *arg)
 {
-    // Cast the void pointer argument back to an integer index.
     int probe_index = (int)arg;
-
-    // Update the state for the specific probe that triggered the interrupt.
     if (probe_index < NUM_PROBES)
     {
         probe_states[probe_index] = digitalRead(PROBE_PINS[probe_index]);
@@ -108,9 +105,17 @@ void setup()
     esp_now_register_recv_cb(OnDataRecv);
     esp_now_register_send_cb(OnDataSent);
 
-    // -- 2. Register ESP2 as an ESP-NOW peer --
+    // -- 2. Register ESP2 and ESP3 as ESP-NOW peers --
     esp_now_peer_info_t peerInfo = {};
+    peerInfo.channel = 0;
+    peerInfo.encrypt = false;
+
+    // Add ESP2 (Main HMI)
     memcpy(peerInfo.peer_addr, esp2_mac_address, 6);
+    esp_now_add_peer(&peerInfo);
+
+    // Add ESP3 (Pendant)
+    memcpy(peerInfo.peer_addr, esp3_mac_address, 6);
     esp_now_add_peer(&peerInfo);
 
     // -- 3. Initialize the EtherCAT slave controller --
@@ -120,7 +125,7 @@ void setup()
         while (1)
         {
             delay(100);
-        } // Halt execution
+        }
     }
     Serial.println("EasyCAT Init SUCCESS.");
 
@@ -141,17 +146,12 @@ void setup()
 #elif SPINDLE_SENSOR_TYPE == ENCODER
     if (DEBUG_ENABLED)
         Serial.println("Spindle sensor type: ENCODER");
-    // The encoder is already initialized in the loop above.
 #endif
 
     // -- 6. Flexibly setup all configured probes --
     for (int i = 0; i < NUM_PROBES; i++)
     {
         pinMode(PROBE_PINS[i], INPUT_PULLUP);
-    }
-
-    for (int i = 0; i < NUM_PROBES; i++)
-    {
         attachInterruptArg(digitalPinToInterrupt(PROBE_PINS[i]), probe_isr_handler, (void *)i, CHANGE);
     }
 
@@ -160,7 +160,7 @@ void setup()
 
 void loop()
 {
-    // 1. Run the main state machine for the EtherCAT library. This is critical and must be called frequently.
+    // 1. Run the main state machine for the EtherCAT library.
     EASYCAT.MainTask();
 
     // 2. Read local high-speed sensors and write their values into the EtherCAT IN buffer.
@@ -173,25 +173,21 @@ void loop()
     if (millis() - last_rpm_calc_time >= TACHO_UPDATE_INTERVAL_MS)
     {
         uint32_t rpm = 0;
-
 #if SPINDLE_SENSOR_TYPE == HALL_SENSOR
         noInterrupts();
         uint32_t pulses = hall_pulse_count;
         hall_pulse_count = 0;
         interrupts();
         rpm = (pulses * (60000 / TACHO_UPDATE_INTERVAL_MS)) / TACHO_MAGNETS_PER_REVOLUTION;
-
 #elif SPINDLE_SENSOR_TYPE == ENCODER
         static long last_spindle_encoder_count = 0;
         long current_count = encoders[SPINDLE_ENCODER_INDEX].getCount();
         long count_delta = current_count - last_spindle_encoder_count;
         last_spindle_encoder_count = current_count;
-
         float interval_in_minutes = TACHO_UPDATE_INTERVAL_MS / 60000.0;
         float counts_per_minute = count_delta / interval_in_minutes;
         rpm = abs(counts_per_minute / SPINDLE_ENCODER_PPR);
 #endif
-
         EASYCAT.BufferIn.Cust.spindle_rpm = rpm;
         last_rpm_calc_time = millis();
     }
@@ -207,15 +203,29 @@ void loop()
     }
     EASYCAT.BufferIn.Cust.probe_states = probe_bitmask;
 
-    // 4. Bridge data from ESP2 (HMI) into the EtherCAT IN buffer to make it available to LinuxCNC.
-    memcpy(EASYCAT.BufferIn.Cust.button_matrix, incoming_hmi_data.button_matrix_states, sizeof(EASYCAT.BufferIn.Cust.button_matrix));
-    memcpy(EASYCAT.BufferIn.Cust.joystick_axes, incoming_hmi_data.joystick_values, sizeof(EASYCAT.BufferIn.Cust.joystick_axes));
-    // Note: If you add encoders to ESP2, you would memcpy them into EASYCAT.BufferIn.Cust.hmi_enc_pos here.
+    // 4. Bridge data from ESP2 and ESP3 into the EtherCAT IN buffer.
+    memcpy(EASYCAT.BufferIn.Cust.button_matrix, incoming_esp2_data.button_matrix_states, sizeof(EASYCAT.BufferIn.Cust.button_matrix));
+    memcpy(EASYCAT.BufferIn.Cust.joystick_axes, incoming_esp2_data.joystick_values, sizeof(EASYCAT.BufferIn.Cust.joystick_axes));
 
-    // 5. Bridge data from the EtherCAT OUT buffer (from LinuxCNC) to ESP2 to update the HMI.
+    EASYCAT.BufferIn.Cust.pendant_handwheel_pos = incoming_esp3_data.handwheel_position;
+    EASYCAT.BufferIn.Cust.pendant_button_states = incoming_esp3_data.button_states;
+    EASYCAT.BufferIn.Cust.pendant_selected_axis = incoming_esp3_data.selected_axis;
+    EASYCAT.BufferIn.Cust.pendant_selected_step = incoming_esp3_data.selected_step;
+
+    // 5. Bridge data from the EtherCAT OUT buffer to both HMIs.
     memcpy(outgoing_lcnc_data.led_matrix_states, EASYCAT.BufferOut.Cust.led_matrix, sizeof(outgoing_lcnc_data.led_matrix_states));
     outgoing_lcnc_data.linuxcnc_status = EASYCAT.BufferOut.Cust.lcnc_status_word;
     outgoing_lcnc_data.machine_status = EASYCAT.BufferOut.Cust.machine_status;
     outgoing_lcnc_data.spindle_coolant_status = EASYCAT.BufferOut.Cust.spindle_coolant_status;
+
+    // --- NEW: Copy all new data fields ---
+    outgoing_lcnc_data.feed_override = EASYCAT.BufferOut.Cust.feed_override;
+    outgoing_lcnc_data.rapid_override = EASYCAT.BufferOut.Cust.rapid_override;
+    outgoing_lcnc_data.spindle_override = EASYCAT.BufferOut.Cust.spindle_override;
+    outgoing_lcnc_data.current_tool_diameter = EASYCAT.BufferOut.Cust.current_tool_diameter;
+    memcpy(outgoing_lcnc_data.dro_pos, EASYCAT.BufferOut.Cust.dro_pos, sizeof(outgoing_lcnc_data.dro_pos));
+
+    // Send the same status packet to both peers.
     esp_now_send(esp2_mac_address, (uint8_t *)&outgoing_lcnc_data, sizeof(outgoing_lcnc_data));
+    esp_now_send(esp3_mac_address, (uint8_t *)&outgoing_lcnc_data, sizeof(outgoing_lcnc_data));
 }

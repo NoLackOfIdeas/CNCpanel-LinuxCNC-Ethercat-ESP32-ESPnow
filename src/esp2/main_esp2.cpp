@@ -1,17 +1,8 @@
 /**
  * @file main_esp2.cpp
- * @brief Main firmware for ESP2, the HMI Controller. (Fully Implemented)
- *
- * This code serves as the main entry point for the HMI unit. It is responsible for:
- * 1. Orchestrating the HMI peripherals via the hmi_handler module.
- * 2. Hosting the asynchronous web server for dynamic configuration and status monitoring.
- * 3. Handling Over-The-Air (OTA) firmware updates.
- * 4. Communicating with the ESP1 bridge via the ESP-NOW protocol.
- *
- * Concepts are derived from the project document "Integriertes Dual-ESP32-Steuerungssystem".
+ * @brief Main firmware for ESP2, the Main HMI Panel Controller. (Fully Implemented)
  */
 
-// --- INCLUDES ---
 #include <Arduino.h>
 #include <WiFi.h>
 #include <ESPAsyncWebServer.h>
@@ -27,19 +18,15 @@
 // --- GLOBAL OBJECTS ---
 AsyncWebServer server(80);
 AsyncWebSocket ws("/ws");
-struct_message_to_esp1 outgoing_hmi_data;  // Data to be sent to ESP1
-struct_message_to_esp2 incoming_lcnc_data; // Data received from ESP1
+struct_message_from_esp2 outgoing_hmi_data;
+struct_message_to_hmi incoming_lcnc_data;
 
 // --- HELPER FUNCTIONS ---
-
-/**
- * @brief Creates a JSON string with the current HMI status and broadcasts it to all web clients.
- */
 void broadcast_live_status()
 {
     uint8_t btn_buf[8];
     uint8_t led_buf[8];
-    get_live_status_data(btn_buf, led_buf); // Get current state from the HMI handler
+    get_live_status_data(btn_buf, led_buf);
 
     StaticJsonDocument<512> doc;
     doc["type"] = "liveStatus";
@@ -52,14 +39,10 @@ void broadcast_live_status()
 
     String json_output;
     serializeJson(doc, json_output);
-    ws.textAll(json_output); // Broadcast to all connected web clients
+    ws.textAll(json_output);
 }
 
 // --- WEBSOCKET EVENT HANDLER ---
-
-/**
- * @brief Handles all WebSocket events (connect, disconnect, data received).
- */
 void onWsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType type, void *arg, uint8_t *data, size_t len)
 {
     if (type == WS_EVT_CONNECT)
@@ -104,38 +87,23 @@ void onWsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventTyp
 
 // --- ESP-NOW CALLBACKS ---
 void OnDataSent(const uint8_t *mac_addr, esp_now_send_status_t status) {}
-
-/**
- * @brief Callback executed when new data arrives from ESP1.
- */
 void OnDataRecv(const uint8_t *mac, const uint8_t *incomingData, int len)
 {
     memcpy(&incoming_lcnc_data, incomingData, sizeof(incoming_lcnc_data));
-
-    // --- NEW: Evaluate Action Bindings ---
-    // This new function call triggers the HMI to re-evaluate its state
-    // based on the new machine status received from LinuxCNC.
     evaluate_action_bindings(incoming_lcnc_data);
-
-    // Update the physical LEDs based on the new data.
     update_leds_from_lcnc(incoming_lcnc_data);
-
-    // Broadcast the new status to the web UI.
     broadcast_live_status();
 }
 
 // --- MAIN SETUP AND LOOP ---
-
 void setup()
 {
     Serial.begin(115200);
-
     if (!LittleFS.begin(true))
     {
         Serial.println("An Error has occurred while mounting LittleFS");
         return;
     }
-
     load_configuration();
     hmi_init();
 
@@ -177,7 +145,6 @@ void loop()
 {
     hmi_task();
     ws.cleanupClients();
-
     if (hmi_data_has_changed())
     {
         get_hmi_data(&outgoing_hmi_data);

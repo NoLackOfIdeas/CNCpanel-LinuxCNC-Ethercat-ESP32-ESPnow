@@ -133,6 +133,14 @@ net hmi-rotary_pos-29 <= easycat.0.pdo-in.rotary_pos-3.5
 net hmi-rotary_pos-30 <= easycat.0.pdo-in.rotary_pos-3.6
 net hmi-rotary_pos-31 <= easycat.0.pdo-in.rotary_pos-3.7
 
+net hmi-pendant_handwheel_pos <= easycat.0.pdo-in.pendant_handwheel_pos
+
+net hmi-pendant_button_states <= easycat.0.pdo-in.pendant_button_states
+
+net hmi-pendant_selected_axis <= easycat.0.pdo-in.pendant_selected_axis
+
+net hmi-pendant_selected_step <= easycat.0.pdo-in.pendant_selected_step
+
 
 # --- OUT Signals: Data from LinuxCNC to HMI ---
 net lcnc-led_matrix-0 => easycat.0.pdo-out.led_matrix-0
@@ -157,4 +165,13 @@ net lcnc-feed_override => easycat.0.pdo-out.feed_override
 net lcnc-rapid_override => easycat.0.pdo-out.rapid_override
 
 net lcnc-spindle_override => easycat.0.pdo-out.spindle_override
+
+net lcnc-current_tool_diameter => easycat.0.pdo-out.current_tool_diameter
+
+net lcnc-dro_pos-0 => easycat.0.pdo-out.dro_pos-0
+net lcnc-dro_pos-1 => easycat.0.pdo-out.dro_pos-1
+net lcnc-dro_pos-2 => easycat.0.pdo-out.dro_pos-2
+net lcnc-dro_pos-3 => easycat.0.pdo-out.dro_pos-3
+net lcnc-dro_pos-4 => easycat.0.pdo-out.dro_pos-4
+net lcnc-dro_pos-5 => easycat.0.pdo-out.dro_pos-5
 
