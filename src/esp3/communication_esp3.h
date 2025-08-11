@@ -1,38 +1,29 @@
+/**
+ * @file communication_esp3.h
+ * @brief Public API for the ESP-NOW communication layer.
+ */
+
 #ifndef COMMUNICATION_ESP3_H
 #define COMMUNICATION_ESP3_H
 
-#include "shared_structures.h"
+#include "shared_structures.h" // For packet struct definitions
 
 /**
- * Initialize ESP-NOW (or your chosen transport) and ready the module
- * for send/receive.
+ * @brief Initializes the ESP-NOW service. Must be called once from setup().
  */
 void communication_esp3_init();
 
 /**
- * Call periodically from loop() if your transport needs polling.
- * For ESP-NOW this can be a no-op.
+ * @brief Sends the pendant's state packet over ESP-NOW.
+ * @param msg The PendantStatePacket to send.
+ * @return true if the message was successfully queued for sending, false otherwise.
  */
-void communication_esp3_loop();
+bool communication_esp3_send(const PendantStatePacket &msg);
 
 /**
- * Send the current HMI → LCNC packet over ESP-NOW.
- * Returns true on success.
+ * @brief Registers a function to be called when a status packet arrives from LCNC.
+ * @param cb The callback function pointer.
  */
-bool communication_esp3_send(const struct_message_from_esp3 &msg);
-
-/**
- * Register a callback that will fire whenever an incoming
- * LCNC → HMI packet arrives.
- */
-void communication_esp3_register_receive_callback(
-    void (*cb)(const struct_message_to_hmi &msg));
-
-/**
- * Send a single LCNC action (button, macro, handwheel‐enable toggle).
- */
-void lcnc_send_action(uint16_t action_code, bool pressed);
-
-bool communication_esp3_receive(struct_message_to_hmi &msg);
+void communication_esp3_register_receive_callback(void (*cb)(const LcncStatusPacket &msg));
 
 #endif // COMMUNICATION_ESP3_H

@@ -1,0 +1,7 @@
+{
+  "name": "lvgl-config",
+  "version": "1.0.0",
+  "build": {
+    "flags": ["-D LV_CONF_INCLUDE_SIMPLE=1", "-I \"${PROJECT_DIR}/include\""]
+  }
+}

@@ -1,53 +1,60 @@
+/**
+ * @file persistence_esp3.h
+ * @brief Public interface for loading and saving the pendant's configuration.
+ *
+ * This module handles the serialization of the configuration object to and from
+ * the ESP32's non-volatile storage (NVS) using JSON.
+ */
+
 #pragma once
 
-/**
- * persistence_esp3.h
- *
- * Load and save the PendantWebConfig to non-volatile storage (NVS) on the ESP32.
- * The web UI exchanges JSON payloads matching the fields of PendantWebConfig.
- */
-
-#include <Arduino.h>
 #include "shared_structures.h"
+#include <Arduino.h> // For the String class
 
-/**
- * Global runtime configuration object.
- * Defined in config_esp3.cpp; populated by load_pendant_configuration().
- */
-extern PendantWebConfig pendant_web_cfg;
+#ifdef __cplusplus
+extern "C"
+{
+#endif
 
-/**
- * Load the JSON-serialized PendantWebConfig from NVS.
- * On success, populates pendant_web_cfg; on failure, leaves defaults in place.
- */
-void load_pendant_configuration();
+    /**
+     * @brief The global runtime configuration object for the entire application.
+     *
+     * It is defined and managed in persistence_esp3.cpp. Other modules can
+     * access it by including this header file.
+     */
+    extern PendantWebConfig pendant_web_cfg;
 
-/**
- * Save a JSON-serialized PendantWebConfig into NVS.
- * The json_string must represent fields matching PendantWebConfig.
- */
-void save_pendant_configuration(const String &json_string);
+    /**
+     * @brief Loads the configuration from NVS into the global `pendant_web_cfg` object.
+     *
+     * If no configuration is found in NVS, it loads and uses the default values.
+     */
+    void load_pendant_configuration();
 
-/**
- * Serialize the current pendant_web_cfg back into a JSON string
- * suitable for sending to the web UI.
- */
-String get_pendant_config_as_json();
+    /**
+     * @brief Saves a configuration from a JSON string into NVS.
+     * @param json_string A string containing the configuration in JSON format.
+     */
+    void save_pendant_configuration(const String &json_string);
 
-/**
- * Run the built-in factory test routine (LEDs, buttons, sensors…).
- */
-void run_factory_test();
+    /**
+     * @brief Serializes the current in-memory `pendant_web_cfg` into a JSON string.
+     * @return A String object containing the full configuration in JSON format.
+     */
+    String get_pendant_config_as_json();
 
-/**
- * Reset the pendant configuration to default values and persist them.
- * This will overwrite any existing configuration in NVS.
- */
-void reset_pendant_to_defaults();
+    /**
+     * @brief Resets the configuration to factory defaults and saves them to NVS.
+     */
+    void reset_pendant_to_defaults();
 
-/**
- * Load the default in-memory configuration (button + LED bindings).
- * Used internally by both load_pendant_configuration() on failure
- * and reset_pendant_to_defaults().
- */
-void load_pendant_default_configuration();
+    void update_hmi_from_config();
+
+    /**
+     * @brief A stub function for a factory test routine.
+     */
+    void run_factory_test();
+
+#ifdef __cplusplus
+}
+#endif

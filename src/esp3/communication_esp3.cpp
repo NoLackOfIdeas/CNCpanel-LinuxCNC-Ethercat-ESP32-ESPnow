@@ -1,81 +1,84 @@
+/**
+ * @file communication_esp3.cpp
+ * @brief Implements the ESP-NOW communication layer for the ESP32-S3 Pendant.
+ */
+
 #include "communication_esp3.h"
 #include <WiFi.h>
 #include <esp_now.h>
 #include <Arduino.h>
 
-// callback pointer set by main
-static void (*on_receive_cb)(const struct_message_to_hmi &msg) = nullptr;
+// --- Module-static (private) variables ---
 
-// broadcast MAC for ESP-NOW
-static uint8_t broadcast_addr[6] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
+// MAC address of the LinuxCNC bridge ESP32.
+// IMPORTANT: Replace this with the actual MAC address of your receiver.
+static uint8_t peer_mac_address[] = {0xAA, 0xBB, 0xCC, 0xDD, 0xEE, 0xFF};
 
-// low-level receive callback from ESP-NOW
-static void espnow_recv_cb(
-    const uint8_t *mac_addr,
-    const uint8_t *incoming_data,
-    int len)
+// Pointer to the callback function provided by the main application.
+static void (*on_receive_callback)(const LcncStatusPacket &msg) = nullptr;
+
+// --- Internal ESP-NOW Callbacks ---
+
+// This callback runs when data is received.
+static void esp_now_receive_cb(const uint8_t *mac_addr, const uint8_t *data, int len)
 {
-    if (len != sizeof(struct_message_to_hmi) || on_receive_cb == nullptr)
+    // Validate the message and ensure a callback is registered.
+    if (len == sizeof(LcncStatusPacket) && on_receive_callback != nullptr)
     {
-        return;
+        // Safely cast the raw data to our struct and invoke the callback.
+        on_receive_callback(*(LcncStatusPacket *)data);
     }
-    struct_message_to_hmi msg;
-    memcpy(&msg, incoming_data, sizeof(msg));
-    on_receive_cb(msg);
 }
+
+// This callback confirms if a message was sent successfully.
+static void esp_now_send_cb(const uint8_t *mac_addr, esp_now_send_status_t status)
+{
+    if (status != ESP_NOW_SEND_SUCCESS)
+    {
+        Serial.println("WARN: ESP-NOW send failed.");
+    }
+}
+
+// --- Public API Functions ---
 
 void communication_esp3_init()
 {
-    // Put Wi-Fi in STA mode (ESP-NOW requires it)
+    // ESP-NOW requires Wi-Fi in Station mode.
     WiFi.mode(WIFI_STA);
+    // Setting the MAC address is optional but can be useful for debugging.
+    // WiFi.macAddress(new_mac);
 
     if (esp_now_init() != ESP_OK)
     {
-        Serial.println("ERROR: ESP-NOW init failed");
-        return;
+        Serial.println("FATAL: ESP-NOW initialization failed. Halting.");
+        while (true)
+        {
+            delay(1000);
+        }
     }
 
-    // Register receive callback
-    esp_now_register_recv_cb(espnow_recv_cb);
+    esp_now_register_recv_cb(esp_now_receive_cb);
+    esp_now_register_send_cb(esp_now_send_cb);
 
-    // Add a broadcast peer so we can send to any listener
-    esp_now_peer_info_t peerInfo = {};
-    memcpy(peerInfo.peer_addr, broadcast_addr, 6);
-    peerInfo.channel = 0; // use current Wi-Fi channel
-    peerInfo.encrypt = false;
-    if (esp_now_add_peer(&peerInfo) != ESP_OK)
+    // Register the receiver as a peer for reliable sending.
+    esp_now_peer_info_t peer_info = {};
+    memcpy(peer_info.peer_addr, peer_mac_address, 6);
+    peer_info.channel = 0; // 0 means use the current Wi-Fi channel.
+    peer_info.encrypt = false;
+
+    if (esp_now_add_peer(&peer_info) != ESP_OK)
     {
-        Serial.println("WARN: failed to add ESP-NOW broadcast peer");
+        Serial.println("WARN: Failed to add ESP-NOW peer.");
     }
 }
 
-void communication_esp3_register_receive_callback(
-    void (*cb)(const struct_message_to_hmi &msg))
+void communication_esp3_register_receive_callback(void (*cb)(const LcncStatusPacket &msg))
 {
-    on_receive_cb = cb;
+    on_receive_callback = cb;
 }
 
-void communication_esp3_loop()
+bool communication_esp3_send(const PendantStatePacket &msg)
 {
-    // ESP-NOW needs no polling; placeholder for timeouts/retries if needed
-}
-
-bool communication_esp3_send(const struct_message_from_esp3 &msg)
-{
-    // Fire-and-forget broadcast
-    esp_err_t res = esp_now_send(
-        broadcast_addr,
-        (uint8_t *)&msg,
-        sizeof(msg));
-
-    bool ok = (res == ESP_OK);
-    if (!ok)
-    {
-        Serial.printf("ERROR: ESP-NOW send failed (%d), retrying...\n", res);
-        // Single retry
-        res = esp_now_send(broadcast_addr, (uint8_t *)&msg, sizeof(msg));
-        ok = (res == ESP_OK);
-        Serial.printf("ESP-NOW send retry %s\n", ok ? "succeeded" : "failed");
-    }
-    return ok;
+    esp_err_t result = esp_now_send(peer_mac_address, (uint8_t *)&msg, sizeof(msg));
+    return (result == ESP_OK);
 }

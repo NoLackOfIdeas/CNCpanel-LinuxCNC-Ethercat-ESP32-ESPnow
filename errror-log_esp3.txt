@@ -1,0 +1,186 @@
+Compiling .pio\build\esp3\src\esp3\ui\ui_font_montserat_bold_20.c.o
+In file included from lib/lvgl/src/../src/lv_init.h:17,
+                 from lib/lvgl/src/../lvgl.h:24,
+                 from lib/lvgl/src/lvgl.h:16,
+                 from src/esp3/ui/actions.c:1:
+lib/lvgl/src/../src/lv_conf_internal.h:59:18: fatal error: ../../lv_conf.h: No such file or directory
+         #include "../../lv_conf.h"                /*Else assume lv_conf.h is next to the lvgl folder*/
+                  ^~~~~~~~~~~~~~~~~
+compilation terminated.
+Compiling .pio\build\esp3\src\esp3\ui_popups.c.o
+In file included from lib/lvgl/src/../src/lv_init.h:17,
+                 from lib/lvgl/src/../lvgl.h:24,
+                 from lib/lvgl/src/lvgl.h:16,
+                 from src/esp3/ui/images.h:4,
+                 from src/esp3/ui/images.c:1:
+Compiling .pio\build\esp3\src\esp3\ui_tab_logic.c.o
+lib/lvgl/src/../src/lv_conf_internal.h:59:18: fatal error: ../../lv_conf.h: No such file or directory
+         #include "../../lv_conf.h"                /*Else assume lv_conf.h is next to the lvgl folder*/
+                  ^~~~~~~~~~~~~~~~~
+compilation terminated.
+*** [.pio\build\esp3\src\esp3\ui\actions.c.o] Error 1
+*** [.pio\build\esp3\src\esp3\ui\images.c.o] Error 1
+In file included from lib/lvgl/src/../src/lv_init.h:17,
+                 from lib/lvgl/src/../lvgl.h:24,
+                 from lib/lvgl/src/lvgl.h:16,
+                 from src/esp3/ui/styles.h:4,
+                 from src/esp3/ui/styles.c:1:
+lib/lvgl/src/../src/lv_conf_internal.h:59:18: fatal error: ../../lv_conf.h: No such file or directory
+         #include "../../lv_conf.h"                /*Else assume lv_conf.h is next to the lvgl folder*/
+                  ^~~~~~~~~~~~~~~~~
+compilation terminated.
+In file included from lib/lvgl/src/../src/lv_init.h:17,
+                 from lib/lvgl/src/../lvgl.h:24,
+                 from lib/lvgl/src/lvgl.h:16,
+                 from src/esp3/ui/ui.h:4,
+                 from src/esp3/ui/ui.c:5:
+lib/lvgl/src/../src/lv_conf_internal.h:59:18: fatal error: ../../lv_conf.h: No such file or directory
+         #include "../../lv_conf.h"                /*Else assume lv_conf.h is next to the lvgl folder*/
+                  ^~~~~~~~~~~~~~~~~
+compilation terminated.
+*** [.pio\build\esp3\src\esp3\ui\styles.c.o] Error 1
+In file included from lib/lvgl/src/../src/lv_init.h:17,
+                 from lib/lvgl/src/../lvgl.h:24,
+                 from lib/lvgl/src/lvgl.h:16,
+                 from src/esp3/ui/ui_font_montserat_bold_14.c:16:
+lib/lvgl/src/../src/lv_conf_internal.h:59:18: fatal error: ../../lv_conf.h: No such file or directory
+         #include "../../lv_conf.h"                /*Else assume lv_conf.h is next to the lvgl folder*/
+                  ^~~~~~~~~~~~~~~~~
+compilation terminated.
+*** [.pio\build\esp3\src\esp3\ui\ui.c.o] Error 1
+In file included from lib/lvgl/src/../src/lv_init.h:17,
+                 from lib/lvgl/src/../lvgl.h:24,
+                 from lib/lvgl/src/lvgl.h:16,
+                 from src/esp3/ui/ui_font_montserat_bold_20.c:16:
+lib/lvgl/src/../src/lv_conf_internal.h:59:18: fatal error: ../../lv_conf.h: No such file or directory
+         #include "../../lv_conf.h"                /*Else assume lv_conf.h is next to the lvgl folder*/
+                  ^~~~~~~~~~~~~~~~~
+compilation terminated.
+*** [.pio\build\esp3\src\esp3\ui\ui_font_montserat_bold_14.c.o] Error 1
+*** [.pio\build\esp3\src\esp3\ui\ui_font_montserat_bold_20.c.o] Error 1
+In file included from lib/lvgl/src/../src/lv_init.h:17,
+                 from lib/lvgl/src/../lvgl.h:24,
+                 from lib/lvgl/src/lvgl.h:16,
+                 from src/esp3/ui/screens.h:4,
+                 from src/esp3/ui_popups.c:7:
+lib/lvgl/src/../src/lv_conf_internal.h:59:18: fatal error: ../../lv_conf.h: No such file or directory
+         #include "../../lv_conf.h"                /*Else assume lv_conf.h is next to the lvgl folder*/
+                  ^~~~~~~~~~~~~~~~~
+compilation terminated.
+In file included from lib/lvgl/src/../src/lv_init.h:17,
+                 from lib/lvgl/src/../lvgl.h:24,
+                 from lib/lvgl/src/lvgl.h:16,
+                 from src/esp3/ui/screens.h:4,
+                 from src/esp3/ui_tab_logic.c:7:
+lib/lvgl/src/../src/lv_conf_internal.h:59:18: fatal error: ../../lv_conf.h: No such file or directory
+         #include "../../lv_conf.h"                /*Else assume lv_conf.h is next to the lvgl folder*/
+                  ^~~~~~~~~~~~~~~~~
+*** [.pio\build\esp3\src\esp3\ui_popups.c.o] Error 1
+compilation terminated.
+*** [.pio\build\esp3\src\esp3\ui_tab_logic.c.o] Error 1
+In file included from lib/lvgl/src/../src/lv_init.h:17,
+                 from lib/lvgl/src/../lvgl.h:24,
+                 from lib/lvgl/src/lvgl.h:16,
+                 from src/esp3/ui/screens.h:4,
+                 from src/esp3/ui/screens.c:3:
+lib/lvgl/src/../src/lv_conf_internal.h:59:18: fatal error: ../../lv_conf.h: No such file or directory
+         #include "../../lv_conf.h"                /*Else assume lv_conf.h is next to the lvgl folder*/
+                  ^~~~~~~~~~~~~~~~~
+compilation terminated.
+*** [.pio\build\esp3\src\esp3\ui\screens.c.o] Error 1
+In file included from lib/lvgl/src/../src/lv_init.h:17,
+                 from lib/lvgl/src/../lvgl.h:24,
+                 from lib/lvgl/src/lvgl.h:16,
+                 from src/esp3/main_esp3.cpp:9:
+lib/lvgl/src/../src/lv_conf_internal.h:59:18: fatal error: ../../lv_conf.h: No such file or directory
+         #include "../../lv_conf.h"                /*Else assume lv_conf.h is next to the lvgl folder*/
+                  ^~~~~~~~~~~~~~~~~
+compilation terminated.
+*** [.pio\build\esp3\src\esp3\main_esp3.cpp.o] Error 1
+In file included from lib/lvgl/src/../src/lv_init.h:17,
+                 from lib/lvgl/src/../lvgl.h:24,
+                 from lib/lvgl/src/lvgl.h:16,
+                 from src/esp3/ui/ui.h:4,
+                 from src/esp3/ui.cpp:7:
+lib/lvgl/src/../src/lv_conf_internal.h:59:18: fatal error: ../../lv_conf.h: No such file or directory
+         #include "../../lv_conf.h"                /*Else assume lv_conf.h is next to the lvgl folder*/
+                  ^~~~~~~~~~~~~~~~~
+compilation terminated.
+*** [.pio\build\esp3\src\esp3\ui.cpp.o] Error 1
+src/esp3/persistence_esp3.cpp:13:13: warning: ARDUINOJSON_NAMESPACE is deprecated, use ArduinoJson instead
+ namespace ARDUINOJSON_NAMESPACE
+             ^~~~~~~~~~~~~~~~~~~
+src/esp3/persistence_esp3.cpp: In function 'void serialize_config_to_json(ArduinoJson::V704PB2::JsonDocument&, const PendantWebConfig&)':
+src/esp3/persistence_esp3.cpp:180:63: warning: 'ArduinoJson::V704PB2::JsonArray ArduinoJson::V704PB2::JsonDocument::createNestedArray(TChar*) [with TChar = const char]' is deprecated: use doc[key].to<JsonArray>() instead [-Wdeprecated-declarations]
+     JsonArray axisLabels = doc.createNestedArray("axis_labels");
+                                                               ^
+In file included from .pio/libdeps/esp3/ArduinoJson/src/ArduinoJson.hpp:33,
+                 from .pio/libdeps/esp3/ArduinoJson/src/ArduinoJson.h:9,
+                 from src/esp3/persistence_esp3.cpp:9:
+.pio/libdeps/esp3/ArduinoJson/src/ArduinoJson/Document/JsonDocument.hpp:305:13: note: declared here
+   JsonArray createNestedArray(TChar* key) {
+             ^~~~~~~~~~~~~~~~~
+src/esp3/persistence_esp3.cpp:186:63: warning: 'ArduinoJson::V704PB2::JsonArray ArduinoJson::V704PB2::JsonDocument::createNestedArray(TChar*) [with TChar = const char]' is deprecated: use doc[key].to<JsonArray>() instead [-Wdeprecated-declarations]
+     JsonArray btnArr = doc.createNestedArray("button_bindings");
+                                                               ^
+In file included from .pio/libdeps/esp3/ArduinoJson/src/ArduinoJson.hpp:33,
+                 from .pio/libdeps/esp3/ArduinoJson/src/ArduinoJson.h:9,
+                 from src/esp3/persistence_esp3.cpp:9:
+.pio/libdeps/esp3/ArduinoJson/src/ArduinoJson/Document/JsonDocument.hpp:305:13: note: declared here
+   JsonArray createNestedArray(TChar* key) {
+             ^~~~~~~~~~~~~~~~~
+src/esp3/persistence_esp3.cpp:189:52: warning: 'ArduinoJson::V704PB2::JsonObject ArduinoJson::V704PB2::JsonArray::createNestedObject() const' is deprecated: use add<JsonObject>() instead [-Wdeprecated-declarations]
+         JsonObject obj = btnArr.createNestedObject();
+                                                    ^
+In file included from .pio/libdeps/esp3/ArduinoJson/src/ArduinoJson.hpp:53,
+                 from .pio/libdeps/esp3/ArduinoJson/src/ArduinoJson.h:9,
+                 from src/esp3/persistence_esp3.cpp:9:
+.pio/libdeps/esp3/ArduinoJson/src/ArduinoJson/compatibility.hpp:140:19: note: declared here
+ inline JsonObject JsonArray::createNestedObject() const {
+                   ^~~~~~~~~
+src/esp3/persistence_esp3.cpp:196:60: warning: 'ArduinoJson::V704PB2::JsonArray ArduinoJson::V704PB2::JsonDocument::createNestedArray(TChar*) [with TChar = const char]' is deprecated: use doc[key].to<JsonArray>() instead [-Wdeprecated-declarations]
+     JsonArray ledArr = doc.createNestedArray("led_bindings");
+                                                            ^
+In file included from .pio/libdeps/esp3/ArduinoJson/src/ArduinoJson.hpp:33,
+                 from .pio/libdeps/esp3/ArduinoJson/src/ArduinoJson.h:9,
+                 from src/esp3/persistence_esp3.cpp:9:
+.pio/libdeps/esp3/ArduinoJson/src/ArduinoJson/Document/JsonDocument.hpp:305:13: note: declared here
+   JsonArray createNestedArray(TChar* key) {
+             ^~~~~~~~~~~~~~~~~
+src/esp3/persistence_esp3.cpp:199:52: warning: 'ArduinoJson::V704PB2::JsonObject ArduinoJson::V704PB2::JsonArray::createNestedObject() const' is deprecated: use add<JsonObject>() instead [-Wdeprecated-declarations]
+         JsonObject obj = ledArr.createNestedObject();
+                                                    ^
+In file included from .pio/libdeps/esp3/ArduinoJson/src/ArduinoJson.hpp:53,
+                 from .pio/libdeps/esp3/ArduinoJson/src/ArduinoJson.h:9,
+                 from src/esp3/persistence_esp3.cpp:9:
+.pio/libdeps/esp3/ArduinoJson/src/ArduinoJson/compatibility.hpp:140:19: note: declared here
+ inline JsonObject JsonArray::createNestedObject() const {
+                   ^~~~~~~~~
+src/esp3/persistence_esp3.cpp:208:56: warning: 'ArduinoJson::V704PB2::JsonArray ArduinoJson::V704PB2::JsonDocument::createNestedArray(TChar*) [with TChar = const char]' is deprecated: use doc[key].to<JsonArray>() instead [-Wdeprecated-declarations]
+     JsonArray macroArr = doc.createNestedArray("macros");
+                                                        ^
+In file included from .pio/libdeps/esp3/ArduinoJson/src/ArduinoJson.hpp:33,
+                 from .pio/libdeps/esp3/ArduinoJson/src/ArduinoJson.h:9,
+                 from src/esp3/persistence_esp3.cpp:9:
+.pio/libdeps/esp3/ArduinoJson/src/ArduinoJson/Document/JsonDocument.hpp:305:13: note: declared here
+   JsonArray createNestedArray(TChar* key) {
+             ^~~~~~~~~~~~~~~~~
+src/esp3/persistence_esp3.cpp:211:54: warning: 'ArduinoJson::V704PB2::JsonObject ArduinoJson::V704PB2::JsonArray::createNestedObject() const' is deprecated: use add<JsonObject>() instead [-Wdeprecated-declarations]
+         JsonObject obj = macroArr.createNestedObject();
+                                                      ^
+In file included from .pio/libdeps/esp3/ArduinoJson/src/ArduinoJson.hpp:53,
+                 from .pio/libdeps/esp3/ArduinoJson/src/ArduinoJson.h:9,
+                 from src/esp3/persistence_esp3.cpp:9:
+.pio/libdeps/esp3/ArduinoJson/src/ArduinoJson/compatibility.hpp:140:19: note: declared here
+ inline JsonObject JsonArray::createNestedObject() const {
+                   ^~~~~~~~~
+src/esp3/persistence_esp3.cpp:214:62: warning: 'ArduinoJson::V704PB2::JsonArray ArduinoJson::V704PB2::JsonObject::createNestedArray(TChar*) const [with TChar = const char]' is deprecated: use obj[key].to<JsonArray>() instead [-Wdeprecated-declarations]
+         JsonArray commands = obj.createNestedArray("commands");
+                                                              ^
+In file included from .pio/libdeps/esp3/ArduinoJson/src/ArduinoJson.hpp:30,
+                 from .pio/libdeps/esp3/ArduinoJson/src/ArduinoJson.h:9,
+                 from src/esp3/persistence_esp3.cpp:9:
+.pio/libdeps/esp3/ArduinoJson/src/ArduinoJson/Object/JsonObject.hpp:167:13: note: declared here
+   JsonArray createNestedArray(TChar* key) const {
+             ^~~~~~~~~~~~~~~~~
+====================================================================== [FAILED]

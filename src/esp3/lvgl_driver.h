@@ -1,47 +1,40 @@
+/**
+ * @file lvgl_driver.h
+ * @brief Public interface for the LVGL driver module.
+ *
+ * This header declares the functions and variables needed to initialize
+ * and interact with the LVGL driver from the main application.
+ */
+
 #pragma once
 
-#include "lv_conf.h"
-#include <lvgl.h> // LVGL core types
-#include <stdint.h>
-#include <esp_timer.h> // For esp_timer_handle_t
+#include <lvgl.h> // Provides all necessary LVGL types (lv_group_t, etc.)
 
 #ifdef __cplusplus
 extern "C"
 {
 #endif
 
-    // Global LVGL encoder group (used for navigation focus)
-    extern lv_group_t *g_input_group;
-
-    // Internal esp_timer handle for LVGL tick (created in init)
-    extern esp_timer_handle_t lvgl_tick_timer;
+    /**
+     * @brief A global handle to the LVGL input group for the physical encoder.
+     *
+     * Widgets must be added to this group to be navigable by the handwheel.
+     */
+    extern lv_group_t *g_default_group;
 
     /**
-     * @brief Initialize LVGL display and input drivers.
-     *        Call once from setup() after lv_init().
-     *        Also starts esp_timer for 1 ms LVGL ticks.
+     * @brief Initializes the LVGL display and input drivers using LovyanGFX.
+     *
+     * This function sets up the display, touchscreen, encoder, and a precise
+     * 1ms tick timer. It should be called once from setup().
      */
     void lvgl_driver_init();
 
     /**
-     * @brief LVGL v9 flush callback: pushes rendered area to display.
-     * @param disp LVGL display handle
-     * @param area Area to update
-     * @param color_buf Pixel buffer (RGB565)
-     */
-    void my_disp_flush(lv_display_t *, const lv_area_t *, uint8_t *);
-
-    /**
-     * @brief LVGL v9 encoder read callback.
-     * @param indev Input device handle
-     * @param data Encoder state and delta
-     */
-    void encoder_read_cb(lv_indev_t *, lv_indev_data_t *);
-
-    /**
-     * @brief Query driver status and retrieve last FPS.
-     * @param fps Output: last calculated frames per second
-     * @return true if driver is initialized
+     * @brief (Optional) Query driver status and retrieve last calculated FPS.
+     *
+     * @param[out] fps A reference to an integer that will be filled with the FPS value.
+     * @return true if the driver is initialized, false otherwise.
      */
     bool lvgl_driver_status(int &fps);
 

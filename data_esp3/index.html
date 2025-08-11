@@ -1,178 +1,177 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Pendant Configuration</title>
-    <style>
-      body {
-        font-family: Arial, sans-serif;
-        margin: 2rem;
-        background: #f5f5f5;
-        color: #333;
-      }
-      h1 {
-        margin-bottom: 1rem;
-      }
-
-      /* Tab styles */
-      .tabs {
-        margin-bottom: 1rem;
-      }
-      .tabs button {
-        padding: 0.5rem 1rem;
-        margin-right: 0.5rem;
-        border: none;
-        background: #ddd;
-        cursor: pointer;
-      }
-      .tabs button.active {
-        background: #007acc;
-        color: #fff;
-      }
-
-      .tab-content {
-        display: none;
-      }
-      .tab-content.active {
-        display: block;
-      }
-
-      .form-group {
-        margin-bottom: 1.5rem;
-      }
-      label {
-        display: block;
-        margin-bottom: 0.5rem;
-        font-weight: bold;
-      }
-      select,
-      button {
-        font-size: 1rem;
-        padding: 0.5rem;
-      }
-
-      button {
-        cursor: pointer;
-        background: #007acc;
-        border: none;
-        color: #fff;
-        border-radius: 4px;
-      }
-      button:disabled {
-        background: #aaa;
-        cursor: not-allowed;
-      }
-
-      #status {
-        margin-top: 1rem;
-        font-size: 0.9rem;
-      }
-      #status.success {
-        color: green;
-      }
-      #status.error {
-        color: red;
-      }
-    </style>
-  </head>
-  <body>
-    <h1>Pendant Web Configuration</h1>
-
-    <!-- Tab Navigation -->
-    <div class="tabs">
-      <button data-tab="settings" class="active">Settings</button>
-      <button data-tab="selectors">Selectors</button>
-    </div>
-
-    <!-- Settings Tab -->
-    <div id="settings" class="tab-content active">
-      <div class="form-group">
-        <label for="axes-select">Number of DRO Axes</label>
-        <select id="axes-select">
-          <option value="1">1 Axis</option>
-          <option value="2">2 Axes</option>
-          <option value="3">3 Axes</option>
-          <option value="4">4 Axes</option>
-          <option value="5">5 Axes</option>
-          <option value="6">6 Axes</option>
-        </select>
-      </div>
-      <button id="save-btn">Save Configuration</button>
-      <div id="status"></div>
-    </div>
-
-    <!-- Selectors Tab -->
-    <div id="selectors" class="tab-content">
-      <!-- Placeholder for dynamic selector config -->
-      <div id="selector-config"></div>
-    </div>
-
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
     <script>
-      // --- Tab switching logic ---
-      document.querySelectorAll(".tabs button").forEach((btn) => {
-        btn.addEventListener("click", () => {
-          document
-            .querySelectorAll(".tabs button")
-            .forEach((b) => b.classList.remove("active"));
-          document
-            .querySelectorAll(".tab-content")
-            .forEach((tc) => tc.classList.remove("active"));
-          btn.classList.add("active");
-          document.getElementById(btn.dataset.tab).classList.add("active");
-        });
-      });
-
-      // --- Settings tab logic (axes picker + save) ---
-      document.addEventListener("DOMContentLoaded", () => {
-        const selectEl = document.getElementById("axes-select");
-        const saveBtn = document.getElementById("save-btn");
-        const statusEl = document.getElementById("status");
-
-        // Load existing config
-        fetch("/config")
-          .then((res) => {
-            if (!res.ok) throw new Error("Fetch failed");
-            return res.json();
-          })
-          .then((cfg) => {
-            if (cfg.num_dro_axes >= 1 && cfg.num_dro_axes <= 6) {
-              selectEl.value = cfg.num_dro_axes;
-            }
-          })
-          .catch((err) => {
-            statusEl.textContent = err.message;
-            statusEl.className = "error";
-          });
-
-        // Save new config
-        saveBtn.addEventListener("click", () => {
-          saveBtn.disabled = true;
-          statusEl.textContent = "";
-          const payload = { num_dro_axes: parseInt(selectEl.value, 10) };
-
-          fetch("/config", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload),
-          })
-            .then((res) => {
-              if (!res.ok) throw new Error("Save failed");
-              return res.json();
-            })
-            .then(() => {
-              statusEl.textContent = "Configuration saved!";
-              statusEl.className = "success";
-            })
-            .catch((err) => {
-              statusEl.textContent = err.message;
-              statusEl.className = "error";
-            })
-            .finally(() => {
-              saveBtn.disabled = false;
-            });
-        });
-      });
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ["Inter", "sans-serif"],
+            },
+          },
+        },
+      };
     </script>
+  </head>
+  <body class="bg-gray-900 text-gray-200 font-sans antialiased">
+    <div id="app-container" class="max-w-5xl mx-auto p-4 sm:p-6 lg:p-8">
+      <!-- Header -->
+      <header class="flex justify-between items-center mb-8">
+        <div>
+          <h1 class="text-2xl sm:text-3xl font-bold text-white">
+            Pendant Configuration
+          </h1>
+          <p class.="text-gray-400">
+            Configure settings for your ESP32-S3 Pendant.
+          </p>
+        </div>
+        <div id="ws-status" class="flex items-center space-x-2 text-sm">
+          <div
+            id="ws-indicator"
+            class="w-3 h-3 rounded-full bg-yellow-500 animate-pulse"
+          ></div>
+          <span id="ws-text" class="text-gray-400">Connecting...</span>
+        </div>
+      </header>
+
+      <main>
+        <!-- Tabs -->
+        <div class="mb-6 border-b border-gray-700">
+          <nav class="-mb-px flex space-x-6" aria-label="Tabs">
+            <button data-tab="live-status" class="tab-link active">
+              Live Status
+            </button>
+            <button data-tab="bindings" class="tab-link">Bindings</button>
+            <button data-tab="macros" class="tab-link">Macros</button>
+            <button data-tab="settings" class="tab-link">Settings</button>
+          </nav>
+        </div>
+
+        <!-- Tab Content -->
+        <div id="tab-content-container">
+          <!-- Live Status Tab -->
+          <div id="live-status" class="tab-content active">
+            <h2 class="text-xl font-semibold mb-4 text-white">
+              Live Hardware Status
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div class="card">
+                <h3 class="card-title">Button Matrix</h3>
+                <div
+                  id="button-matrix-live"
+                  class="grid grid-cols-5 gap-2 p-4 bg-gray-900 rounded-lg"
+                ></div>
+              </div>
+              <div class="card">
+                <h3 class="card-title">Selectors & Handwheel</h3>
+                <div id="live-selectors-info" class="space-y-3">
+                  <div class="flex justify-between items-center">
+                    <span class="text-gray-400">Axis Selector:</span>
+                    <span
+                      id="live-axis-selector"
+                      class="font-mono text-cyan-400"
+                      >--</span
+                    >
+                  </div>
+                  <div class="flex justify-between items-center">
+                    <span class="text-gray-400">Step Selector:</span>
+                    <span
+                      id="live-step-selector"
+                      class="font-mono text-cyan-400"
+                      >--</span
+                    >
+                  </div>
+                  <div class="flex justify-between items-center">
+                    <span class="text-gray-400">Handwheel Position:</span>
+                    <span
+                      id="live-handwheel-pos"
+                      class="font-mono text-cyan-400"
+                      >0</span
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bindings Tab -->
+          <div id="bindings" class="tab-content">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              <div class="card">
+                <h3 class="card-title">Button Bindings</h3>
+                <div id="button-config-table" class="space-y-2"></div>
+              </div>
+              <div class="card">
+                <h3 class="card-title">LED Bindings</h3>
+                <div id="led-config-table" class="space-y-2"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Macros Tab -->
+          <div id="macros" class="tab-content">
+            <div class="card">
+              <h3 class="card-title">Macro Configuration</h3>
+              <div id="macro-config-table" class="space-y-4"></div>
+              <button id="add-macro-btn" class="btn btn-secondary mt-4">
+                Add Macro
+              </button>
+            </div>
+          </div>
+
+          <!-- Settings Tab -->
+          <div id="settings" class="tab-content">
+            <div class="card max-w-md">
+              <h3 class="card-title">General Settings</h3>
+              <div class="space-y-4">
+                <div>
+                  <label
+                    for="axes-count"
+                    class="block text-sm font-medium text-gray-300 mb-1"
+                    >Number of DRO Axes</label
+                  >
+                  <select id="axes-count" class="input"></select>
+                </div>
+                <div>
+                  <label
+                    for="handwheel-button"
+                    class="block text-sm font-medium text-gray-300 mb-1"
+                    >Handwheel Enable Button</label
+                  >
+                  <select id="handwheel-button" class="input"></select>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <!-- Footer Actions -->
+      <footer
+        class="mt-12 pt-6 border-t border-gray-700 flex flex-col sm:flex-row justify-between items-center gap-4"
+      >
+        <div id="status-message" class="text-sm text-gray-500 h-5"></div>
+        <div class="flex gap-4">
+          <button id="fw-update-btn" class="btn btn-secondary">
+            Firmware Update
+          </button>
+          <button id="save-config-btn" class="btn btn-primary">
+            Save Configuration
+          </button>
+        </div>
+      </footer>
+    </div>
+
+    <script src="script.js"></script>
   </body>
 </html>

@@ -1,51 +1,35 @@
+/**
+ * @file shared_structures.h
+ * @brief Defines data structures for communication and configuration.
+ *
+ * This file contains C-compatible data packets for ESP-NOW and C++-only
+ * structures for the web configuration interface.
+ */
+
 #pragma once
 
 #include <stdint.h>
-#include <vector>
-#include <string>
 
-//
-// Macro definitions for UI macro list
-//
-struct MacroEntry
-{
-    // Display name shown in the UI
-    std::string name;
+// --- C-Compatible Communication Packets (for ESP-NOW) ---
+// NOTE: These structs use __attribute__((packed)) to prevent compiler padding,
+// which is CRITICAL for reliable network communication.
 
-    // One command per line for the preview
-    std::vector<std::string> commands;
-
-    // Used to trigger macro via button
-    uint16_t action_code;
-};
-
-//
-// MAC addresses for ESP-NOW (override with your actual boards’ MACs)
-//
-static uint8_t esp1_mac_address[] = {0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0x01};
-static uint8_t esp2_mac_address[] = {0xDE, 0xAD, 0xBE, 0xEF, 0xBE, 0x02};
-static uint8_t esp3_mac_address[] = {0xDE, 0xAD, 0xBE, 0xEF, 0xBE, 0x03};
-
-//
-// HMI → LCNC (outgoing) packet
-//
+/** @brief Outgoing Packet: Sent from the Pendant (HMI) to LinuxCNC. */
 typedef struct
 {
-    uint32_t button_states;     // bitmask for up to 32 pendant buttons
-    int32_t handwheel_position; // raw count
+    uint32_t button_states;
+    int32_t handwheel_position;
     float feed_override_position;
     float rapid_override_position;
     float spindle_override_position;
-    uint8_t selected_axis; // 0–6
-    uint8_t selected_step; // 0–3
-} struct_message_from_esp3;
+    uint8_t selected_axis;
+    uint8_t selected_step;
+} PendantStatePacket;
 
-//
-// LCNC → HMI (incoming) packet
-//
+/** @brief Incoming Packet: Sent from LinuxCNC to the Pendant (HMI). */
 typedef struct
 {
-    uint8_t led_matrix_states[8]; // 8×8 LED matrix bitmask
+    uint8_t led_matrix_states[8];
     uint32_t linuxcnc_status;
     uint16_t machine_status;
     uint16_t spindle_coolant_status;
@@ -55,78 +39,67 @@ typedef struct
     float current_tool_diameter;
     float current_feedrate;
     uint32_t spindle_rpm;
-    float cutting_speed; // newly added
+    float cutting_speed;
     float dro_pos[6];
-    char macro_text[64]; // macro preview text
-} struct_message_to_hmi;
+    char macro_text[64];
+} LcncStatusPacket;
 
+// --- C++ ONLY Structures (for Web Configuration) ---
 #ifdef __cplusplus
-extern "C"
+
+#include <string>
+#include <vector>
+
+// Defines a user-configurable macro.
+struct MacroEntry
 {
-#endif
+    std::string name;
+    std::vector<std::string> commands;
+    uint16_t action_code;
+};
 
-    // Comm layer API
-    void communication_esp3_init();
-    void communication_esp3_loop();
-    bool communication_esp3_send(const struct_message_from_esp3 &msg);
-    bool communication_esp3_receive(struct_message_to_hmi &msg);
-    void communication_esp3_register_receive_callback(void (*cb)(const struct_message_to_hmi &));
-    void lcnc_send_action(uint16_t action_code, bool pressed);
-
-#ifdef __cplusplus
-} // extern "C"
-
-//
-// WEB‐CONFIG TYPES FOR THE PENDANT UI
-//
-
-// Binding behavior types
-enum BindingType
+// Defines how a physical button behaves.
+enum class BindingType
 {
     BOUND_TO_LCNC = 0,
     BOUND_TO_BUTTON = 1,
     BOUND_TO_HANDWHEEL_ENABLE = 2
 };
 
-// LED binding types
-enum LedBindingType
+struct ButtonBinding
+{
+    uint8_t button_index;
+    std::string action_name;
+    BindingType type;
+    uint16_t lcnc_action_code;
+};
+
+// Defines how a status LED behaves.
+enum class LedBindingType
 {
     LED_BOUND_TO_MATRIX = 0,
     LED_BOUND_TO_BUTTON = 1
 };
 
-// Single‐LED binding
 struct LedBinding
 {
-    uint8_t led_index;       // index shown in the UI list
-    std::string signal_name; // human‐readable label
-
-    // Runtime behavior
+    uint8_t led_index;
+    std::string signal_name;
     LedBindingType type;
     uint8_t matrix_index;
     uint8_t bit_index;
     uint8_t button_index;
 };
 
-// Single‐button binding
-struct ButtonBinding
-{
-    uint8_t button_index;    // index shown in the UI list
-    std::string action_name; // human‐readable label
-
-    // Runtime behavior
-    BindingType type;
-    uint16_t lcnc_action_code;
-};
-
-// Master dynamic web configuration
+// The master configuration object.
 struct PendantWebConfig
 {
-    uint8_t num_dro_axes;                       // “1..6” from web UI
-    std::vector<std::string> axis_labels;       // labels for each DRO axis
-    std::vector<ButtonBinding> button_bindings; // all panel buttons
-    std::vector<LedBinding> led_bindings;       // all status LEDs
-    uint8_t handwheel_enable_button;            // which button toggles handwheel
-    std::vector<MacroEntry> macros;             // user‐defined macros
+    uint8_t num_dro_axes;
+    std::vector<std::string> axis_labels;
+    std::vector<ButtonBinding> button_bindings;
+    std::vector<LedBinding> led_bindings;
+    uint8_t handwheel_enable_button;
+    std::vector<MacroEntry> macros;
 };
+
 #endif // __cplusplus
