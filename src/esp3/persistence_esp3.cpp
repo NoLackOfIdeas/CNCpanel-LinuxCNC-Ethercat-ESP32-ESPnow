@@ -29,7 +29,8 @@ namespace ARDUINOJSON_NAMESPACE
 }
 
 // --- Global config object definition ---
-PendantWebConfig pendant_web_cfg;
+extern PendantWebConfig pendant_web_cfg;
+void run_factory_test() {}
 
 // --- NVS (Preferences) constants ---
 static constexpr char PENDANT_PREF_NS[] = "pendant";

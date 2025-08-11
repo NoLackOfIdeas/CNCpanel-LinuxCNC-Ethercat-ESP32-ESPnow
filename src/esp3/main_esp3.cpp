@@ -74,6 +74,7 @@ static void initialize_core_systems()
             yield();
     }
 }
+void lvgl_driver_init() {}
 
 static void initialize_hmi_and_ui()
 {
@@ -116,6 +117,7 @@ static void on_lcnc_data_received(const LcncStatusPacket &msg)
     update_hmi_from_lcnc(msg);
     web_interface_broadcast_status(incoming_lcnc_data);
 }
+void web_interface_broadcast_status(const LcncStatusPacket &data) {}
 
 static void handle_core_tasks()
 {
