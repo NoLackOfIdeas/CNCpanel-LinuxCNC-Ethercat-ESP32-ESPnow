@@ -1,3 +1,5 @@
+# IntegratedTHIS IS WORK-IN-PROGRESS --> NOT fully working yet!!!
+
 # Integrated Dual-ESP32 HMI for LinuxCNC
 
 An advanced, modular Human-Machine Interface (HMI) for LinuxCNC-controlled machines. The system utilizes a dual-ESP32 architecture to decouple real-time machine communication from the complex HMI logic. The connection to LinuxCNC is handled by the industrial **EtherCAT** protocol, while the two controllers communicate wirelessly with low latency via **ESP-NOW**.
