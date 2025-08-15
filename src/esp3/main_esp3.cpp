@@ -7,6 +7,7 @@
 #include <WiFi.h>
 #include <LittleFS.h>
 #include <lvgl.h>
+#include <nvs_flash.h> // << Add this for NVS initialization
 
 // --- Core Application Headers ---
 #include "config_esp3.h" // Master config/include file
@@ -28,7 +29,7 @@ static constexpr unsigned long WIFI_CONNECT_TIMEOUT_MS = 10000;
 static PendantStatePacket outgoing_pendant_data;
 static LcncStatusPacket incoming_lcnc_data;
 
-// --- Forward Declarations for Static Helper Functions ---
+// --- Forward Declarations ---
 static void initialize_core_systems();
 static void initialize_hmi_and_ui();
 static void initialize_network_and_comms();
@@ -60,21 +61,42 @@ void loop()
 }
 
 //================================================================================
-// HELPER FUNCTION IMPLEMENTATIONS
+// HELPER FUNCTIONS
 //================================================================================
 
 static void initialize_core_systems()
 {
+    // 0) Initialize NVS — required before using Preferences
+    esp_err_t ret = nvs_flash_init();
+    if (ret == ESP_ERR_NVS_NO_FREE_PAGES || ret == ESP_ERR_NVS_NEW_VERSION_FOUND)
+    {
+        // NVS partition was truncated, erase and retry
+        nvs_flash_erase();
+        ret = nvs_flash_init();
+    }
+    if (ret != ESP_OK)
+    {
+        Serial.printf("FATAL: NVS init failed (%d). Halting.\n", ret);
+        while (true)
+        {
+            yield();
+        }
+    }
+
+    // 1) Serial on 115200 so we see boot messages
     Serial.begin(115200);
     Serial.println("\n--- ESP3 Pendant Booting ---");
+
+    // 2) Mount (or format on first run) LittleFS
     if (!LittleFS.begin(true))
     {
         Serial.println("FATAL: LittleFS mount failed. Halting.");
         while (true)
+        {
             yield();
+        }
     }
 }
-void lvgl_driver_init() {}
 
 static void initialize_hmi_and_ui()
 {
@@ -90,9 +112,11 @@ static void initialize_network_and_comms()
 {
     WiFi.mode(WIFI_STA);
     WiFi.begin(Pinout::WIFI_SSID, Pinout::WIFI_PASSWORD);
+
     unsigned long start = millis();
     Serial.print("Connecting to Wi-Fi");
-    while (WiFi.status() != WL_CONNECTED && millis() - start < WIFI_CONNECT_TIMEOUT_MS)
+    while (WiFi.status() != WL_CONNECTED &&
+           millis() - start < WIFI_CONNECT_TIMEOUT_MS)
     {
         delay(500);
         Serial.print(".");
@@ -100,7 +124,8 @@ static void initialize_network_and_comms()
 
     if (WiFi.status() == WL_CONNECTED)
     {
-        Serial.printf("\nWi-Fi Connected. IP: %s\n", WiFi.localIP().toString().c_str());
+        Serial.printf("\nWi-Fi Connected. IP: %s\n",
+                      WiFi.localIP().toString().c_str());
     }
     else
     {
@@ -117,7 +142,6 @@ static void on_lcnc_data_received(const LcncStatusPacket &msg)
     update_hmi_from_lcnc(msg);
     web_interface_broadcast_status(incoming_lcnc_data);
 }
-void web_interface_broadcast_status(const LcncStatusPacket &data) {}
 
 static void handle_core_tasks()
 {
@@ -128,29 +152,29 @@ static void handle_core_tasks()
 
 static void handle_pendant_data_sending()
 {
-    static unsigned long last_pendant_send_ms = 0;
-    if (hmi_pendant_data_has_changed() && (millis() - last_pendant_send_ms > PENDANT_SEND_INTERVAL_MS))
+    static unsigned long last = 0;
+    if (hmi_pendant_data_has_changed() &&
+        (millis() - last > PENDANT_SEND_INTERVAL_MS))
     {
         get_pendant_data(&outgoing_pendant_data);
         if (!communication_esp3_send(outgoing_pendant_data))
         {
             Serial.println("WARN: ESP-NOW send failed.");
         }
-        last_pendant_send_ms = millis();
+        last = millis();
     }
 }
 
 static void handle_web_status_broadcast()
 {
-    static unsigned long last_status_broadcast_ms = 0;
-    if (millis() - last_status_broadcast_ms > STATUS_BROADCAST_INTERVAL_MS)
+    static unsigned long last = 0;
+    if (millis() - last > STATUS_BROADCAST_INTERVAL_MS)
     {
         uint32_t btns;
         int32_t hw;
         uint8_t axis, step;
         get_pendant_live_status(btns, hw, axis, step);
         web_interface_broadcast_live_pendant_status(btns, hw, axis, step);
-        last_status_broadcast_ms = millis();
+        last = millis();
     }
 }
-// NOTE: The extra '}' at the end of the file has been removed.

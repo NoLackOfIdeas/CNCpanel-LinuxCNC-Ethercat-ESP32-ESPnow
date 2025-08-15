@@ -1,9 +1,6 @@
 /**
  * @file LGFX_Config.h
  * @brief Custom configuration for LovyanGFX on the ESP32-S3 Pendant.
- *
- * This file configures the LovyanGFX driver to use the specific hardware
- * pins and settings defined in the central config_esp3.h file.
  */
 
 #pragma once
@@ -15,10 +12,17 @@
 #define LGFX_USE_LVGL_COLOR_DEPTH 16
 
 #include <LovyanGFX.hpp>
-#include "esp3/config_esp3.h" // Include your master hardware pin definition file
+#include "esp3/config_esp3.h"
+using namespace DisplayConfig;
 
 class LGFX : public lgfx::LGFX_Device
 {
+    // --- Member Variable Declarations ---
+    // You must declare the bus, panel, and touch instances you will use.
+    lgfx::Bus_SPI _bus_instance;
+    lgfx::Panel_ST7796 _panel_instance;
+    lgfx::Touch_FT5x06 _touch_instance; // The FT5x06 driver is compatible with your FT6336U
+
 public:
     LGFX(void)
     {
@@ -29,9 +33,9 @@ public:
             cfg.spi_mode = 0;
             cfg.freq_write = 40000000;
             cfg.freq_read = 16000000;
-            cfg.spi_sclk = DisplayConfig::PIN_LCD_SCLK;
-            cfg.spi_mosi = DisplayConfig::PIN_LCD_MOSI;
-            cfg.spi_miso = DisplayConfig::PIN_LCD_MISO;
+            cfg.pin_sclk = DisplayConfig::PIN_LCD_SCLK;
+            cfg.pin_mosi = DisplayConfig::PIN_LCD_MOSI;
+            cfg.pin_miso = DisplayConfig::PIN_LCD_MISO;
             cfg.dma_channel = SPI_DMA_CH_AUTO;
             _bus_instance.config(cfg);
             _panel_instance.setBus(&_bus_instance);
@@ -52,12 +56,11 @@ public:
             cfg.dummy_read_bits = 1;
             cfg.readable = true;
             cfg.invert = true;
-            cfg.rgb_order = lgfx::rgb_order_t::RGB;
+            cfg.rgb_order = true;
             cfg.dlen_16bit = false;
             cfg.bus_shared = true;
             _panel_instance.config(cfg);
         }
-        _panel_instance.setPanel(&_panel_st7796);
 
         // Touch Screen Control Configuration (FT6336U)
         {

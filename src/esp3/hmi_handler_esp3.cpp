@@ -5,6 +5,8 @@
 
 #include "hmi_handler_esp3.h"
 #include "config_esp3.h"
+using namespace Pinout;
+
 #include "persistence_esp3.h"
 #include "ui.h"
 #include <Arduino.h>
@@ -51,10 +53,91 @@ static void read_selectors();
 
 void hmi_pendant_init()
 {
+
+    // ------------------------------------------------------------------------
+    // Debug: Print all GPIO assignments before configurations
+    // ------------------------------------------------------------------------
+    Serial.println("\n--- PIN MAP DUMP ---");
+    Serial.printf("Rows:   ");
+    for (size_t i = 0; i < PENDANT_MATRIX_ROWS; ++i)
+    {
+        Serial.printf("%u ", PENDANT_ROW_PINS[i]);
+    }
+    Serial.println();
+    +Serial.printf("Cols:   ");
+    for (size_t i = 0; i < PENDANT_MATRIX_COLS; ++i)
+    {
+        Serial.printf("%u ", PENDANT_COL_PINS[i]);
+    }
+    Serial.println();
+    Serial.printf("LEDs:   ");
+    for (size_t i = 0; i < NUM_PENDANT_LEDS; ++i)
+    {
+        Serial.printf("%u ", PENDANT_LED_PINS[i]);
+    }
+    Serial.println();
+
+#if PENDANT_HAS_FEED_OVERRIDE_ENCODER
+    Serial.printf("FEED A      -> GPIO %u\n", Pinout::PIN_FEED_OVR_A);
+    Serial.printf("FEED B      -> GPIO %u\n", Pinout::PIN_FEED_OVR_B);
+#endif
+
+#if PENDANT_HAS_RAPID_OVERRIDE_ENCODER
+    Serial.printf("RAPID A     -> GPIO %u\n", Pinout::PIN_RAPID_OVR_A);
+    Serial.printf("RAPID B     -> GPIO %u\n", Pinout::PIN_RAPID_OVR_B);
+#endif
+
+#if PENDANT_HAS_SPINDLE_OVERRIDE_ENCODER
+    Serial.printf("SPINDLE A   -> GPIO %u\n", Pinout::PIN_SPINDLE_OVR_A);
+    Serial.printf("SPINDLE B   -> GPIO %u\n", Pinout::PIN_SPINDLE_OVR_B);
+#endif
+    Serial.println("--------------------------------\n");
+
+    // 1) Feed-override encoder
+#if PENDANT_HAS_FEED_OVERRIDE_ENCODER
+    Serial.printf("Configuring feed-override A on GPIO %u\n", Pinout::PIN_FEED_OVR_A);
+    Serial.printf("Configuring feed-override B on GPIO %u\n", Pinout::PIN_FEED_OVR_B);
+    pinMode(Pinout::PIN_FEED_OVR_A, INPUT_PULLUP);
+    pinMode(Pinout::PIN_FEED_OVR_B, INPUT_PULLUP);
+
+    static ESP32Encoder feedEnc;
+    ESP32Encoder::useInternalWeakPullResistors = puType::up;
+    feedEnc.attachFullQuad(Pinout::PIN_FEED_OVR_A, Pinout::PIN_FEED_OVR_B);
+    feedEnc.clearCount();
+#endif
+
+    // 2) Rapid-override encoder
+#if PENDANT_HAS_RAPID_OVERRIDE_ENCODER
+    Serial.printf("Configuring rapid-override A on GPIO %u\n", Pinout::PIN_RAPID_OVR_A);
+    Serial.printf("Configuring rapid-override B on GPIO %u\n", Pinout::PIN_RAPID_OVR_B);
+    pinMode(Pinout::PIN_RAPID_OVR_A, INPUT_PULLUP);
+    pinMode(Pinout::PIN_RAPID_OVR_B, INPUT_PULLUP);
+
+    static ESP32Encoder rapidEnc;
+    ESP32Encoder::useInternalWeakPullResistors = puType::up;
+    rapidEnc.attachFullQuad(Pinout::PIN_RAPID_OVR_A, Pinout::PIN_RAPID_OVR_B);
+    rapidEnc.clearCount();
+#endif
+
+    // 3) Spindle-override encoder
+#if PENDANT_HAS_SPINDLE_OVERRIDE_ENCODER
+    Serial.printf("Configuring spindle-override A on GPIO %u\n", Pinout::PIN_SPINDLE_OVR_A);
+    Serial.printf("Configuring spindle-override B on GPIO %u\n", Pinout::PIN_SPINDLE_OVR_B);
+    pinMode(Pinout::PIN_SPINDLE_OVR_A, INPUT_PULLUP);
+    pinMode(Pinout::PIN_SPINDLE_OVR_B, INPUT_PULLUP);
+
+    static ESP32Encoder spindleEnc;
+    ESP32Encoder::useInternalWeakPullResistors = puType::up;
+    spindleEnc.attachFullQuad(Pinout::PIN_SPINDLE_OVR_A, Pinout::PIN_SPINDLE_OVR_B);
+    spindleEnc.clearCount();
+#endif
+
+    // 4) Handwheel encoder
     ESP32Encoder::useInternalWeakPullResistors = puType::up;
     handwheel.attachFullQuad(Pinout::HW_ENCODER_A, Pinout::HW_ENCODER_B);
     handwheel.clearCount();
 
+    // 5) Button matrix
 #if PENDANT_HAS_BUTTON_MATRIX
     for (size_t i = 0; i < PENDANT_MATRIX_ROWS; ++i)
     {
@@ -67,6 +150,7 @@ void hmi_pendant_init()
     }
 #endif
 
+    // 6) LEDs
 #if PENDANT_HAS_LEDS
     for (size_t i = 0; i < NUM_PENDANT_LEDS; ++i)
     {

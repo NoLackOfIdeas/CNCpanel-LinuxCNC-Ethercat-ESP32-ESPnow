@@ -12,24 +12,16 @@ default_envs = esp3
 platform = espressif32@~6.1.0
 framework = arduino
 board = esp32-s3-devkitc-1
+upload_port = COM3     ; ← change this to the port you discovereddevkits
 monitor_speed = 115200
-; upload_speed = 115200
 lib_ldf_mode = deep+
 
-
-board_build.arduino.memory_type = qio_opi
-board_build.flash_mode = qio
-board_build.psram_type = opi
-board_upload.flash_size = 16MB
-board_upload.maximum_size = 16777216
-board_build.partitions = partitions/default_16MB.csv
-board_build.extra_flags = 
-  -DBOARD_HAS_PSRAM
 board_build.cppstd = gnu++17
 board_build.filesystem = littlefs
-board_build.erase_flash = true
 board_build.data_dir = data_esp3
-
+board_build.arduino.memory_type = qio_opi
+board_build.flash_size = 16MB
+board_build.psram = enabled
 
 build_src_filter =
     +<esp3/>
@@ -42,8 +34,8 @@ build_flags =
     -I include
     -D ARDUINO_USB_MODE=1
     -D ARDUINO_USB_CDC_ON_BOOT=1
-    ; -D BOARD_HAS_PSRAM
-    ;-mfix-esp32-psram-cache-issue
+    -D BOARD_HAS_PSRAM
+    -mfix-esp32-psram-cache-issue
 
 lib_deps =
     ; Core HMI and UI libs

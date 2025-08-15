@@ -1,7 +1,7 @@
-Executing task: C:\Users\Maasen.KHV-NB-MZ37\.platformio\penv\Scripts\platformio.exe run --environment esp3 
+ *  Executing task: C:\Users\Maasen.KHV-NB-MZ37\.platformio\penv\Scripts\platformio.exe run --environment esp3 
 
 Processing esp3 (platform: espressif32@~6.1.0; framework: arduino; board: esp32-s3-devkitc-1)
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------
 Verbose mode can be enabled via `-v, --verbose` option
 CONFIGURATION: https://docs.platformio.org/page/boards/espressif32/esp32-s3-devkitc-1.html
 PLATFORM: Espressif 32 (6.1.0) > Espressif ESP32-S3-DevKitC-1-N8 (8 MB QD, No PSRAM)
@@ -14,7 +14,7 @@ PACKAGES:
  - toolchain-xtensa-esp32s3 @ 8.4.0+2021r2-patch5
 LDF: Library Dependency Finder -> https://bit.ly/configure-pio-ldf
 LDF Modes: Finder ~ deep+, Compatibility ~ soft
-Found 44 compatible libraries
+Found 43 compatible libraries
 Scanning dependencies...
 Dependency Graph
 |-- LovyanGFX @ 1.2.7
@@ -30,96 +30,95 @@ Dependency Graph
 |-- Preferences @ 2.0.0
 |-- Update @ 2.0.0
 Building in release mode
-Compiling .pio\build\esp3\lib401\LovyanGFX\lgfx\Fonts\IPA\lgfx_font_japan.c.o
-Compiling .pio\build\esp3\lib401\LovyanGFX\lgfx\Fonts\efont\lgfx_efont_cn.c.o
-Compiling .pio\build\esp3\lib401\LovyanGFX\lgfx\Fonts\efont\lgfx_efont_ja.c.o
-Compiling .pio\build\esp3\lib401\LovyanGFX\lgfx\Fonts\efont\lgfx_efont_kr.c.o
-Compiling .pio\build\esp3\lib401\LovyanGFX\lgfx\Fonts\efont\lgfx_efont_tw.c.o
-Compiling .pio\build\esp3\lib401\LovyanGFX\lgfx\utility\lgfx_miniz.c.o
-Compiling .pio\build\esp3\lib401\LovyanGFX\lgfx\utility\lgfx_pngle.c.o
-Compiling .pio\build\esp3\lib401\LovyanGFX\lgfx\utility\lgfx_qoi.c.o
-Compiling .pio\build\esp3\lib401\LovyanGFX\lgfx\utility\lgfx_qrcode.c.o
-Compiling .pio\build\esp3\lib401\LovyanGFX\lgfx\utility\lgfx_tjpgd.c.o
-Compiling .pio\build\esp3\lib401\LovyanGFX\lgfx\v1\LGFXBase.cpp.o
-Compiling .pio\build\esp3\lib401\LovyanGFX\lgfx\v1\LGFX_Button.cpp.o
-Compiling .pio\build\esp3\lib401\LovyanGFX\lgfx\v1\LGFX_Sprite.cpp.o
-Compiling .pio\build\esp3\lib401\LovyanGFX\lgfx\v1\lgfx_fonts.cpp.o
-Compiling .pio\build\esp3\lib401\LovyanGFX\lgfx\v1\misc\DividedFrameBuffer.cpp.o
-Compiling .pio\build\esp3\lib401\LovyanGFX\lgfx\v1\misc\SpriteBuffer.cpp.o
-Compiling .pio\build\esp3\lib401\LovyanGFX\lgfx\v1\misc\common_function.cpp.o
-Compiling .pio\build\esp3\lib401\LovyanGFX\lgfx\v1\misc\pixelcopy.cpp.o
-Compiling .pio\build\esp3\lib401\LovyanGFX\lgfx\v1\panel\Panel_Device.cpp.o
-Compiling .pio\build\esp3\lib401\LovyanGFX\lgfx\v1\panel\Panel_EPDiy.cpp.o
-Compiling .pio\build\esp3\lib401\LovyanGFX\lgfx\v1\panel\Panel_FlexibleFrameBuffer.cpp.o
-Compiling .pio\build\esp3\lib401\LovyanGFX\lgfx\v1\panel\Panel_FrameBufferBase.cpp.o
-Compiling .pio\build\esp3\lib401\LovyanGFX\lgfx\v1\panel\Panel_GDEW0154M09.cpp.o
-Compiling .pio\build\esp3\lib401\LovyanGFX\lgfx\v1\panel\Panel_HUB75.cpp.o
-Compiling .pio\build\esp3\lib401\LovyanGFX\lgfx\v1\panel\Panel_HasBuffer.cpp.o
-Compiling .pio\build\esp3\lib401\LovyanGFX\lgfx\v1\panel\Panel_ILI9225.cpp.o
-Compiling .pio\build\esp3\lib401\LovyanGFX\lgfx\v1\panel\Panel_IT8951.cpp.o
-Compiling .pio\build\esp3\lib401\LovyanGFX\lgfx\v1\panel\Panel_LCD.cpp.o
-Compiling .pio\build\esp3\lib401\LovyanGFX\lgfx\v1\panel\Panel_M5HDMI.cpp.o
-Compiling .pio\build\esp3\lib401\LovyanGFX\lgfx\v1\panel\Panel_M5UnitGLASS.cpp.o
-Compiling .pio\build\esp3\lib401\LovyanGFX\lgfx\v1\panel\Panel_M5UnitLCD.cpp.o
-Compiling .pio\build\esp3\lib401\LovyanGFX\lgfx\v1\panel\Panel_NT35510.cpp.o
-Compiling .pio\build\esp3\lib401\LovyanGFX\lgfx\v1\panel\Panel_RA8875.cpp.o
-Compiling .pio\build\esp3\lib401\LovyanGFX\lgfx\v1\panel\Panel_RM68120.cpp.o
-Compiling .pio\build\esp3\lib401\LovyanGFX\lgfx\v1\panel\Panel_SSD1306.cpp.o
-Compiling .pio\build\esp3\lib401\LovyanGFX\lgfx\v1\panel\Panel_SSD1327.cpp.o
-Compiling .pio\build\esp3\lib401\LovyanGFX\lgfx\v1\panel\Panel_SSD1331.cpp.o
-Compiling .pio\build\esp3\lib401\LovyanGFX\lgfx\v1\panel\Panel_SSD1351.cpp.o
-Compiling .pio\build\esp3\lib401\LovyanGFX\lgfx\v1\panel\Panel_SSD1963.cpp.o
-Compiling .pio\build\esp3\lib401\LovyanGFX\lgfx\v1\platforms\arduino_default\Bus_SPI.cpp.o
-Compiling .pio\build\esp3\lib401\LovyanGFX\lgfx\v1\platforms\arduino_default\Bus_Stream.cpp.o
-Compiling .pio\build\esp3\lib401\LovyanGFX\lgfx\v1\platforms\arduino_default\common.cpp.o
-Compiling .pio\build\esp3\lib401\LovyanGFX\lgfx\v1\platforms\esp32\Bus_HUB75.cpp.o
-Compiling .pio\build\esp3\lib401\LovyanGFX\lgfx\v1\platforms\esp32\Bus_I2C.cpp.o
-Compiling .pio\build\esp3\lib401\LovyanGFX\lgfx\v1\platforms\esp32\Bus_Parallel8.cpp.o
-Compiling .pio\build\esp3\lib401\LovyanGFX\lgfx\v1\platforms\esp32\Bus_SPI.cpp.o
-Compiling .pio\build\esp3\lib401\LovyanGFX\lgfx\v1\platforms\esp32\Light_PWM.cpp.o
-Compiling .pio\build\esp3\lib401\LovyanGFX\lgfx\v1\platforms\esp32\Panel_CVBS.cpp.o
-Compiling .pio\build\esp3\lib401\LovyanGFX\lgfx\v1\platforms\esp32\common.cpp.o
-Compiling .pio\build\esp3\lib401\LovyanGFX\lgfx\v1\platforms\esp32c3\Bus_Parallel8.cpp.o
-Compiling .pio\build\esp3\lib401\LovyanGFX\lgfx\v1\platforms\esp32s2\Bus_Parallel16.cpp.o
-Compiling .pio\build\esp3\lib401\LovyanGFX\lgfx\v1\platforms\esp32s2\Bus_Parallel8.cpp.o
-Compiling .pio\build\esp3\lib401\LovyanGFX\lgfx\v1\platforms\esp32s3\Bus_Parallel16.cpp.o
-Compiling .pio\build\esp3\lib401\LovyanGFX\lgfx\v1\platforms\esp32s3\Bus_Parallel8.cpp.o
-Compiling .pio\build\esp3\lib401\LovyanGFX\lgfx\v1\platforms\esp32s3\Bus_RGB.cpp.o
-Compiling .pio\build\esp3\lib401\LovyanGFX\lgfx\v1\platforms\esp32s3\Panel_RGB.cpp.o
-Compiling .pio\build\esp3\lib401\LovyanGFX\lgfx\v1\platforms\esp8266\Bus_I2C.cpp.o
-Compiling .pio\build\esp3\lib401\LovyanGFX\lgfx\v1\platforms\esp8266\Bus_SPI.cpp.o
-Compiling .pio\build\esp3\lib401\LovyanGFX\lgfx\v1\platforms\esp8266\common.cpp.o
-Compiling .pio\build\esp3\lib401\LovyanGFX\lgfx\v1\platforms\framebuffer\Panel_fb.cpp.o
-Compiling .pio\build\esp3\lib401\LovyanGFX\lgfx\v1\platforms\framebuffer\common.cpp.o
-Compiling .pio\build\esp3\lib401\LovyanGFX\lgfx\v1\platforms\opencv\Panel_OpenCV.cpp.o
-Compiling .pio\build\esp3\lib401\LovyanGFX\lgfx\v1\platforms\opencv\common.cpp.o
-Compiling .pio\build\esp3\lib401\LovyanGFX\lgfx\v1\platforms\rp2040\Bus_I2C.cpp.o
-Compiling .pio\build\esp3\lib401\LovyanGFX\lgfx\v1\platforms\rp2040\Bus_SPI.cpp.o
-Compiling .pio\build\esp3\lib401\LovyanGFX\lgfx\v1\platforms\rp2040\Light_PWM.cpp.o
-Compiling .pio\build\esp3\lib401\LovyanGFX\lgfx\v1\platforms\rp2040\common.cpp.o
-Compiling .pio\build\esp3\lib401\LovyanGFX\lgfx\v1\platforms\samd21\Bus_I2C.cpp.o
-Compiling .pio\build\esp3\lib401\LovyanGFX\lgfx\v1\platforms\samd21\Bus_SPI.cpp.o
-Compiling .pio\build\esp3\lib401\LovyanGFX\lgfx\v1\platforms\samd21\common.cpp.o
-Compiling .pio\build\esp3\lib401\LovyanGFX\lgfx\v1\platforms\samd51\Bus_I2C.cpp.o
-Compiling .pio\build\esp3\lib401\LovyanGFX\lgfx\v1\platforms\samd51\Bus_SPI.cpp.o
-Compiling .pio\build\esp3\lib401\LovyanGFX\lgfx\v1\platforms\samd51\common.cpp.o
-Compiling .pio\build\esp3\lib401\LovyanGFX\lgfx\v1\platforms\sdl\Panel_sdl.cpp.o
-Compiling .pio\build\esp3\lib401\LovyanGFX\lgfx\v1\platforms\sdl\common.cpp.o
-Compiling .pio\build\esp3\lib401\LovyanGFX\lgfx\v1\platforms\spresense\Bus_SPI.cpp.o
-Compiling .pio\build\esp3\lib401\LovyanGFX\lgfx\v1\platforms\spresense\common.cpp.o
-Compiling .pio\build\esp3\lib401\LovyanGFX\lgfx\v1\platforms\stm32\Bus_SPI.cpp.o
-Compiling .pio\build\esp3\lib401\LovyanGFX\lgfx\v1\platforms\stm32\common.cpp.o
-Compiling .pio\build\esp3\lib401\LovyanGFX\lgfx\v1\touch\Touch_CST816S.cpp.o
-Compiling .pio\build\esp3\lib401\LovyanGFX\lgfx\v1\touch\Touch_FT5x06.cpp.o
-Compiling .pio\build\esp3\lib401\LovyanGFX\lgfx\v1\touch\Touch_GSLx680.cpp.o
-Compiling .pio\build\esp3\lib401\LovyanGFX\lgfx\v1\touch\Touch_GT911.cpp.o
-Compiling .pio\build\esp3\lib401\LovyanGFX\lgfx\v1\touch\Touch_NS2009.cpp.o
-Compiling .pio\build\esp3\lib401\LovyanGFX\lgfx\v1\touch\Touch_RA8875.cpp.o
-Compiling .pio\build\esp3\lib401\LovyanGFX\lgfx\v1\touch\Touch_STMPE610.cpp.o
-Compiling .pio\build\esp3\lib401\LovyanGFX\lgfx\v1\touch\Touch_TT21xxx.cpp.o
-Compiling .pio\build\esp3\lib401\LovyanGFX\lgfx\v1\touch\Touch_XPT2046.cpp.o
+Compiling .pio\build\esp3\lib322\LovyanGFX\lgfx\Fonts\IPA\lgfx_font_japan.c.o
+Compiling .pio\build\esp3\lib322\LovyanGFX\lgfx\Fonts\efont\lgfx_efont_cn.c.o
+Compiling .pio\build\esp3\lib322\LovyanGFX\lgfx\Fonts\efont\lgfx_efont_ja.c.o
+Compiling .pio\build\esp3\lib322\LovyanGFX\lgfx\Fonts\efont\lgfx_efont_kr.c.o
+Compiling .pio\build\esp3\lib322\LovyanGFX\lgfx\Fonts\efont\lgfx_efont_tw.c.o
+Compiling .pio\build\esp3\lib322\LovyanGFX\lgfx\utility\lgfx_miniz.c.o
+Compiling .pio\build\esp3\lib322\LovyanGFX\lgfx\utility\lgfx_pngle.c.o
+Compiling .pio\build\esp3\lib322\LovyanGFX\lgfx\utility\lgfx_qoi.c.o
+Compiling .pio\build\esp3\lib322\LovyanGFX\lgfx\utility\lgfx_qrcode.c.o
+Compiling .pio\build\esp3\lib322\LovyanGFX\lgfx\utility\lgfx_tjpgd.c.o
+Compiling .pio\build\esp3\lib322\LovyanGFX\lgfx\v1\LGFXBase.cpp.o
+Compiling .pio\build\esp3\lib322\LovyanGFX\lgfx\v1\LGFX_Button.cpp.o
+Compiling .pio\build\esp3\lib322\LovyanGFX\lgfx\v1\LGFX_Sprite.cpp.o
+Compiling .pio\build\esp3\lib322\LovyanGFX\lgfx\v1\lgfx_fonts.cpp.o
+Compiling .pio\build\esp3\lib322\LovyanGFX\lgfx\v1\misc\DividedFrameBuffer.cpp.o
+Compiling .pio\build\esp3\lib322\LovyanGFX\lgfx\v1\misc\SpriteBuffer.cpp.o
+Compiling .pio\build\esp3\lib322\LovyanGFX\lgfx\v1\misc\common_function.cpp.o
+Compiling .pio\build\esp3\lib322\LovyanGFX\lgfx\v1\misc\pixelcopy.cpp.o
+Compiling .pio\build\esp3\lib322\LovyanGFX\lgfx\v1\panel\Panel_Device.cpp.o
+Compiling .pio\build\esp3\lib322\LovyanGFX\lgfx\v1\panel\Panel_EPDiy.cpp.o
+Compiling .pio\build\esp3\lib322\LovyanGFX\lgfx\v1\panel\Panel_FlexibleFrameBuffer.cpp.o
+Compiling .pio\build\esp3\lib322\LovyanGFX\lgfx\v1\panel\Panel_FrameBufferBase.cpp.o
+Compiling .pio\build\esp3\lib322\LovyanGFX\lgfx\v1\panel\Panel_GDEW0154M09.cpp.o
+Compiling .pio\build\esp3\lib322\LovyanGFX\lgfx\v1\panel\Panel_HUB75.cpp.o
+Compiling .pio\build\esp3\lib322\LovyanGFX\lgfx\v1\panel\Panel_HasBuffer.cpp.o
+Compiling .pio\build\esp3\lib322\LovyanGFX\lgfx\v1\panel\Panel_ILI9225.cpp.o
+Compiling .pio\build\esp3\lib322\LovyanGFX\lgfx\v1\panel\Panel_IT8951.cpp.o
+Compiling .pio\build\esp3\lib322\LovyanGFX\lgfx\v1\panel\Panel_LCD.cpp.o
+Compiling .pio\build\esp3\lib322\LovyanGFX\lgfx\v1\panel\Panel_M5HDMI.cpp.o
+Compiling .pio\build\esp3\lib322\LovyanGFX\lgfx\v1\panel\Panel_M5UnitGLASS.cpp.o
+Compiling .pio\build\esp3\lib322\LovyanGFX\lgfx\v1\panel\Panel_M5UnitLCD.cpp.o
+Compiling .pio\build\esp3\lib322\LovyanGFX\lgfx\v1\panel\Panel_NT35510.cpp.o
+Compiling .pio\build\esp3\lib322\LovyanGFX\lgfx\v1\panel\Panel_RA8875.cpp.o
+Compiling .pio\build\esp3\lib322\LovyanGFX\lgfx\v1\panel\Panel_RM68120.cpp.o
+Compiling .pio\build\esp3\lib322\LovyanGFX\lgfx\v1\panel\Panel_SSD1306.cpp.o
+Compiling .pio\build\esp3\lib322\LovyanGFX\lgfx\v1\panel\Panel_SSD1327.cpp.o
+Compiling .pio\build\esp3\lib322\LovyanGFX\lgfx\v1\panel\Panel_SSD1331.cpp.o
+Compiling .pio\build\esp3\lib322\LovyanGFX\lgfx\v1\panel\Panel_SSD1351.cpp.o
+Compiling .pio\build\esp3\lib322\LovyanGFX\lgfx\v1\panel\Panel_SSD1963.cpp.o
+Compiling .pio\build\esp3\lib322\LovyanGFX\lgfx\v1\platforms\arduino_default\Bus_SPI.cpp.o
+Compiling .pio\build\esp3\lib322\LovyanGFX\lgfx\v1\platforms\arduino_default\Bus_Stream.cpp.o
+Compiling .pio\build\esp3\lib322\LovyanGFX\lgfx\v1\platforms\arduino_default\common.cpp.o
+Compiling .pio\build\esp3\lib322\LovyanGFX\lgfx\v1\platforms\esp32\Bus_HUB75.cpp.o
+Compiling .pio\build\esp3\lib322\LovyanGFX\lgfx\v1\platforms\esp32\Bus_I2C.cpp.o
+Compiling .pio\build\esp3\lib322\LovyanGFX\lgfx\v1\platforms\esp32\Bus_Parallel8.cpp.o
+Compiling .pio\build\esp3\lib322\LovyanGFX\lgfx\v1\platforms\esp32\Bus_SPI.cpp.o
+Compiling .pio\build\esp3\lib322\LovyanGFX\lgfx\v1\platforms\esp32\Light_PWM.cpp.o
+Compiling .pio\build\esp3\lib322\LovyanGFX\lgfx\v1\platforms\esp32\Panel_CVBS.cpp.o
+Compiling .pio\build\esp3\lib322\LovyanGFX\lgfx\v1\platforms\esp32\common.cpp.o
+Compiling .pio\build\esp3\lib322\LovyanGFX\lgfx\v1\platforms\esp32c3\Bus_Parallel8.cpp.o
+Compiling .pio\build\esp3\lib322\LovyanGFX\lgfx\v1\platforms\esp32s2\Bus_Parallel16.cpp.o
+Compiling .pio\build\esp3\lib322\LovyanGFX\lgfx\v1\platforms\esp32s2\Bus_Parallel8.cpp.o
+Compiling .pio\build\esp3\lib322\LovyanGFX\lgfx\v1\platforms\esp32s3\Bus_Parallel16.cpp.o
+Compiling .pio\build\esp3\lib322\LovyanGFX\lgfx\v1\platforms\esp32s3\Bus_Parallel8.cpp.o
+Compiling .pio\build\esp3\lib322\LovyanGFX\lgfx\v1\platforms\esp32s3\Bus_RGB.cpp.o
+Compiling .pio\build\esp3\lib322\LovyanGFX\lgfx\v1\platforms\esp32s3\Panel_RGB.cpp.o
+Compiling .pio\build\esp3\lib322\LovyanGFX\lgfx\v1\platforms\esp8266\Bus_I2C.cpp.o
+Compiling .pio\build\esp3\lib322\LovyanGFX\lgfx\v1\platforms\esp8266\Bus_SPI.cpp.o
+Compiling .pio\build\esp3\lib322\LovyanGFX\lgfx\v1\platforms\esp8266\common.cpp.o
+Compiling .pio\build\esp3\lib322\LovyanGFX\lgfx\v1\platforms\framebuffer\Panel_fb.cpp.o
+Compiling .pio\build\esp3\lib322\LovyanGFX\lgfx\v1\platforms\framebuffer\common.cpp.o
+Compiling .pio\build\esp3\lib322\LovyanGFX\lgfx\v1\platforms\opencv\Panel_OpenCV.cpp.o
+Compiling .pio\build\esp3\lib322\LovyanGFX\lgfx\v1\platforms\opencv\common.cpp.o
+Compiling .pio\build\esp3\lib322\LovyanGFX\lgfx\v1\platforms\rp2040\Bus_I2C.cpp.o
+Compiling .pio\build\esp3\lib322\LovyanGFX\lgfx\v1\platforms\rp2040\Bus_SPI.cpp.o
+Compiling .pio\build\esp3\lib322\LovyanGFX\lgfx\v1\platforms\rp2040\Light_PWM.cpp.o
+Compiling .pio\build\esp3\lib322\LovyanGFX\lgfx\v1\platforms\rp2040\common.cpp.o
+Compiling .pio\build\esp3\lib322\LovyanGFX\lgfx\v1\platforms\samd21\Bus_I2C.cpp.o
+Compiling .pio\build\esp3\lib322\LovyanGFX\lgfx\v1\platforms\samd21\Bus_SPI.cpp.o
+Compiling .pio\build\esp3\lib322\LovyanGFX\lgfx\v1\platforms\samd21\common.cpp.o
+Compiling .pio\build\esp3\lib322\LovyanGFX\lgfx\v1\platforms\samd51\Bus_I2C.cpp.o
+Compiling .pio\build\esp3\lib322\LovyanGFX\lgfx\v1\platforms\samd51\Bus_SPI.cpp.o
+Compiling .pio\build\esp3\lib322\LovyanGFX\lgfx\v1\platforms\samd51\common.cpp.o
+Compiling .pio\build\esp3\lib322\LovyanGFX\lgfx\v1\platforms\sdl\Panel_sdl.cpp.o
+Compiling .pio\build\esp3\lib322\LovyanGFX\lgfx\v1\platforms\sdl\common.cpp.o
+Compiling .pio\build\esp3\lib322\LovyanGFX\lgfx\v1\platforms\spresense\Bus_SPI.cpp.o
+Compiling .pio\build\esp3\lib322\LovyanGFX\lgfx\v1\platforms\spresense\common.cpp.o
+Compiling .pio\build\esp3\lib322\LovyanGFX\lgfx\v1\platforms\stm32\Bus_SPI.cpp.o
+Compiling .pio\build\esp3\lib322\LovyanGFX\lgfx\v1\platforms\stm32\common.cpp.o
+Compiling .pio\build\esp3\lib322\LovyanGFX\lgfx\v1\touch\Touch_CST816S.cpp.o
+Compiling .pio\build\esp3\lib322\LovyanGFX\lgfx\v1\touch\Touch_FT5x06.cpp.o
+Compiling .pio\build\esp3\lib322\LovyanGFX\lgfx\v1\touch\Touch_GSLx680.cpp.o
+Compiling .pio\build\esp3\lib322\LovyanGFX\lgfx\v1\touch\Touch_GT911.cpp.o
+Compiling .pio\build\esp3\lib322\LovyanGFX\lgfx\v1\touch\Touch_NS2009.cpp.o
+Compiling .pio\build\esp3\lib322\LovyanGFX\lgfx\v1\touch\Touch_RA8875.cpp.o
+Compiling .pio\build\esp3\lib322\LovyanGFX\lgfx\v1\touch\Touch_STMPE610.cpp.o
+Compiling .pio\build\esp3\lib322\LovyanGFX\lgfx\v1\touch\Touch_TT21xxx.cpp.o
+Compiling .pio\build\esp3\lib322\LovyanGFX\lgfx\v1\touch\Touch_XPT2046.cpp.o
 Compiling .pio\build\esp3\src\esp3\communication_esp3.cpp.o
-Compiling .pio\build\esp3\src\esp3\config_esp3.cpp.o
 Compiling .pio\build\esp3\src\esp3\hmi_handler_esp3.cpp.o
 Compiling .pio\build\esp3\src\esp3\lvgl_driver.cpp.o
 Compiling .pio\build\esp3\src\esp3\main_esp3.cpp.o
@@ -141,172 +140,180 @@ esptool.py v4.5
 Creating esp32s3 image...
 Merged 1 ELF section
 Successfully created esp32s3 image.
-Compiling .pio\build\esp3\libfcc\lvgl\core\lv_group.c.o
-Compiling .pio\build\esp3\libfcc\lvgl\core\lv_obj.c.o
-Compiling .pio\build\esp3\libfcc\lvgl\core\lv_obj_class.c.o
-Compiling .pio\build\esp3\libfcc\lvgl\core\lv_obj_draw.c.o
-Compiling .pio\build\esp3\libfcc\lvgl\core\lv_obj_event.c.o
-Compiling .pio\build\esp3\libfcc\lvgl\core\lv_obj_id_builtin.c.o
-Compiling .pio\build\esp3\libfcc\lvgl\core\lv_obj_pos.c.o
-src/esp3/persistence_esp3.cpp:13:13: warning: ARDUINOJSON_NAMESPACE is deprecated, use ArduinoJson instead
+Compiling .pio\build\esp3\libfd0\lvgl\core\lv_group.c.o
+Compiling .pio\build\esp3\libfd0\lvgl\core\lv_obj.c.o
+Compiling .pio\build\esp3\libfd0\lvgl\core\lv_obj_class.c.o
+Compiling .pio\build\esp3\libfd0\lvgl\core\lv_obj_draw.c.o
+Compiling .pio\build\esp3\libfd0\lvgl\core\lv_obj_event.c.o
+Compiling .pio\build\esp3\libfd0\lvgl\core\lv_obj_id_builtin.c.o
+src/esp3/persistence_esp3.cpp:47:13: warning: ARDUINOJSON_NAMESPACE is deprecated, use ArduinoJson instead
  namespace ARDUINOJSON_NAMESPACE
-             ^~~~~~~~~~~~~~~~~~~
-Compiling .pio\build\esp3\libfcc\lvgl\core\lv_obj_property.c.o
-Compiling .pio\build\esp3\libfcc\lvgl\core\lv_obj_scroll.c.o
-Compiling .pio\build\esp3\libfcc\lvgl\core\lv_obj_style.c.o
-Compiling .pio\build\esp3\libfcc\lvgl\core\lv_obj_style_gen.c.o
-src/esp3/persistence_esp3.cpp: In function 'void serialize_config_to_json(ArduinoJson::V704PB2::JsonDocument&, const PendantWebConfig&)':
-src/esp3/persistence_esp3.cpp:180:63: warning: 'ArduinoJson::V704PB2::JsonArray ArduinoJson::V704PB2::JsonDocument::createNestedArray(TChar*) [with TChar = const char]' is deprecated: use doc[key].to<JsonArray>() instead [-Wdeprecated-declarations]
-     JsonArray axisLabels = doc.createNestedArray("axis_labels");
-                                                               ^
-In file included from .pio/libdeps/esp3/ArduinoJson/src/ArduinoJson.hpp:33,
-                 from .pio/libdeps/esp3/ArduinoJson/src/ArduinoJson.h:9,
-                 from src/esp3/persistence_esp3.cpp:9:
-.pio/libdeps/esp3/ArduinoJson/src/ArduinoJson/Document/JsonDocument.hpp:305:13: note: declared here
-   JsonArray createNestedArray(TChar* key) {
-             ^~~~~~~~~~~~~~~~~
-src/esp3/persistence_esp3.cpp:186:63: warning: 'ArduinoJson::V704PB2::JsonArray ArduinoJson::V704PB2::JsonDocument::createNestedArray(TChar*) [with TChar = const char]' is deprecated: use doc[key].to<JsonArray>() instead [-Wdeprecated-declarations]
-     JsonArray btnArr = doc.createNestedArray("button_bindings");
-                                                               ^
-In file included from .pio/libdeps/esp3/ArduinoJson/src/ArduinoJson.hpp:33,
-                 from .pio/libdeps/esp3/ArduinoJson/src/ArduinoJson.h:9,
-                 from src/esp3/persistence_esp3.cpp:9:
-.pio/libdeps/esp3/ArduinoJson/src/ArduinoJson/Document/JsonDocument.hpp:305:13: note: declared here
-   JsonArray createNestedArray(TChar* key) {
-             ^~~~~~~~~~~~~~~~~
-src/esp3/persistence_esp3.cpp:189:52: warning: 'ArduinoJson::V704PB2::JsonObject ArduinoJson::V704PB2::JsonArray::createNestedObject() const' is deprecated: use add<JsonObject>() instead [-Wdeprecated-declarations]
-         JsonObject obj = btnArr.createNestedObject();
-                                                    ^
+             ^~~~~~~~~~~~~~~~~~~                         Compiling .pio\build\esp3\libfd0\lvgl\core\lv_obj_pos.c.o
+
+Compiling .pio\build\esp3\libfd0\lvgl\core\lv_obj_property.c.o
+Compiling .pio\build\esp3\libfd0\lvgl\core\lv_obj_scroll.c.o
+Compiling .pio\build\esp3\libfd0\lvgl\core\lv_obj_style.c.o
+src/esp3/persistence_esp3.cpp: In function 'void load_pendant_configuration()':
+src/esp3/persistence_esp3.cpp:95:36: warning: 'DynamicJsonDocument' is deprecated: use JsonDocument instead [-Wdeprecated-declarations]
+             DynamicJsonDocument doc(2048);
+                                    ^
 In file included from .pio/libdeps/esp3/ArduinoJson/src/ArduinoJson.hpp:53,
                  from .pio/libdeps/esp3/ArduinoJson/src/ArduinoJson.h:9,
-                 from src/esp3/persistence_esp3.cpp:9:
-.pio/libdeps/esp3/ArduinoJson/src/ArduinoJson/compatibility.hpp:140:19: note: declared here
- inline JsonObject JsonArray::createNestedObject() const {
-                   ^~~~~~~~~
-src/esp3/persistence_esp3.cpp:196:60: warning: 'ArduinoJson::V704PB2::JsonArray ArduinoJson::V704PB2::JsonDocument::createNestedArray(TChar*) [with TChar = const char]' is deprecated: use doc[key].to<JsonArray>() instead [-Wdeprecated-declarations]
-     JsonArray ledArr = doc.createNestedArray("led_bindings");
-                                                            ^
-In file included from .pio/libdeps/esp3/ArduinoJson/src/ArduinoJson.hpp:33,
-                 from .pio/libdeps/esp3/ArduinoJson/src/ArduinoJson.h:9,
-                 from src/esp3/persistence_esp3.cpp:9:
-.pio/libdeps/esp3/ArduinoJson/src/ArduinoJson/Document/JsonDocument.hpp:305:13: note: declared here
-   JsonArray createNestedArray(TChar* key) {
-             ^~~~~~~~~~~~~~~~~
-src/esp3/persistence_esp3.cpp:199:52: warning: 'ArduinoJson::V704PB2::JsonObject ArduinoJson::V704PB2::JsonArray::createNestedObject() const' is deprecated: use add<JsonObject>() instead [-Wdeprecated-declarations]
-         JsonObject obj = ledArr.createNestedObject();
-                                                    ^
+                 from src/esp3/persistence_esp3.cpp:10:
+.pio/libdeps/esp3/ArduinoJson/src/ArduinoJson/compatibility.hpp:125:58: note: declared here       
+ class ARDUINOJSON_DEPRECATED("use JsonDocument instead") DynamicJsonDocument
+                                                          ^~~~~~~~~~~~~~~~~~~
+src/esp3/persistence_esp3.cpp: In function 'String get_pendant_config_as_json()':
+src/esp3/persistence_esp3.cpp:144:28: warning: 'DynamicJsonDocument' is deprecated: use JsonDocument instead [-Wdeprecated-declarations]
+     DynamicJsonDocument doc(2048);
+                            ^
 In file included from .pio/libdeps/esp3/ArduinoJson/src/ArduinoJson.hpp:53,
                  from .pio/libdeps/esp3/ArduinoJson/src/ArduinoJson.h:9,
-                 from src/esp3/persistence_esp3.cpp:9:
-.pio/libdeps/esp3/ArduinoJson/src/ArduinoJson/compatibility.hpp:140:19: note: declared here
- inline JsonObject JsonArray::createNestedObject() const {
-                   ^~~~~~~~~
-src/esp3/persistence_esp3.cpp:208:56: warning: 'ArduinoJson::V704PB2::JsonArray ArduinoJson::V704PB2::JsonDocument::createNestedArray(TChar*) [with TChar = const char]' is deprecated: use doc[key].to<JsonArray>() instead [-Wdeprecated-declarations]
-     JsonArray macroArr = doc.createNestedArray("macros");
-                                                        ^
-In file included from .pio/libdeps/esp3/ArduinoJson/src/ArduinoJson.hpp:33,
-                 from .pio/libdeps/esp3/ArduinoJson/src/ArduinoJson.h:9,
-                 from src/esp3/persistence_esp3.cpp:9:
-.pio/libdeps/esp3/ArduinoJson/src/ArduinoJson/Document/JsonDocument.hpp:305:13: note: declared here
-   JsonArray createNestedArray(TChar* key) {
-             ^~~~~~~~~~~~~~~~~
-src/esp3/persistence_esp3.cpp:211:54: warning: 'ArduinoJson::V704PB2::JsonObject ArduinoJson::V704PB2::JsonArray::createNestedObject() const' is deprecated: use add<JsonObject>() instead [-Wdeprecated-declarations]
-         JsonObject obj = macroArr.createNestedObject();
-                                                      ^
-In file included from .pio/libdeps/esp3/ArduinoJson/src/ArduinoJson.hpp:53,
-                 from .pio/libdeps/esp3/ArduinoJson/src/ArduinoJson.h:9,
-                 from src/esp3/persistence_esp3.cpp:9:
-.pio/libdeps/esp3/ArduinoJson/src/ArduinoJson/compatibility.hpp:140:19: note: declared here
- inline JsonObject JsonArray::createNestedObject() const {
-                   ^~~~~~~~~
-src/esp3/persistence_esp3.cpp:214:62: warning: 'ArduinoJson::V704PB2::JsonArray ArduinoJson::V704PB2::JsonObject::createNestedArray(TChar*) const [with TChar = const char]' is deprecated: use obj[key].to<JsonArray>() instead [-Wdeprecated-declarations]
-         JsonArray commands = obj.createNestedArray("commands");
-                                                              ^
-In file included from .pio/libdeps/esp3/ArduinoJson/src/ArduinoJson.hpp:30,
-                 from .pio/libdeps/esp3/ArduinoJson/src/ArduinoJson.h:9,
-                 from src/esp3/persistence_esp3.cpp:9:
-.pio/libdeps/esp3/ArduinoJson/src/ArduinoJson/Object/JsonObject.hpp:167:13: note: declared here
-   JsonArray createNestedArray(TChar* key) const {
-             ^~~~~~~~~~~~~~~~~
-Compiling .pio\build\esp3\libfcc\lvgl\core\lv_obj_tree.c.o
-Compiling .pio\build\esp3\libfcc\lvgl\core\lv_refr.c.o
-Compiling .pio\build\esp3\libfcc\lvgl\display\lv_display.c.o
-Compiling .pio\build\esp3\libfcc\lvgl\draw\lv_draw.c.o
-Compiling .pio\build\esp3\libfcc\lvgl\draw\lv_draw_arc.c.o
-Compiling .pio\build\esp3\libfcc\lvgl\draw\lv_draw_buf.c.o
-Compiling .pio\build\esp3\libfcc\lvgl\draw\lv_draw_image.c.o
-In file included from src/esp3/web_interface.cpp:8:
+                 from src/esp3/persistence_esp3.cpp:10:
+.pio/libdeps/esp3/ArduinoJson/src/ArduinoJson/compatibility.hpp:125:58: note: declared here       
+ class ARDUINOJSON_DEPRECATED("use JsonDocument instead") DynamicJsonDocument
+                                                          ^~~~~~~~~~~~~~~~~~~
+src/esp3/persistence_esp3.cpp: In function 'void deserialize_config_from_json(PendantWebConfig&, const ArduinoJson::V704PB2::JsonDocument&)':
+src/esp3/persistence_esp3.cpp:206:62: warning: narrowing conversion of 'ArduinoJson::V704PB2::detail::operator|<int>(o.ArduinoJson::V704PB2::JsonObjectConst::operator[]<const char>(((const char*)"button_index")), 0)' from 'ArduinoJson::V704PB2::detail::enable_if<true, int>::type' {aka 'int'} to 'uint8_t' {aka 'unsigned char'} inside { } [-Wnarrowing]
+             cfg.button_bindings.push_back({o["button_index"] | 0,
+                                            ~~~~~~~~~~~~~~~~~~^~~
+src/esp3/persistence_esp3.cpp:209:66: warning: narrowing conversion of 'ArduinoJson::V704PB2::detail::operator|<int>(o.ArduinoJson::V704PB2::JsonObjectConst::operator[]<const char>(((const char*)"lcnc_action_code")), 0)' from 'ArduinoJson::V704PB2::detail::enable_if<true, int>::type' {aka 'int'} to 'uint16_t' {aka 'short unsigned int'} inside { } [-Wnarrowing]
+                                            o["lcnc_action_code"] | 0});
+                                            ~~~~~~~~~~~~~~~~~~~~~~^~~
+src/esp3/persistence_esp3.cpp:220:56: warning: narrowing conversion of 'ArduinoJson::V704PB2::detail::operator|<int>(o.ArduinoJson::V704PB2::JsonObjectConst::operator[]<const char>(((const char*)"led_index")), 0)' from 'ArduinoJson::V704PB2::detail::enable_if<true, int>::type' {aka 'int'} to 'uint8_t' {aka 'unsigned char'} inside { } [-Wnarrowing]
+             cfg.led_bindings.push_back({o["led_index"] | 0,
+                                         ~~~~~~~~~~~~~~~^~~
+src/esp3/persistence_esp3.cpp:223:59: warning: narrowing conversion of 'ArduinoJson::V704PB2::detail::operator|<int>(o.ArduinoJson::V704PB2::JsonObjectConst::operator[]<const char>(((const char*)"matrix_index")), 0)' from 'ArduinoJson::V704PB2::detail::enable_if<true, int>::type' {aka 'int'} to 'uint8_t' {aka 'unsigned char'} inside { } [-Wnarrowing]
+                                         o["matrix_index"] | 0,
+                                         ~~~~~~~~~~~~~~~~~~^~~
+src/esp3/persistence_esp3.cpp:224:56: warning: narrowing conversion of 'ArduinoJson::V704PB2::detail::operator|<int>(o.ArduinoJson::V704PB2::JsonObjectConst::operator[]<const char>(((const char*)"bit_index")), 0)' from 'ArduinoJson::V704PB2::detail::enable_if<true, int>::type' {aka 'int'} to 'uint8_t' {aka 'unsigned char'} inside { } [-Wnarrowing]
+                                         o["bit_index"] | 0,
+                                         ~~~~~~~~~~~~~~~^~~
+src/esp3/persistence_esp3.cpp:225:59: warning: narrowing conversion of 'ArduinoJson::V704PB2::detail::operator|<int>(o.ArduinoJson::V704PB2::JsonObjectConst::operator[]<const char>(((const char*)"button_index")), 0)' from 'ArduinoJson::V704PB2::detail::enable_if<true, int>::type' {aka 'int'} to 'uint8_t' {aka 'unsigned char'} inside { } [-Wnarrowing]
+                                         o["button_index"] | 0});
+                                         ~~~~~~~~~~~~~~~~~~^~~
+src/esp3/persistence_esp3.cpp:245:21: error: a function-definition is not allowed here before '{' token
+                     {
+                     ^
+src/esp3/persistence_esp3.cpp:318:5: error: a function-definition is not allowed here before '{' token
+     {
+     ^
+src/esp3/persistence_esp3.cpp:362:5: error: expected '}' at end of input
+     }
+     ^
+src/esp3/persistence_esp3.cpp:187:1: note: to match this '{'
+ {
+ ^
+Compiling .pio\build\esp3\libfd0\lvgl\core\lv_obj_style_gen.c.o
+Compiling .pio\build\esp3\libfd0\lvgl\core\lv_obj_tree.c.o
+Compiling .pio\build\esp3\libfd0\lvgl\core\lv_refr.c.o
+Compiling .pio\build\esp3\libfd0\lvgl\display\lv_display.c.o
+Compiling .pio\build\esp3\libfd0\lvgl\draw\lv_draw.c.o
+Compiling .pio\build\esp3\libfd0\lvgl\draw\lv_draw_arc.c.o
+src/esp3/persistence_esp3.cpp: At global scope:
+src/esp3/persistence_esp3.cpp:75:13: warning: 'void serialize_config_to_json(ArduinoJson::V704PB2::JsonDocument&, const PendantWebConfig&)' used but never defined
+ static void serialize_config_to_json(JsonDocument &doc, const PendantWebConfig &cfg);
+             ^~~~~~~~~~~~~~~~~~~~~~~~
+*** [.pio\build\esp3\src\esp3\persistence_esp3.cpp.o] Error 1
+In file included from src/esp3/web_interface.cpp:10:
 .pio/libdeps/esp3/AsyncElegantOTA/src/AsyncElegantOTA.h:4:2: warning: #warning AsyncElegantOTA.loop(); is deprecated, please remove it from loop() if defined. This function will be removed in a future release. [-Wcpp]
  #warning AsyncElegantOTA.loop(); is deprecated, please remove it from loop() if defined. This function will be removed in a future release.
   ^~~~~~~
-Compiling .pio\build\esp3\libfcc\lvgl\draw\lv_draw_label.c.o
-In file included from .pio/libdeps/esp3/lvgl/src/draw/../core/../others/sysmon/../../others/observer/../../core/../indev/lv_indev.h:16,
-                 from .pio/libdeps/esp3/lvgl/src/draw/../core/../others/sysmon/../../others/observer/../../core/lv_obj_event.h:19,
-                 from .pio/libdeps/esp3/lvgl/src/draw/../core/../others/sysmon/../../others/observer/../../core/lv_obj.h:32,
-                 from .pio/libdeps/esp3/lvgl/src/draw/../core/../others/sysmon/../../others/observer/lv_observer.h:17,
-                 from .pio/libdeps/esp3/lvgl/src/draw/../core/../others/sysmon/lv_sysmon.h:18,
-                 from .pio/libdeps/esp3/lvgl/src/draw/../core/lv_global.h:32,
-                 from .pio/libdeps/esp3/lvgl/src/draw/lv_draw_buf.c:12:
-.pio/libdeps/esp3/lvgl/src/draw/../core/../others/sysmon/../../others/observer/../../core/../indev/../core/lv_group.h:17:10: fatal error: ../lv_conf_internal.h: No such file or directory
- #include "../lv_conf_internal.h"
-          ^~~~~~~~~~~~~~~~~~~~~~~
-compilation terminated.
-*** [.pio\build\esp3\libfcc\lvgl\draw\lv_draw_buf.c.o] Error 1
-In file included from src/esp3/web_interface.cpp:8:
+In file included from src/esp3/web_interface.cpp:10:
 .pio/libdeps/esp3/AsyncElegantOTA/src/AsyncElegantOTA.h: In lambda function:
-.pio/libdeps/esp3/AsyncElegantOTA/src/AsyncElegantOTA.h:69:126: warning: 'AsyncWebServerResponse* AsyncWebServerRequest::beginResponse_P(int, const String&, const uint8_t*, size_t, AwsTemplateProcessor)' is deprecated: Replaced by beginResponse(int code, const String& contentType, const uint8_t* content, size_t len, AwsTemplateProcessor callback = nullptr) [-Wdeprecated-declarations]
+.pio/libdeps/esp3/AsyncElegantOTA/src/AsyncElegantOTA.h:69:126: warning: 'AsyncWebServerResponse* AsyncWebServerRequest::beginResponse_P(int, const String&, const uint8_t*, size_t, AwsTemplateProcessor)' is deprecated: Replaced by beginResponse(int code, const String& contentType, const uint8_t* content, size_t len, AwsTemplateProcessor callback = nullptr) [-Wdeprecated-declarations]      
                  AsyncWebServerResponse *response = request->beginResponse_P(200, "text/html", ELEGANT_HTML, ELEGANT_HTML_SIZE);
-                                                                                                                              ^
-In file included from src/esp3/web_interface.cpp:7:
+                                                                                                  
+                            ^
+In file included from src/esp3/web_interface.cpp:9:
 .pio/libdeps/esp3/ESPAsyncWebServer/src/ESPAsyncWebServer.h:387:29: note: declared here
      AsyncWebServerResponse* beginResponse_P(int code, const String& contentType, const uint8_t* content, size_t len, AwsTemplateProcessor callback = nullptr) {
                              ^~~~~~~~~~~~~~~
-src/esp3/web_interface.cpp: In function 'void web_interface_broadcast_live_pendant_status(uint32_t, int32_t, uint8_t, uint8_t)':
-src/esp3/web_interface.cpp:57:5: warning: 'template<unsigned int N> class ArduinoJson::V704PB2::StaticJsonDocument' is deprecated: use JsonDocument instead [-Wdeprecated-declarations]
-     StaticJsonDocument<512> doc;
+src/esp3/web_interface.cpp: In lambda function:
+src/esp3/web_interface.cpp:53:9: warning: 'template<unsigned int N> class ArduinoJson::V704PB2::StaticJsonDocument' is deprecated: use JsonDocument instead [-Wdeprecated-declarations]
+         StaticJsonDocument<128> doc;
+         ^~~~~~~~~~~~~~~~~~
+In file included from .pio/libdeps/esp3/ArduinoJson/src/ArduinoJson.hpp:53,
+                 from .pio/libdeps/esp3/ArduinoJson/src/ArduinoJson.h:9,
+                 from src/esp3/web_interface.cpp:11:
+.pio/libdeps/esp3/ArduinoJson/src/ArduinoJson/compatibility.hpp:63:58: note: declared here        
+ class ARDUINOJSON_DEPRECATED("use JsonDocument instead") StaticJsonDocument
+                                                          ^~~~~~~~~~~~~~~~~~
+src/esp3/web_interface.cpp: In lambda function:
+src/esp3/web_interface.cpp:68:9: warning: 'template<unsigned int N> class ArduinoJson::V704PB2::StaticJsonDocument' is deprecated: use JsonDocument instead [-Wdeprecated-declarations]
+         StaticJsonDocument<128> doc;
+         ^~~~~~~~~~~~~~~~~~
+In file included from .pio/libdeps/esp3/ArduinoJson/src/ArduinoJson.hpp:53,
+                 from .pio/libdeps/esp3/ArduinoJson/src/ArduinoJson.h:9,
+                 from src/esp3/web_interface.cpp:11:
+.pio/libdeps/esp3/ArduinoJson/src/ArduinoJson/compatibility.hpp:63:58: note: declared here        
+ class ARDUINOJSON_DEPRECATED("use JsonDocument instead") StaticJsonDocument
+                                                          ^~~~~~~~~~~~~~~~~~
+src/esp3/web_interface.cpp: In function 'void web_interface_broadcast_status(const LcncStatusPacket&)':
+src/esp3/web_interface.cpp:92:5: warning: 'template<unsigned int N> class ArduinoJson::V704PB2::StaticJsonDocument' is deprecated: use JsonDocument instead [-Wdeprecated-declarations]
+     StaticJsonDocument<256> doc;
      ^~~~~~~~~~~~~~~~~~
 In file included from .pio/libdeps/esp3/ArduinoJson/src/ArduinoJson.hpp:53,
                  from .pio/libdeps/esp3/ArduinoJson/src/ArduinoJson.h:9,
-                 from src/esp3/web_interface.cpp:9:
-.pio/libdeps/esp3/ArduinoJson/src/ArduinoJson/compatibility.hpp:63:58: note: declared here
+                 from src/esp3/web_interface.cpp:11:
+.pio/libdeps/esp3/ArduinoJson/src/ArduinoJson/compatibility.hpp:63:58: note: declared here        
  class ARDUINOJSON_DEPRECATED("use JsonDocument instead") StaticJsonDocument
                                                           ^~~~~~~~~~~~~~~~~~
-src/esp3/web_interface.cpp:59:58: warning: 'ArduinoJson::V704PB2::JsonObject ArduinoJson::V704PB2::JsonDocument::createNestedObject(TChar*) [with TChar = const char]' is deprecated: use doc[key].to<JsonObject>() instead [-Wdeprecated-declarations]
-     JsonObject payload = doc.createNestedObject("payload");
-                                                          ^
+src/esp3/web_interface.cpp:94:52: warning: 'ArduinoJson::V704PB2::JsonObject ArduinoJson::V704PB2::JsonDocument::createNestedObject(TChar*) [with TChar = const char]' is deprecated: use doc[key].to<JsonObject>() instead [-Wdeprecated-declarations]
+     auto payload = doc.createNestedObject("payload");
+                                                    ^
 In file included from .pio/libdeps/esp3/ArduinoJson/src/ArduinoJson.hpp:33,
                  from .pio/libdeps/esp3/ArduinoJson/src/ArduinoJson.h:9,
-                 from src/esp3/web_interface.cpp:9:
+                 from src/esp3/web_interface.cpp:11:
+.pio/libdeps/esp3/ArduinoJson/src/ArduinoJson/Document/JsonDocument.hpp:325:14: note: declared here
+   JsonObject createNestedObject(TChar* key) {
+              ^~~~~~~~~~~~~~~~~~
+src/esp3/web_interface.cpp: In function 'void web_interface_broadcast_live_pendant_status(uint32_t, int32_t, uint8_t, uint8_t)':
+src/esp3/web_interface.cpp:109:5: warning: 'template<unsigned int N> class ArduinoJson::V704PB2::StaticJsonDocument' is deprecated: use JsonDocument instead [-Wdeprecated-declarations]
+     StaticJsonDocument<128> doc;
+     ^~~~~~~~~~~~~~~~~~
+In file included from .pio/libdeps/esp3/ArduinoJson/src/ArduinoJson.hpp:53,
+                 from .pio/libdeps/esp3/ArduinoJson/src/ArduinoJson.h:9,
+                 from src/esp3/web_interface.cpp:11:
+.pio/libdeps/esp3/ArduinoJson/src/ArduinoJson/compatibility.hpp:63:58: note: declared here        
+ class ARDUINOJSON_DEPRECATED("use JsonDocument instead") StaticJsonDocument
+                                                          ^~~~~~~~~~~~~~~~~~
+src/esp3/web_interface.cpp:111:52: warning: 'ArduinoJson::V704PB2::JsonObject ArduinoJson::V704PB2::JsonDocument::createNestedObject(TChar*) [with TChar = const char]' is deprecated: use doc[key].to<JsonObject>() instead [-Wdeprecated-declarations]
+     auto payload = doc.createNestedObject("payload");
+                                                    ^
+In file included from .pio/libdeps/esp3/ArduinoJson/src/ArduinoJson.hpp:33,
+                 from .pio/libdeps/esp3/ArduinoJson/src/ArduinoJson.h:9,
+                 from src/esp3/web_interface.cpp:11:
 .pio/libdeps/esp3/ArduinoJson/src/ArduinoJson/Document/JsonDocument.hpp:325:14: note: declared here
    JsonObject createNestedObject(TChar* key) {
               ^~~~~~~~~~~~~~~~~~
 src/esp3/web_interface.cpp: In function 'void handle_ws_connect(AsyncWebSocketClient*)':
-src/esp3/web_interface.cpp:95:5: warning: 'template<unsigned int N> class ArduinoJson::V704PB2::StaticJsonDocument' is deprecated: use JsonDocument instead [-Wdeprecated-declarations]
-     StaticJsonDocument<2048> doc;
+src/esp3/web_interface.cpp:143:5: warning: 'template<unsigned int N> class ArduinoJson::V704PB2::StaticJsonDocument' is deprecated: use JsonDocument instead [-Wdeprecated-declarations]
+     StaticJsonDocument<512> doc;
      ^~~~~~~~~~~~~~~~~~
 In file included from .pio/libdeps/esp3/ArduinoJson/src/ArduinoJson.hpp:53,
                  from .pio/libdeps/esp3/ArduinoJson/src/ArduinoJson.h:9,
-                 from src/esp3/web_interface.cpp:9:
-.pio/libdeps/esp3/ArduinoJson/src/ArduinoJson/compatibility.hpp:63:58: note: declared here
+                 from src/esp3/web_interface.cpp:11:
+.pio/libdeps/esp3/ArduinoJson/src/ArduinoJson/compatibility.hpp:63:58: note: declared here        
  class ARDUINOJSON_DEPRECATED("use JsonDocument instead") StaticJsonDocument
                                                           ^~~~~~~~~~~~~~~~~~
-src/esp3/web_interface.cpp:99:5: warning: 'template<unsigned int N> class ArduinoJson::V704PB2::StaticJsonDocument' is deprecated: use JsonDocument instead [-Wdeprecated-declarations]
-     StaticJsonDocument<1536> payload_doc;
+src/esp3/web_interface.cpp:147:5: warning: 'template<unsigned int N> class ArduinoJson::V704PB2::StaticJsonDocument' is deprecated: use JsonDocument instead [-Wdeprecated-declarations]
+     StaticJsonDocument<512> cfg;
      ^~~~~~~~~~~~~~~~~~
 In file included from .pio/libdeps/esp3/ArduinoJson/src/ArduinoJson.hpp:53,
                  from .pio/libdeps/esp3/ArduinoJson/src/ArduinoJson.h:9,
-                 from src/esp3/web_interface.cpp:9:
-.pio/libdeps/esp3/ArduinoJson/src/ArduinoJson/compatibility.hpp:63:58: note: declared here
+                 from src/esp3/web_interface.cpp:11:
+.pio/libdeps/esp3/ArduinoJson/src/ArduinoJson/compatibility.hpp:63:58: note: declared here        
  class ARDUINOJSON_DEPRECATED("use JsonDocument instead") StaticJsonDocument
                                                           ^~~~~~~~~~~~~~~~~~
 src/esp3/web_interface.cpp: In function 'void handle_ws_data(uint8_t*, size_t)':
-src/esp3/web_interface.cpp:119:5: warning: 'template<unsigned int N> class ArduinoJson::V704PB2::StaticJsonDocument' is deprecated: use JsonDocument instead [-Wdeprecated-declarations]
-     StaticJsonDocument<1536> doc;
+src/esp3/web_interface.cpp:158:5: warning: 'template<unsigned int N> class ArduinoJson::V704PB2::StaticJsonDocument' is deprecated: use JsonDocument instead [-Wdeprecated-declarations]
+     StaticJsonDocument<512> doc;
      ^~~~~~~~~~~~~~~~~~
 In file included from .pio/libdeps/esp3/ArduinoJson/src/ArduinoJson.hpp:53,
                  from .pio/libdeps/esp3/ArduinoJson/src/ArduinoJson.h:9,
-                 from src/esp3/web_interface.cpp:9:
-.pio/libdeps/esp3/ArduinoJson/src/ArduinoJson/compatibility.hpp:63:58: note: declared here
+                 from src/esp3/web_interface.cpp:11:
+.pio/libdeps/esp3/ArduinoJson/src/ArduinoJson/compatibility.hpp:63:58: note: declared here        
  class ARDUINOJSON_DEPRECATED("use JsonDocument instead") StaticJsonDocument
                                                           ^~~~~~~~~~~~~~~~~~
-====================================================================== [FAILED] Took 96.91 seconds
+================================== [FAILED] 

@@ -24,6 +24,10 @@ extern "C"
      */
     extern PendantWebConfig pendant_web_cfg;
 
+    // Handwheel (encoder) configuration
+    extern bool encoder_inverted;
+    extern int16_t encoder_deadzone;
+
     /**
      * @brief Loads the configuration from NVS into the global `pendant_web_cfg` object.
      *
@@ -49,6 +53,10 @@ extern "C"
     void reset_pendant_to_defaults();
 
     void update_hmi_from_config();
+
+    // Load/save encoder settings
+    void load_encoder_config();
+    void save_encoder_config();
 
     /**
      * @brief A stub function for a factory test routine.
