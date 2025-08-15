@@ -7,10 +7,14 @@
 #include <WiFi.h>
 #include <LittleFS.h>
 #include <lvgl.h>
-#include <nvs_flash.h> // << Add this for NVS initialization
+#include <nvs_flash.h>
+
+#include <freertos/FreeRTOS.h>
+#include <freertos/queue.h>
+#include <freertos/task.h>
 
 // --- Core Application Headers ---
-#include "config_esp3.h" // Master config/include file
+#include "config_esp3.h"
 #include "persistence_esp3.h"
 #include "hmi_handler_esp3.h"
 #include "communication_esp3.h"
@@ -29,6 +33,9 @@ static constexpr unsigned long WIFI_CONNECT_TIMEOUT_MS = 10000;
 static PendantStatePacket outgoing_pendant_data;
 static LcncStatusPacket incoming_lcnc_data;
 
+// --- FreeRTOS Queue for Encoder Deltas ---
+QueueHandle_t encoderDeltaQueue = nullptr;
+
 // --- Forward Declarations ---
 static void initialize_core_systems();
 static void initialize_hmi_and_ui();
@@ -38,26 +45,61 @@ static void handle_core_tasks();
 static void handle_pendant_data_sending();
 static void handle_web_status_broadcast();
 
+// This is our new “robust” loop task:
+static void loopTask(void *pvParameters)
+{
+    int32_t diff;
+    while (true)
+    {
+        // wait up to 10 ms for a new delta
+        if (xQueueReceive(encoderDeltaQueue, &diff, pdMS_TO_TICKS(10)) == pdTRUE)
+        {
+            ESP_LOGI("HANDWHEEL", "Encoder Δ = %ld", diff);
+            // any other queued-driven business logic…
+        }
+        // pump LVGL and other periodic work
+        lv_timer_handler();
+        vTaskDelay(pdMS_TO_TICKS(1));
+    }
+}
+
 //================================================================================
 // SETUP
 //================================================================================
+
 void setup()
 {
     initialize_core_systems();
     initialize_hmi_and_ui();
     initialize_network_and_comms();
     web_interface_init();
+
+    // Create our encoder-delta queue
+    encoderDeltaQueue = xQueueCreate(
+        /* length */ 16,
+        /* item size */ sizeof(int32_t));
+
+    // Launch the loopTask on core 1 with priority 1
+    xTaskCreatePinnedToCore(
+        loopTask,
+        "loopTask",
+        /* stack depth */ 4 * 1024,
+        /* parameters */ nullptr,
+        /* priority */ 1,
+        /* handle */ nullptr,
+        /* core */ 1);
+
     Serial.println("--- Setup Complete ---");
 }
 
 //================================================================================
 // LOOP
 //================================================================================
+
 void loop()
 {
-    handle_core_tasks();
-    handle_pendant_data_sending();
-    handle_web_status_broadcast();
+    // Nothing here—everything is now driven by FreeRTOS tasks.
+    vTaskDelay(pdMS_TO_TICKS(1000));
 }
 
 //================================================================================
@@ -66,31 +108,30 @@ void loop()
 
 static void initialize_core_systems()
 {
-    // 0) Initialize NVS — required before using Preferences
+    // 0) NVS init
     esp_err_t ret = nvs_flash_init();
-    if (ret == ESP_ERR_NVS_NO_FREE_PAGES || ret == ESP_ERR_NVS_NEW_VERSION_FOUND)
+    if (ret == ESP_ERR_NVS_NO_FREE_PAGES ||
+        ret == ESP_ERR_NVS_NEW_VERSION_FOUND)
     {
-        // NVS partition was truncated, erase and retry
         nvs_flash_erase();
         ret = nvs_flash_init();
     }
     if (ret != ESP_OK)
     {
-        Serial.printf("FATAL: NVS init failed (%d). Halting.\n", ret);
+        Serial.printf("FATAL: NVS init failed (%d)\n", ret);
         while (true)
         {
             yield();
         }
     }
 
-    // 1) Serial on 115200 so we see boot messages
     Serial.begin(115200);
     Serial.println("\n--- ESP3 Pendant Booting ---");
 
-    // 2) Mount (or format on first run) LittleFS
+    // 1) LittleFS
     if (!LittleFS.begin(true))
     {
-        Serial.println("FATAL: LittleFS mount failed. Halting.");
+        Serial.println("FATAL: LittleFS mount failed");
         while (true)
         {
             yield();
@@ -121,7 +162,6 @@ static void initialize_network_and_comms()
         delay(500);
         Serial.print(".");
     }
-
     if (WiFi.status() == WL_CONNECTED)
     {
         Serial.printf("\nWi-Fi Connected. IP: %s\n",
@@ -145,9 +185,7 @@ static void on_lcnc_data_received(const LcncStatusPacket &msg)
 
 static void handle_core_tasks()
 {
-    lv_timer_handler();
-    hmi_pendant_task();
-    web_interface_loop();
+    // No longer called every cycle—it lives in loopTask now
 }
 
 static void handle_pendant_data_sending()

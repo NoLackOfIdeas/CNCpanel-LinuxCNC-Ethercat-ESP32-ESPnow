@@ -15,6 +15,7 @@
 static LGFX tft;
 static lv_display_t *disp;
 lv_group_t *g_default_group = nullptr;
+extern QueueHandle_t encoderDeltaQueue;
 
 // --- LVGL Callbacks ---
 
@@ -52,22 +53,23 @@ static void touchpad_read_cb(lv_indev_t *indev,
     }
 }
 
-static void encoder_read_cb(lv_indev_t *indev,
-                            lv_indev_data_t *data)
+static void encoder_read_cb(lv_indev_t *indev, lv_indev_data_t *data)
 {
     (void)indev;
     int32_t diff = get_handwheel_diff();
-    // apply inversion
+    // apply inversion and deadzone as before…
     if (encoder_inverted)
-    {
         diff = -diff;
-    }
-    // apply deadzone
     if (abs(diff) < encoder_deadzone)
-    {
         diff = 0;
-    }
+
+    // feed LVGL so the UI still moves
     data->enc_diff = diff;
+
+    // queue it for later logging/processing
+    BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+    xQueueSendFromISR(encoderDeltaQueue, &diff, &xHigherPriorityTaskWoken);
+    portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
 }
 
 // --- Main Initialization Function ---

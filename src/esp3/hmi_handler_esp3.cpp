@@ -12,6 +12,15 @@ using namespace Pinout;
 #include <Arduino.h>
 #include <ESP32Encoder.h>
 
+// -----------------------------------------------------------------------------
+// Encoder instances must live in global scope to avoid PCNT/FreeRTOS before-init
+// -----------------------------------------------------------------------------
+static ESP32Encoder feedEnc;
+static ESP32Encoder rapidEnc;
+static ESP32Encoder spindleEnc;
+
+// -----------------------------------------------------------------------------
+
 // --- Constants ---
 static constexpr unsigned long KEY_DEBOUNCE_MS = 50;
 
@@ -35,6 +44,7 @@ struct KeyInfo
 #if PENDANT_HAS_BUTTON_MATRIX
 static KeyInfo key_matrix[PENDANT_MATRIX_ROWS][PENDANT_MATRIX_COLS];
 #endif
+
 static uint32_t current_button_bitmask = 0;
 static ESP32Encoder handwheel;
 static int32_t handwheel_position = 0;
@@ -42,100 +52,93 @@ static uint8_t selected_axis = 0;
 static uint8_t selected_step = 0;
 static bool data_changed_flag = false;
 
+// For get_handwheel_diff()
+static int32_t last_count = 0;
+static volatile int16_t handwheel_diff = 0;
+
 // --- Forward declarations for internal functions ---
 static void update_keypad_states();
 static void read_encoders();
 static void read_selectors();
 
 //================================================================================
-// PUBLIC API FUNCTIONS (Implementations are now correctly here)
+// PUBLIC API FUNCTIONS
 //================================================================================
 
 void hmi_pendant_init()
 {
-
-    // ------------------------------------------------------------------------
-    // Debug: Print all GPIO assignments before configurations
-    // ------------------------------------------------------------------------
+    Serial.begin(115200);
     Serial.println("\n--- PIN MAP DUMP ---");
+
+#if PENDANT_HAS_BUTTON_MATRIX
     Serial.printf("Rows:   ");
     for (size_t i = 0; i < PENDANT_MATRIX_ROWS; ++i)
-    {
         Serial.printf("%u ", PENDANT_ROW_PINS[i]);
-    }
-    Serial.println();
-    +Serial.printf("Cols:   ");
+
+    Serial.printf("\nCols:   ");
     for (size_t i = 0; i < PENDANT_MATRIX_COLS; ++i)
-    {
         Serial.printf("%u ", PENDANT_COL_PINS[i]);
-    }
-    Serial.println();
-    Serial.printf("LEDs:   ");
+#endif
+
+#if PENDANT_HAS_LEDS
+    Serial.printf("\nLEDs:   ");
     for (size_t i = 0; i < NUM_PENDANT_LEDS; ++i)
-    {
         Serial.printf("%u ", PENDANT_LED_PINS[i]);
-    }
-    Serial.println();
+#endif
 
 #if PENDANT_HAS_FEED_OVERRIDE_ENCODER
-    Serial.printf("FEED A      -> GPIO %u\n", Pinout::PIN_FEED_OVR_A);
-    Serial.printf("FEED B      -> GPIO %u\n", Pinout::PIN_FEED_OVR_B);
+    Serial.printf("\nFEED A      -> GPIO %u\n", PIN_FEED_OVR_A);
+    Serial.printf("FEED B      -> GPIO %u\n", PIN_FEED_OVR_B);
 #endif
 
 #if PENDANT_HAS_RAPID_OVERRIDE_ENCODER
-    Serial.printf("RAPID A     -> GPIO %u\n", Pinout::PIN_RAPID_OVR_A);
-    Serial.printf("RAPID B     -> GPIO %u\n", Pinout::PIN_RAPID_OVR_B);
+    Serial.printf("RAPID A     -> GPIO %u\n", PIN_RAPID_OVR_A);
+    Serial.printf("RAPID B     -> GPIO %u\n", PIN_RAPID_OVR_B);
 #endif
 
 #if PENDANT_HAS_SPINDLE_OVERRIDE_ENCODER
-    Serial.printf("SPINDLE A   -> GPIO %u\n", Pinout::PIN_SPINDLE_OVR_A);
-    Serial.printf("SPINDLE B   -> GPIO %u\n", Pinout::PIN_SPINDLE_OVR_B);
+    Serial.printf("SPINDLE A   -> GPIO %u\n", PIN_SPINDLE_OVR_A);
+    Serial.printf("SPINDLE B   -> GPIO %u\n", PIN_SPINDLE_OVR_B);
 #endif
-    Serial.println("--------------------------------\n");
+
+    Serial.println("\n--------------------------------\n");
 
     // 1) Feed-override encoder
 #if PENDANT_HAS_FEED_OVERRIDE_ENCODER
-    Serial.printf("Configuring feed-override A on GPIO %u\n", Pinout::PIN_FEED_OVR_A);
-    Serial.printf("Configuring feed-override B on GPIO %u\n", Pinout::PIN_FEED_OVR_B);
-    pinMode(Pinout::PIN_FEED_OVR_A, INPUT_PULLUP);
-    pinMode(Pinout::PIN_FEED_OVR_B, INPUT_PULLUP);
+    pinMode(PIN_FEED_OVR_A, INPUT_PULLUP);
+    pinMode(PIN_FEED_OVR_B, INPUT_PULLUP);
 
-    static ESP32Encoder feedEnc;
     ESP32Encoder::useInternalWeakPullResistors = puType::up;
-    feedEnc.attachFullQuad(Pinout::PIN_FEED_OVR_A, Pinout::PIN_FEED_OVR_B);
+    feedEnc.attachFullQuad(PIN_FEED_OVR_A, PIN_FEED_OVR_B);
     feedEnc.clearCount();
 #endif
 
     // 2) Rapid-override encoder
 #if PENDANT_HAS_RAPID_OVERRIDE_ENCODER
-    Serial.printf("Configuring rapid-override A on GPIO %u\n", Pinout::PIN_RAPID_OVR_A);
-    Serial.printf("Configuring rapid-override B on GPIO %u\n", Pinout::PIN_RAPID_OVR_B);
-    pinMode(Pinout::PIN_RAPID_OVR_A, INPUT_PULLUP);
-    pinMode(Pinout::PIN_RAPID_OVR_B, INPUT_PULLUP);
+    pinMode(PIN_RAPID_OVR_A, INPUT_PULLUP);
+    pinMode(PIN_RAPID_OVR_B, INPUT_PULLUP);
 
-    static ESP32Encoder rapidEnc;
     ESP32Encoder::useInternalWeakPullResistors = puType::up;
-    rapidEnc.attachFullQuad(Pinout::PIN_RAPID_OVR_A, Pinout::PIN_RAPID_OVR_B);
+    rapidEnc.attachFullQuad(PIN_RAPID_OVR_A, PIN_RAPID_OVR_B);
     rapidEnc.clearCount();
 #endif
 
     // 3) Spindle-override encoder
 #if PENDANT_HAS_SPINDLE_OVERRIDE_ENCODER
-    Serial.printf("Configuring spindle-override A on GPIO %u\n", Pinout::PIN_SPINDLE_OVR_A);
-    Serial.printf("Configuring spindle-override B on GPIO %u\n", Pinout::PIN_SPINDLE_OVR_B);
-    pinMode(Pinout::PIN_SPINDLE_OVR_A, INPUT_PULLUP);
-    pinMode(Pinout::PIN_SPINDLE_OVR_B, INPUT_PULLUP);
+    pinMode(PIN_SPINDLE_OVR_A, INPUT_PULLUP);
+    pinMode(PIN_SPINDLE_OVR_B, INPUT_PULLUP);
 
-    static ESP32Encoder spindleEnc;
     ESP32Encoder::useInternalWeakPullResistors = puType::up;
-    spindleEnc.attachFullQuad(Pinout::PIN_SPINDLE_OVR_A, Pinout::PIN_SPINDLE_OVR_B);
+    spindleEnc.attachFullQuad(PIN_SPINDLE_OVR_A, PIN_SPINDLE_OVR_B);
     spindleEnc.clearCount();
 #endif
 
     // 4) Handwheel encoder
+#if PENDANT_HAS_HANDWHEEL_ENCODER
     ESP32Encoder::useInternalWeakPullResistors = puType::up;
-    handwheel.attachFullQuad(Pinout::HW_ENCODER_A, Pinout::HW_ENCODER_B);
+    handwheel.attachFullQuad(HW_ENCODER_A, HW_ENCODER_B);
     handwheel.clearCount();
+#endif
 
     // 5) Button matrix
 #if PENDANT_HAS_BUTTON_MATRIX
@@ -190,14 +193,13 @@ void get_pendant_data(PendantStatePacket *out)
 
 void update_hmi_from_lcnc(const LcncStatusPacket &data)
 {
-    // Pass the data packet to the UI bridge, which handles all screen updates.
     ui_bridge_update_from_lcnc(data);
 
-// Handle physical LEDs based on config
 #if PENDANT_HAS_LEDS
-    for (size_t i = 0; i < pendant_web_cfg.led_bindings.size() && i < NUM_PENDANT_LEDS; ++i)
+    for (size_t i = 0;
+         i < pendant_web_cfg.led_bindings.size() && i < NUM_PENDANT_LEDS;
+         ++i)
     {
-        const auto &bind = pendant_web_cfg.led_bindings[i];
         bool on = false;
         // (Your LED logic here)
         digitalWrite(PENDANT_LED_PINS[i], on ? HIGH : LOW);
@@ -205,7 +207,10 @@ void update_hmi_from_lcnc(const LcncStatusPacket &data)
 #endif
 }
 
-void get_pendant_live_status(uint32_t &btn_states, int32_t &hw_pos, uint8_t &axis_pos, uint8_t &step_pos)
+void get_pendant_live_status(uint32_t &btn_states,
+                             int32_t &hw_pos,
+                             uint8_t &axis_pos,
+                             uint8_t &step_pos)
 {
     btn_states = current_button_bitmask;
     hw_pos = handwheel_position;
@@ -213,29 +218,106 @@ void get_pendant_live_status(uint32_t &btn_states, int32_t &hw_pos, uint8_t &axi
     step_pos = selected_step;
 }
 
+// Returns the delta since last call and stores it internally
 int32_t get_handwheel_diff()
 {
-    static int32_t last_read_handwheel = 0;
-    long current_pos = handwheel.getCount();
-    int32_t diff = current_pos - last_read_handwheel;
-    last_read_handwheel = current_pos;
+    int32_t current = handwheel.getCount();
+    int32_t diff = current - last_count;
+    last_count = current;
+    handwheel_diff = diff;
     return diff;
 }
 
 //================================================================================
 // INTERNAL HELPER FUNCTIONS
 //================================================================================
+
 static void update_keypad_states()
 {
-    // (Implementation)
+#if PENDANT_HAS_BUTTON_MATRIX
+    // Drive one row low at a time, read columns
+    for (size_t r = 0; r < PENDANT_MATRIX_ROWS; ++r)
+    {
+        // Set all rows HIGH, then drive this one LOW
+        for (size_t rr = 0; rr < PENDANT_MATRIX_ROWS; ++rr)
+            digitalWrite(PENDANT_ROW_PINS[rr], rr == r ? LOW : HIGH);
+        delayMicroseconds(20);
+
+        // Read each column
+        for (size_t c = 0; c < PENDANT_MATRIX_COLS; ++c)
+        {
+            bool raw = (digitalRead(PENDANT_COL_PINS[c]) == LOW);
+            KeyInfo &ki = key_matrix[r][c];
+
+            // Debounce edge detection
+            if (raw != ki.last_raw)
+            {
+                ki.last_raw = raw;
+                ki.last_change_ms = millis();
+            }
+            else if (millis() - ki.last_change_ms >= KEY_DEBOUNCE_MS)
+            {
+                uint8_t bitIndex = r * PENDANT_MATRIX_COLS + c;
+
+                if (raw && ki.state == KeyState::IDLE)
+                {
+                    ki.state = KeyState::PRESSED;
+                    data_changed_flag = true;
+                    if (bitIndex < 32)
+                        current_button_bitmask |= (1u << bitIndex);
+                }
+                else if (!raw && (ki.state == KeyState::PRESSED || ki.state == KeyState::HELD))
+                {
+                    ki.state = KeyState::RELEASED;
+                    data_changed_flag = true;
+                    if (bitIndex < 32)
+                        current_button_bitmask &= ~(1u << bitIndex);
+                }
+                else if (ki.state == KeyState::PRESSED)
+                {
+                    ki.state = KeyState::HELD;
+                }
+            }
+        }
+    }
+
+    // Return all rows to HIGH
+    for (size_t rr = 0; rr < PENDANT_MATRIX_ROWS; ++rr)
+        digitalWrite(PENDANT_ROW_PINS[rr], HIGH);
+#endif
 }
 
 static void read_encoders()
 {
-    // (Implementation)
+    int32_t diff = get_handwheel_diff();
+    if (diff != 0)
+    {
+        handwheel_position += diff;
+        data_changed_flag = true;
+    }
 }
 
 static void read_selectors()
 {
-    // (Implementation)
+#if defined(AXIS_SELECTOR_ADC)
+    uint32_t rawA = analogRead(AXIS_SELECTOR_ADC);
+    uint8_t maxAxes = pendant_web_cfg.num_dro_axes;
+    uint8_t newAxis = (rawA * maxAxes) / 4096;
+    if (newAxis != selected_axis)
+    {
+        selected_axis = newAxis;
+        data_changed_flag = true;
+    }
+#endif
+
+#if defined(STEP_SELECTOR_ADC)
+    uint32_t rawS = analogRead(STEP_SELECTOR_ADC);
+    constexpr uint8_t NUM_STEPS = 4;
+    uint8_t newStep = (rawS * NUM_STEPS) / 4096;
+    if (newStep != selected_step)
+    {
+        selected_step = newStep;
+        data_changed_flag = true;
+    }
+#endif
 }
