@@ -1,4 +1,4 @@
-# IntegratedTHIS IS WORK-IN-PROGRESS --> NOT fully working yet!!!
+# THIS IS WORK-IN-PROGRESS --> NOT fully working yet!!!
 
 # Integrated Dual-ESP32 HMI for LinuxCNC
 
