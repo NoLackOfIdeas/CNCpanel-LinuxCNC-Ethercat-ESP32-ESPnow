@@ -14,6 +14,7 @@
 // IMPORTANT: Replace this with the actual MAC address of your receiver.
 static uint8_t peer_mac_address[] = {0xAA, 0xBB, 0xCC, 0xDD, 0xEE, 0xFF};
 
+
 // Pointer to the callback function provided by the main application.
 static void (*on_receive_callback)(const LcncStatusPacket &msg) = nullptr;
 

@@ -73,6 +73,7 @@ static void encoder_read_cb(lv_indev_t *indev, lv_indev_data_t *data)
 }
 
 // --- Main Initialization Function ---
+bool lvgl_initialized = false;
 
 void lvgl_driver_init()
 {
@@ -140,4 +141,7 @@ void lvgl_driver_init()
     g_default_group = lv_group_create();
     lv_group_set_default(g_default_group);
     lv_indev_set_group(indev_encoder, g_default_group);
+
+    lvgl_initialized = true;
+    Serial.println("DEBUG: LVGL initialization complete");
 }

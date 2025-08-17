@@ -10,6 +10,9 @@
 
 #include <lvgl.h> // Provides all necessary LVGL types (lv_group_t, etc.)
 
+extern bool lvgl_initialized;
+extern lv_group_t *g_default_group;
+
 #ifdef __cplusplus
 extern "C"
 {
@@ -20,7 +23,6 @@ extern "C"
      *
      * Widgets must be added to this group to be navigable by the handwheel.
      */
-    extern lv_group_t *g_default_group;
 
     /**
      * @brief Initializes the LVGL display and input drivers using LovyanGFX.

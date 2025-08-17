@@ -49,16 +49,22 @@ static void handle_web_status_broadcast();
 static void loopTask(void *pvParameters)
 {
     int32_t diff;
+
+    // Wait for LVGL to be ready
+    while (!lvgl_initialized)
+    {
+        vTaskDelay(pdMS_TO_TICKS(100));
+    }
+    Serial.println("DEBUG: loopTask starting - LVGL ready");
+
     while (true)
     {
-        // wait up to 10 ms for a new delta
         if (xQueueReceive(encoderDeltaQueue, &diff, pdMS_TO_TICKS(10)) == pdTRUE)
         {
-            ESP_LOGI("HANDWHEEL", "Encoder Δ = %ld", diff);
-            // any other queued-driven business logic…
+            ESP_LOGI("HANDWHEEL", "Encoder delta = %ld", diff);
         }
-        // pump LVGL and other periodic work
-        lv_timer_handler();
+
+        lv_timer_handler(); // Now safe to call
         vTaskDelay(pdMS_TO_TICKS(1));
     }
 }
@@ -70,6 +76,11 @@ static void loopTask(void *pvParameters)
 void setup()
 {
     initialize_core_systems();
+
+    // Add PSRAM check right here:
+    Serial.printf("PSRAM size: %d bytes\n", ESP.getPsramSize());
+    Serial.printf("Free PSRAM: %d bytes\n", ESP.getFreePsram());
+
     initialize_hmi_and_ui();
     initialize_network_and_comms();
     web_interface_init();
@@ -151,14 +162,19 @@ static void initialize_hmi_and_ui()
 
 static void initialize_network_and_comms()
 {
+    Serial.println("DEBUG: Starting WiFi setup...");
     WiFi.mode(WIFI_STA);
+    Serial.println("DEBUG: WiFi mode set to STA");
+
     WiFi.begin(Pinout::WIFI_SSID, Pinout::WIFI_PASSWORD);
+    Serial.println("DEBUG: WiFi.begin() called");
 
     unsigned long start = millis();
     Serial.print("Connecting to Wi-Fi");
     while (WiFi.status() != WL_CONNECTED &&
            millis() - start < WIFI_CONNECT_TIMEOUT_MS)
     {
+        Serial.println("DEBUG: In WiFi delay loop"); // ← Add this
         delay(500);
         Serial.print(".");
     }

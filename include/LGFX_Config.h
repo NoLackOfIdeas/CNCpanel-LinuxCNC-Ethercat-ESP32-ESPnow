@@ -35,7 +35,7 @@ public:
             cfg.freq_read = 16000000;
             cfg.pin_sclk = DisplayConfig::PIN_LCD_SCLK;
             cfg.pin_mosi = DisplayConfig::PIN_LCD_MOSI;
-            cfg.pin_miso = DisplayConfig::PIN_LCD_MISO;
+            cfg.pin_miso = -1; // only for headless debugging, set back to DisplayConfig::PIN_LCD_MISO;
             cfg.dma_channel = SPI_DMA_CH_AUTO;
             _bus_instance.config(cfg);
             _panel_instance.setBus(&_bus_instance);
@@ -54,7 +54,7 @@ public:
             cfg.offset_rotation = 0;
             cfg.dummy_read_pixel = 8;
             cfg.dummy_read_bits = 1;
-            cfg.readable = true;
+            cfg.readable = false; // -->just for debugging. Set back to true
             cfg.invert = true;
             cfg.rgb_order = true;
             cfg.dlen_16bit = false;
